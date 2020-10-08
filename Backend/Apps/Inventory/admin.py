@@ -7,7 +7,6 @@ class ElementAdmin(admin.TabularInline):
     fk_name = 'reserve'
 
 class ReserveAdmin(admin.ModelAdmin):
-
     inlines = (ElementAdmin,)
 
 admin.site.register(Schedule)

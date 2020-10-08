@@ -1,0 +1,5 @@
+# Robotarium
+**.pyc
+**/migrations/*
+Pipfile
+Backend/db.sqlite3

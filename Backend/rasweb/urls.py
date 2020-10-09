@@ -17,13 +17,13 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include, url
 
-from Apps.User.views import (SignUp, SignIn, LogOut)
+from Apps.User import urls as user_urls
+
+url_base = 'coco-api/v1.0/'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    #User
-    path('signup/', SignUp.as_view(), name='signup'),
-    path('login/', SignIn.as_view(), name='login'),
-    path('Logout/', LogOut.as_view(), name='logout'),
+    
+    #User model
+    path(url_base, include(user_urls)),
 ]

@@ -1,4 +1,4 @@
-# rasweb_front
+# rasweb-frontend
 
 ## Project setup
 ```

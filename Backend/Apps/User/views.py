@@ -1,3 +1,5 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.http import JsonResponse
 
 from django.views.generic import TemplateView
@@ -7,10 +9,11 @@ from django.contrib.auth.models import User
 from .models import *
 from django.contrib.auth import authenticate, login
 
+from ..Chat.models import Message
+
 
 class SignUp(TemplateView):
     def get(self, request, **kwargs):  # change to Post Method
-
         try:
             username = self.request.GET["Username"]
             email = self.request.GET["Email"]
@@ -79,17 +82,42 @@ class SignIn(TemplateView):
         try:
             username = request.GET["Username"]
             password = request.GET["Password"]
-            
+
             user_to_authenticate = authenticate(
                 username=username, password=password)
             login(request, user_to_authenticate)
-            #http://127.0.0.1:8000/login/?Username=pipe&Password=Coco_F13280212
+            # http://127.0.0.1:8000/login/?Username=pipe&Password=Coco_F13280212
             return JsonResponse({
                 'Authenticated': True
             })
 
         except:
-            return JsonResponse({'Authenticated': False,})
+            return JsonResponse({'Authenticated': False, })
+
+
+class NavBar(TemplateView): #, LoginRequiredMixin):
+    #login_url = '/'
+
+    def get(self, request, **kwargs):
+        #user = request.user
+        user = User.objects.get(id=1)
+        try:
+            profile_picture = UserProfilePhoto.objects.get(
+                user_id=user.pk).profile_picture.url
+        except:
+            profile_picture = ''
+        unread_messages = Message.objects.filter(
+            (Q(conversation__owner_id=request.user.pk) |
+             Q(conversation__opponent_id=request.user.pk)),
+            read=False
+        ).exists()
+        unread_notifications = True
+        return JsonResponse({
+            'name': user.username,
+            'profile_picture': profile_picture,
+            'unread_messages': unread_messages,
+            'unread_notifications': unread_notifications
+        })
 
 
 class LogOut(LogoutView):

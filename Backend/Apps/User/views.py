@@ -110,15 +110,40 @@ class NavBar(TemplateView): #, LoginRequiredMixin):
             (Q(conversation__owner_id=request.user.pk) |
              Q(conversation__opponent_id=request.user.pk)),
             read=False
-        ).exists()
-        unread_notifications = True
+        ).count()
+        unread_notifications = 3
         return JsonResponse({
-            'name': user.username,
+            'name': user.first_name + ' ' + user.last_name,
             'profile_picture': profile_picture,
             'unread_messages': unread_messages,
             'unread_notifications': unread_notifications
         })
 
+
+class UsersList(TemplateView):
+    def get(self, request, **kwargs):
+        #user = request.user
+        domain = "http://127.0.0.1:8000"
+        users_list = []
+        users_query = User.objects.all()
+
+        for user in users_query:
+            user_dic = {}
+            user_dic["name"] = "{0} {1}".format(user.first_name, user.last_name).strip(" ")
+            user_dic["username"] = user.username
+            user_dic["online"] = UserOnline.objects.get(user_id=user.pk).is_online
+
+            try:
+                profile_picture = domain + UserProfilePhoto.objects.get(user_id=user.pk).profile_picture.url
+            except:
+                profile_picture = ''
+            user_dic["profile_picture"] = profile_picture
+            if user_dic["online"]:
+                user_dic["color"] = "green"
+            else:
+                user_dic["color"]="grey"
+            users_list.append(user_dic)
+        return JsonResponse(users_list, safe=False)
 
 class LogOut(LogoutView):
     pass

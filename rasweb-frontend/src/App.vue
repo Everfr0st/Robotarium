@@ -7,14 +7,14 @@
           <v-col sm="6" md="3" color="primary">
             <LeftAside/>
           </v-col>
-          <v-col md="6" color="red">
-            2
+          <v-col sm="12" md="6" color="red">
+            <router-view/>
           </v-col>
-          <v-col md="3" color="green">
+          <v-col class="pa-0" sm="12" md="3" lg="3" color="green">
             <RightAside/>
           </v-col>
         </v-row>
-        
+        <UserDetailDialog/>
       </v-container>
     </v-main>
   </v-app>
@@ -27,6 +27,7 @@
 import LeftAside from "@/components/LeftAside.vue";
 import RightAside from "@/components/RightAside.vue";
 import NavBar from "@/components/NavBar.vue";
+import UserDetailDialog from "@/components/UserDetailDialog.vue";
 
 
 
@@ -36,7 +37,8 @@ export default {
   components: {
     NavBar,
     LeftAside,
-    RightAside
+    RightAside,
+    UserDetailDialog
   },
 
   data: () => ({

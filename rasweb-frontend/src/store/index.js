@@ -11,8 +11,11 @@ export default new Vuex.Store({
     online: '',
   },
   mutations: {
-    setAccountInfo(parameter){
-      console.log(parameter)
+    setAccountInfo(state,parameter){
+      state.name = parameter.name;
+      state.username = parameter.username;
+      state.profile_picture = parameter.profile_picture;
+      state.online = parameter.color;
     }
   },
   actions: {

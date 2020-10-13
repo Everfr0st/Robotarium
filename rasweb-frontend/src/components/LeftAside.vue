@@ -35,7 +35,7 @@ export default {
       {
         title: "Inventario",
         icon: "mdi-store",
-        link: "About",
+        link: "Inventory",
       },
       {
         title: "Robotarium",

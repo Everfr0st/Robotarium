@@ -9,5 +9,6 @@ urlpatterns = [
     path('login/', SignIn.as_view(), name='login'),
     path('logout/', LogOut.as_view(), name='logout'),
     path('navbar-info/', NavBar.as_view(), name='navbar_info'),
-    path('users-list/', UsersList.as_view(), name='users_list')
+    path('users-list/', UsersList.as_view(), name='users_list'),
+    path('user-detail', UserDetail.as_view(), name='user_detail')
 ]

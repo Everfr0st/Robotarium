@@ -10,7 +10,6 @@ url_base = 'coco-api/v1.0/'
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
-
                   # User model
                   path(url_base, include(user_urls)),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

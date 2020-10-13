@@ -14,7 +14,7 @@
       
         <template  v-for="(user, index) in users">
           <v-list-item :key="index" class="user-list" 
-          @click="setAccountInfo(user.name)">
+          @click="setAccountInfo(user)">
             <v-badge
               bordered
               bottom
@@ -27,7 +27,8 @@
                 <v-img :src="user.profile_picture"></v-img>
               </v-list-item-avatar>
               <v-list-item-avatar v-else color="primary">
-                <span style="color: white">US</span>
+                <span v-if="user.name" style="color: white">{{user.name.split(" ")[0].slice(0,1)}}{{user.name.split(" ")[1].slice(0,1)}}</span>
+                <span v-else style="color: white">{{user.username.slice(0,2).toUpperCase()}}</span>
               </v-list-item-avatar>
             </v-badge>
 
@@ -80,6 +81,7 @@ export default {
     this.users = response;
     this.loaded = true;
   },
+ 
   
 };
 </script>

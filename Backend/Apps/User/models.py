@@ -22,7 +22,7 @@ class UserProfilePhoto(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    carreer = models.CharField(max_length=30)
+    career = models.CharField(max_length=30)
     semester = models.IntegerField()
 
 

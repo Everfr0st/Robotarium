@@ -6,6 +6,8 @@ from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
 
 from django.contrib.auth.models import User
+
+from .auxmethods import get_semester_name
 from .models import *
 from django.contrib.auth import authenticate, login
 
@@ -95,11 +97,11 @@ class SignIn(TemplateView):
             return JsonResponse({'Authenticated': False, })
 
 
-class NavBar(TemplateView): #, LoginRequiredMixin):
-    #login_url = '/'
+class NavBar(TemplateView):  # , LoginRequiredMixin):
+    # login_url = '/'
 
     def get(self, request, **kwargs):
-        #user = request.user
+        # user = request.user
         user = User.objects.get(id=1)
         try:
             profile_picture = UserProfilePhoto.objects.get(
@@ -115,14 +117,14 @@ class NavBar(TemplateView): #, LoginRequiredMixin):
         return JsonResponse({
             'name': user.first_name + ' ' + user.last_name,
             'profile_picture': profile_picture,
-            'unread_messages': unread_messages,
+            'unread_messages': unread_messages + 1,
             'unread_notifications': unread_notifications
         })
 
 
 class UsersList(TemplateView):
     def get(self, request, **kwargs):
-        #user = request.user
+        # user = request.user
         domain = "http://127.0.0.1:8000"
         users_list = []
         users_query = User.objects.all()
@@ -141,9 +143,35 @@ class UsersList(TemplateView):
             if user_dic["online"]:
                 user_dic["color"] = "green"
             else:
-                user_dic["color"]="grey"
+                user_dic["color"] = "grey"
             users_list.append(user_dic)
         return JsonResponse(users_list, safe=False)
+
+
+class UserDetail(TemplateView):
+    def get(self, request, **kwargs):
+        username = request.GET["username"]
+        first_element = ''
+        second_element = ''
+
+
+        try:
+            user_is_teacher = Teacher.objects.get(user__username=username)
+            first_element = "Departamento de " + user_is_teacher.department
+            second_element = "Trabaja desde " + str(user_is_teacher.date_start)
+        except:
+            try:
+                user_is_student = Student.objects.get(user__username=username)
+                first_element = "Estudiante de -" + user_is_student.career
+                second_element = get_semester_name(user_is_student.semester)
+            except:
+                print("Error")
+
+        return JsonResponse({
+            'first_element': first_element,
+            'second_element': second_element}
+        )
+
 
 class LogOut(LogoutView):
     pass

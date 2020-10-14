@@ -15,7 +15,7 @@
           color="accent"
           overlap
         >
-          <v-icon> mdi-comment-text </v-icon>
+          <v-icon> mdi-comment-text-multiple </v-icon>
         </v-badge>
       </v-btn>
       <v-btn fab text>

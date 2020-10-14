@@ -4,7 +4,7 @@
       <v-flex v-for="(item, index) in elements" :key="index">
         <v-btn
           color="primary secondary--text"
-          class="ma-2 text-left"
+          class="ma-2"
           text
           block
           elevation="2"
@@ -12,10 +12,13 @@
           exact
           rounded
         >
-          <v-icon left>{{ item.icon }}</v-icon>
-          <span>
-            <h2>{{ item.title }}</h2>
-          </span>
+          <v-row  class="pa-4">
+            <h2>
+<v-icon left>{{ item.icon }}</v-icon>
+              {{ item.title }}   
+            </h2>
+                
+          </v-row>
         </v-btn>
       </v-flex>
     </v-layout>
@@ -39,17 +42,16 @@ export default {
       },
       {
         title: "Robotarium",
-        icon: "mdi-comment-text",
+        icon: "mdi-robot",
         link: "Robotarium",
       },
     ],
-    toggle_exclusive: undefined,
   }),
 };
 </script>
 
 <style scoped>
-.btn-menu{
+.btn-menu {
   background-color: rgba(190, 7, 7, 0.4);
 }
 </style>

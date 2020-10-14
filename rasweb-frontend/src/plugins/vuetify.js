@@ -19,7 +19,6 @@ export default new Vuetify({
       },
     },
   },
-  iconfont: 'md',
     lang: {
       locales: { es },
       current: 'es',

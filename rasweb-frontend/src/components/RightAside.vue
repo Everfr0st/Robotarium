@@ -20,7 +20,7 @@
               class="user-list"
               :id="'user_' + user.username"
               @mouseenter="setAccountInfo(user); showDialog();"
-              @click="setChatInfo([user,index]); addChat2List(index)"
+              @click="addChat2List(user)"
             >
               <v-badge
                 bordered

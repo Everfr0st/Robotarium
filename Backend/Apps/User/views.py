@@ -115,6 +115,7 @@ class NavBar(TemplateView):  # , LoginRequiredMixin):
         ).count()
         unread_notifications = 3
         return JsonResponse({
+            'username': user.username,
             'name': user.first_name + ' ' + user.last_name,
             'profile_picture': profile_picture,
             'unread_messages': unread_messages + 1,
@@ -130,10 +131,12 @@ class UsersList(TemplateView):
         users_query = User.objects.all()
 
         for user in users_query:
-            user_dic = {}
-            user_dic["name"] = "{0} {1}".format(user.first_name, user.last_name).strip(" ")
-            user_dic["username"] = user.username
-            user_dic["online"] = UserOnline.objects.get(user_id=user.pk).is_online
+            user_dic = {
+                "name": "{0} {1}".format(user.first_name,
+                                         user.last_name).strip(" "),
+                "username": user.username,
+                "online": UserOnline.objects.get(user_id=user.pk).is_online
+            }
 
             try:
                 profile_picture = domain + UserProfilePhoto.objects.get(user_id=user.pk).profile_picture.url
@@ -153,7 +156,6 @@ class UserDetail(TemplateView):
         username = request.GET["username"]
         first_element = ''
         second_element = ''
-
 
         try:
             user_is_teacher = Teacher.objects.get(user__username=username)

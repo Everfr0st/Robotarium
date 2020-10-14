@@ -2,7 +2,7 @@
   <div>
       <v-container>
         <v-row>
-          <ActiveChat/>
+          <ActiveChatList/>
         </v-row>
       </v-container>
   </div>
@@ -10,7 +10,7 @@
 
 <script>
 // @ is an alias to /src
-import ActiveChat from "@/components/ActiveChat.vue";
+import ActiveChatList from "@/components/ActiveChatList.vue";
 export default {
   name: "Home",
   data: () => ({
@@ -19,7 +19,7 @@ export default {
 
   }),
   components: {
-    ActiveChat,
+    ActiveChatList,
   },
 
 };

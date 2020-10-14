@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "NavBar",
@@ -60,12 +62,15 @@ export default {
     this.unread_messages = nav_data.unread_messages;
     this.name = nav_data.name;
     this.profile_picture = nav_data.profile_picture.length? web_domain+nav_data.profile_picture:'';
+    this.setSelfuser(nav_data.username);
   },
   mounted() {
     const logo = document.getElementById("logo-btn");
     logo.classList.remove("v-btn--active", "v-btn--contained");
   },
-  methods: {},
+  methods: {
+     ...mapMutations(["setSelfuser"]),
+  },
 };
 </script>
 

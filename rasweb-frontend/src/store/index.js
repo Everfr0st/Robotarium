@@ -5,43 +5,38 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    dialog : {
+    self_user:'',
+    dialog: {
       name: '',
       username: '',
       profile_picture: '',
       online: '',
     },
-    chat : {
-      name: '',
-      username: '',
-      profile_picture: '',
-      online: '',
-      id : undefined
-    }, 
-    chats : []
-    
+    chats: []
+
   },
   mutations: {
-    setAccountInfo(state,user){
+    setSelfuser(state,username){
+      state.self_user = username;
+    },
+    setAccountInfo(state, user) {
       state.dialog.name = user.name;
       state.dialog.username = user.username;
       state.dialog.profile_picture = user.profile_picture;
-      state.dialog.online = user.color;  
+      state.dialog.online = user.color;
     },
-    setChatInfo(state, user_params){
-      let user = user_params[0]
-      let index = user_params[1]
-      state.chat.name = user.name;
-      state.chat.username = user.username;
-      state.chat.profile_picture = user.profile_picture;
-      state.chat.online = user.color; 
-      state.chat.id = index;
-      console.log(user)
-      console.log(index)
-      
+    addChat2List(state, chat) {
+      let chat_in_list = state.chats.indexOf(chat)
+      if (chat_in_list === -1) {
+        state.chats.push(chat)
+      }
+      console.log(state.chats)
     },
-    addChat2List(state, chat){
-      state.chats.push(chat)
+    deleteChatfromlist(state, chat){
+      let chat_in_list = state.chats.indexOf(chat)
+      if (chat_in_list != -1) {
+        state.chats.splice(chat_in_list, 1);
+      }
     }
   },
   actions: {

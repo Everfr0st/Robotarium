@@ -39,7 +39,13 @@
       </v-card-subtitle>
       <v-card-actions>
         <v-row justify="center" class="mt-1 mb-2">
-          <v-btn small class="mr-1" color="primary">
+          <v-btn @click="addChat2List({
+            color: dialog.online,
+            name: dialog.name,
+            online: dialog.online ==='green'?true:false,
+            profile_picture: dialog.profile_picture,
+            username: dialog.username,
+          })" small class="mr-1" color="primary">
             <v-icon left>mdi-send</v-icon>
             <span>Escríbeme</span>
           </v-btn>
@@ -53,7 +59,8 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
+
 import store from "@/store/index.js";
 import { setDialogPosition } from "@/auxfunctions/DomFunctions.js";
 const web_domain = "http://127.0.0.1:8000";
@@ -96,6 +103,7 @@ export default {
       let dialog = document.getElementsByClassName("user-detail-dialog");
       dialog[0].style = "display: none;";
     },
+    ...mapMutations(["addChat2List"]),
   },
 };
 </script>

@@ -18,6 +18,6 @@ class ChatMessages(TemplateView):
                 Q(conversation__owner__username=sender, conversation__opponent__username=receiver) |
                 Q(conversation__owner__username=receiver, conversation__opponent__username=sender)
             )
-        )
+        ).order_by("-updated")
         conversation_messages_list = [messages.serializer() for messages in conversation_messages]
         return JsonResponse(conversation_messages_list, safe=False)

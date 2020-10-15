@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
-
 export default new Vuex.Store({
   state: {
     self_user:'',
@@ -30,10 +29,11 @@ export default new Vuex.Store({
       if (chat_in_list === -1) {
         state.chats.push(chat)
       }
-      console.log(state.chats)
+      console.log(chat_in_list)
     },
     deleteChatfromlist(state, chat){
       let chat_in_list = state.chats.indexOf(chat)
+      console.log(chat,chat_in_list)
       if (chat_in_list != -1) {
         state.chats.splice(chat_in_list, 1);
       }
@@ -44,3 +44,4 @@ export default new Vuex.Store({
   modules: {
   }
 })
+

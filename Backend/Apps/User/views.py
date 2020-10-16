@@ -4,8 +4,8 @@ from django.http import JsonResponse
 
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
-
-from django.contrib.auth.models import User
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
 from .auxmethods import get_semester_name
 from .models import *
@@ -97,12 +97,11 @@ class SignIn(TemplateView):
             return JsonResponse({'Authenticated': False, })
 
 
-class NavBar(TemplateView):  # , LoginRequiredMixin):
-    # login_url = '/'
+class NavBar(generics.RetrieveAPIView):  # , LoginRequiredMixin):
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, **kwargs):
-        # user = request.user
-        user = User.objects.get(id=1)
+        user = request.user
         try:
             profile_picture = UserProfilePhoto.objects.get(
                 user_id=user.pk).profile_picture.url
@@ -123,13 +122,12 @@ class NavBar(TemplateView):  # , LoginRequiredMixin):
         })
 
 
-class UsersList(TemplateView):
+class UsersList(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, **kwargs):
-        # user = request.user
         domain = "http://127.0.0.1:8000"
         users_list = []
-        users_query = User.objects.all()
-
+        users_query = User.objects.all().exclude(id=request.user.pk)
         for user in users_query:
             user_dic = {
                 "name": "{0} {1}".format(user.first_name,

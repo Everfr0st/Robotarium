@@ -4,7 +4,12 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
-    self_user:'',
+    authentication: {
+      accessToken: localStorage.getItem("token"),
+      refreshToken: null,
+      user_is_authenticated: false,
+    },
+    self_user: '',
     dialog: {
       name: '',
       username: '',
@@ -15,7 +20,19 @@ export default new Vuex.Store({
 
   },
   mutations: {
-    setSelfuser(state,username){
+    updateAuthcredentials(state, { access, refresh, auth }) {
+      state.authentication.accessToken = access;
+      state.authentication.refreshToken = refresh;
+      state.authentication.user_is_authenticated = auth;
+      localStorage.setItem('token', state.authentication.accessToken)
+    },
+    destroyAuthcredentials(state){
+      state.authentication.accessToken = null;
+      state.authentication.refreshToken = null;
+      state.authentication.user_is_authenticated = false;
+      localStorage.removeItem('token');
+    },
+    setSelfuser(state, username) {
       state.self_user = username;
     },
     setAccountInfo(state, user) {
@@ -29,19 +46,23 @@ export default new Vuex.Store({
       if (chat_in_list === -1) {
         state.chats.push(chat)
       }
-      console.log(chat_in_list)
     },
-    deleteChatfromlist(state, chat){
+    deleteChatfromlist(state, chat) {
       let chat_in_list = state.chats.indexOf(chat)
-      console.log(chat,chat_in_list)
       if (chat_in_list != -1) {
         state.chats.splice(chat_in_list, 1);
       }
-    }
+    },
   },
   actions: {
+ 
   },
   modules: {
+  },
+  getters:{
+    loggedIn(state){
+      return state.authentication.accessToken != null
+    }
   }
 })
 

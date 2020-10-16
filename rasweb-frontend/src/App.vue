@@ -1,5 +1,7 @@
 <template>
   <v-app>
+    <div v-if="authentication.user_is_authenticated || authentication.accessToken">
+    
     <NavBar />
     <v-main>
       <v-container fluid>
@@ -14,10 +16,18 @@
             <RightAside />
           </v-col>
         </v-row>
-        
       </v-container>
     </v-main>
-        <UserDetailDialog/>
+    <v-btn color="error" @click="Logout()">
+      Cerrar sesión
+    </v-btn>
+    <UserDetailDialog />
+    <ActiveChatList />
+    </div>
+
+    <div v-else>
+      <router-view />
+    </div>
   </v-app>
 </template>
 
@@ -26,6 +36,9 @@ import LeftAside from "@/components/LeftAside.vue";
 import RightAside from "@/components/RightAside.vue";
 import NavBar from "@/components/NavBar.vue";
 import UserDetailDialog from "@/components/UserDetailDialog.vue";
+import ActiveChatList from "@/components/ActiveChatList.vue";
+
+import {mapState, mapMutations} from "vuex";
 
 export default {
   name: "App",
@@ -35,11 +48,24 @@ export default {
     LeftAside,
     RightAside,
     UserDetailDialog,
+    ActiveChatList,
   },
 
   data: () => ({
     //
   }),
+  computed:{
+    ...mapState(["authentication"])
+  },
+  methods: {
+    ...mapMutations(["destroyAuthcredentials"]),
+    Logout(){
+      localStorage.removeItem("token");
+      this.destroyAuthcredentials()
+      this.$router.push({name: 'Login'})
+      
+    }
+  }
 };
 </script>
 

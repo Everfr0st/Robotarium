@@ -78,7 +78,7 @@
               <span class="ml-1">Escribiendo...</span>
             </v-row>
           </v-card-text>
-
+          {{ created }}
           <v-card
             elevation="0"
             color="white"
@@ -92,6 +92,7 @@
                   ? 'ml-auto outgoing-message'
                   : 'incomming-message'
               "
+              @seeking="showDate(message.send)"
             >
               <p
                 :title="message.text"
@@ -112,7 +113,7 @@
             </v-card-text>
           </v-card>
           <v-btn
-          v-if="loading"
+            v-if="loading"
             text
             class="ma-2"
             :loading="loading"
@@ -143,6 +144,7 @@ export default {
   name: "ActiveChat",
   data: () => ({
     message: "",
+    created: undefined,
     typing: false,
     loading: true,
     messages: [],
@@ -152,16 +154,31 @@ export default {
   computed: {
     ...mapState(["chats", "self_user"]),
   },
-
   async created() {
-    const api_dir = `/coco-api/v1.0/chat/chat-messages?sender=${this.self_user}&receiver=${this.chat.username}`;
+    const api_dir = `/coco-api/v1.0/chat/chat-messages`;
+  
+    var formData = new FormData();
+    formData.append("sender",this.self_user)
+    formData.append("receiver",this.chat.username)
     let response = await fetch(web_domain + api_dir, {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-    });
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: formData // body data type must match "Content-Type" header
+  });
+    
+
     response = await response.json();
-    this.messages = response;
-    this.loading = false;
-},
+    try {
+      this.created = response.conversation_created;
+    } catch {
+      this.messages = response;
+      this.loading = false;
+    }
+  },
   beforeDestroy() {
     this.messages = [];
   },
@@ -180,13 +197,26 @@ export default {
           chat_messages.style = `bottom: 10px;
         right: ${this.index * this.position}px`;
         } else {
-          chat_messages.style = `bottom: -285px;
+          chat_messages.style = `bottom: -295px;
         right: ${this.index * this.position}px`;
         }
       } catch {}
     },
+    showDate(Date) {
+      console.log(Date);
+    },
   },
 };
+function getCookie(cname) {
+  var name = cname + "=";
+  var ca = document.cookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") c = c.substring(1);
+    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+  }
+  return "";
+}
 </script>
 <style  scoped>
 .chat-card {

@@ -6,25 +6,33 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue'),
+  },
+  {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta : {
+      requiresLogin : true
+    }
   },
   {
     path: '/inventory',
     name: 'Inventory',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "inventory" */ '../views/Inventory.vue')
+    component: () => import('../views/Inventory.vue'),
+    meta : {
+      requiresLogin : true
+    }
   },
   {
     path: '/robotarium',
     name: 'Robotarium',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "robotarium" */ '../views/Robotarium.vue')
+    component: () => import('../views/Robotarium.vue'),
+    meta : {
+      requiresLogin : true
+    }
   }
 ]
 

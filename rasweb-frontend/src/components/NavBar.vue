@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 
 const web_domain = "http://127.0.0.1:8000";
 export default {
@@ -53,9 +53,13 @@ export default {
     profile_picture: "",
   }),
   async created() {
-    const api_dir = "/coco-api/v1.0/navbar-info";
-    let nav_data = await await fetch(web_domain + api_dir, {
+    const api_dir = "/coco-api/v1.0/navbar-info/";
+    console.log(this.authentication.accessToken)
+    let nav_data = await fetch(web_domain + api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        Authorization: `Bearer ${this.authentication.accessToken}`
+      }
     });
     nav_data = await nav_data.json();
     this.unread_notifications = nav_data.unread_notifications;
@@ -70,6 +74,9 @@ export default {
   },
   methods: {
      ...mapMutations(["setSelfuser"]),
+  },
+   computed: {
+  ...mapState(["authentication"]), 
   },
 };
 </script>

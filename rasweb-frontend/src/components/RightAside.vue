@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import store from "@/store/index.js";
 import {setDialogPosition} from "@/auxfunctions/DomFunctions.js";
 
@@ -83,6 +83,9 @@ export default {
       boilerplate: false,
     },
   }),
+  computed:{
+    ...mapState(["authentication"])
+  },
   methods: {
     ...mapMutations(["setAccountInfo", "setChatInfo", "addChat2List"]),
     hideDialog() {
@@ -108,6 +111,9 @@ export default {
     const api_dir = "/coco-api/v1.0/users-list";
     let response = await fetch(web_domain + api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        Authorization: `Bearer ${this.authentication.accessToken}`
+      }
     });
     response = await response.json();
     this.users = response;

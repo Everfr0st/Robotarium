@@ -18,7 +18,7 @@ class Message(SoftDeletableModel):
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     read = models.BooleanField(default=False)
-    updated = models.DateTimeField() #When user Postgres, change this name to created or send
+    updated = models.DateTimeField(auto_now_add=True) #When user Postgres, change this name to created or send
 
     def __str__(self):
         return self.sender.username + " (" + str(self.updated)[0:19] + ") - '" + self.text + "'"

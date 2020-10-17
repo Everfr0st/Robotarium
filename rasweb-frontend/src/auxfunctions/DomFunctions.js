@@ -38,3 +38,16 @@ export function getCookie(name) {
     }
     return cookieValue;
 }
+
+
+
+
+
+/*@click = function (e) {
+    const messageInputDom = document.querySelector('#chat-message-input');
+    const message = messageInputDom.value;
+    chatSocket.send(JSON.stringify({
+        'message': message
+    }));
+    messageInputDom.value = '';
+};*/

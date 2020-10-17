@@ -60,7 +60,6 @@ export default {
   methods: {
     ...mapMutations(["destroyAuthcredentials"]),
     Logout(){
-      localStorage.removeItem("token");
       this.destroyAuthcredentials()
       this.$router.push({name: 'Login'})
       

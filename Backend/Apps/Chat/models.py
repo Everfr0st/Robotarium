@@ -12,6 +12,8 @@ class Conversation(TimeStampedModel):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="Conversation_owner")
     opponent = models.ForeignKey(User, on_delete=models.CASCADE, related_name="Conversation_opponent")
 
+    def __str__(self):
+        return '{0} -> {1}'.format(self.owner.username, self.opponent.username)
 
 class Message(SoftDeletableModel):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)

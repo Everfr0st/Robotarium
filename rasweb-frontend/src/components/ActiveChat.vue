@@ -78,7 +78,6 @@
               <span class="ml-1">Escribiendo...</span>
             </v-row>
           </v-card-text>
-          {{ created }}
           <v-card
             elevation="0"
             color="white"
@@ -125,11 +124,14 @@
       </v-card-text>
       <v-card-actions class="ma-0 pa-0">
         <v-text-field
+          @keyup.enter="sendMessage()"
+          @keyup="typingMessage()"
           block
           v-model="message"
           label="Envía un mensaje..."
           type="text"
           solo
+          autocomplete="off"
         ></v-text-field>
       </v-card-actions>
     </v-card>
@@ -140,45 +142,78 @@
 import { mapState } from "vuex";
 import { mapMutations } from "vuex";
 const web_domain = "http://127.0.0.1:8000";
+var vm = {
+  messages: [],
+  typing: false,
+};
 export default {
   name: "ActiveChat",
   data: () => ({
+    websocket: undefined,
     message: "",
     created: undefined,
-    typing: false,
+    room: undefined,
+    typing: vm.typing,
     loading: true,
-    messages: [],
+    messages: vm.messages,
     position: 255,
+    temp_msgobj: null,
   }),
   props: ["chat", "index"],
   computed: {
-    ...mapState(["chats", "self_user"]),
+    ...mapState(["chats", "self_user", "ws_base"]),
   },
-  async created() {
-    const api_dir = `/coco-api/v1.0/chat/chat-messages`;
-  
-    var formData = new FormData();
-    formData.append("sender",this.self_user)
-    formData.append("receiver",this.chat.username)
-    let response = await fetch(web_domain + api_dir, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json'
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: formData // body data type must match "Content-Type" header
-  });
+  updated() {
+    vm = this;
     
-
-    response = await response.json();
-    try {
-      this.created = response.conversation_created;
-    } catch {
-      this.messages = response;
-      this.loading = false;
-    }
   },
+  created() {
+    let response;
+    vm = this;
+    ApiComunication(this.self_user, this.chat.username).then((response) => {
+      if (response.conversation_created == undefined) {
+        this.messages = response;
+        this.room = response[0].conversation;
+      } else if (
+        response.error == undefined &&
+        response.conversation_created != undefined
+      ) {
+        this.room = response.conversation;
+        this.created = response.conversation_created;
+      } else {
+        console.error("Unexpected error have ocurred!!");
+        this.created = response.conversation_created;
+      }
+      this.loading = false;
+    })
+    .then(function(){
+      if (vm.room != undefined) {
+      vm.websocket = new WebSocket(
+        "ws://" + vm.ws_base + "/ws/chat/" + vm.room + "/"
+      );
+      vm.websocket.onopen = function (e) {
+        console.info("conectado exitosamente!");
+      };
+      vm.websocket.onmessage = function (e) {
+        const socket_data = JSON.parse(e.data);
+        if (
+          socket_data.type === "type_message" && 
+          socket_data.sender != vm.self_user 
+        ) {
+          vm.typing = socket_data.typing;
+        } else if (socket_data.type === "chat_message") {
+          vm.messages.unshift(socket_data);
+        }
+      };
+
+      vm.websocket.onclose = function (e) {
+        console.error("Chat socket closed unexpectedly");
+      };
+    }
+    })
+    ;
+  },
+  mounted() {},
   beforeDestroy() {
     this.messages = [];
   },
@@ -205,17 +240,54 @@ export default {
     showDate(Date) {
       console.log(Date);
     },
+    sendMessage() {
+      this.websocket.send(
+        JSON.stringify({
+          type: "chat_message",
+          conversation: this.room,
+          sender: this.self_user,
+          text: this.message,
+          read: false,
+        })
+      );
+      this.message = "";
+    },
+    typingMessage() {
+      if (this.message.length) {
+        this.websocket.send(
+          JSON.stringify({
+            type: "type_message",
+            sender: vm.self_user,
+            typing: true,
+          })
+        );
+      } else{
+        this.websocket.send(
+          JSON.stringify({
+            type: "type_message",
+            sender: vm.self_user,
+            typing: false,
+          })
+        );
+      }
+    },
   },
 };
-function getCookie(cname) {
-  var name = cname + "=";
-  var ca = document.cookie.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") c = c.substring(1);
-    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-  }
-  return "";
+
+async function ApiComunication(sender, receiver) {
+  const api_dir = `/coco-api/v1.0/chat/chat-messages`;
+  let response = await fetch(
+    web_domain + api_dir + `?sender=${sender}&receiver=${receiver}`,
+    {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }
+  );
+  return response.json();
 }
 </script>
 <style  scoped>

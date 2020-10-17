@@ -6,8 +6,8 @@ export default new Vuex.Store({
   state: {
     authentication: {
       accessToken: localStorage.getItem("token"),
-      refreshToken: null,
-      user_is_authenticated: false,
+      refreshToken: localStorage.getItem("refresh_token"),
+      user_is_authenticated: !!localStorage.getItem("token"),
     },
     self_user: '',
     dialog: {
@@ -16,7 +16,9 @@ export default new Vuex.Store({
       profile_picture: '',
       online: '',
     },
-    chats: []
+    chats: [],
+    ws_base : '127.0.0.1:8000',
+    domain_base : 'http://127.0.0.1:8000'
 
   },
   mutations: {
@@ -24,6 +26,7 @@ export default new Vuex.Store({
       state.authentication.accessToken = access;
       state.authentication.refreshToken = refresh;
       state.authentication.user_is_authenticated = auth;
+      localStorage.setItem('refresh_token', state.authentication.refreshToken)
       localStorage.setItem('token', state.authentication.accessToken)
     },
     destroyAuthcredentials(state){
@@ -31,6 +34,7 @@ export default new Vuex.Store({
       state.authentication.refreshToken = null;
       state.authentication.user_is_authenticated = false;
       localStorage.removeItem('token');
+      localStorage.removeItem('refresh_token');
     },
     setSelfuser(state, username) {
       state.self_user = username;

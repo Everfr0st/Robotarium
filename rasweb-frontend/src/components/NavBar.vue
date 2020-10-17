@@ -33,7 +33,7 @@
           <img :src="profile_picture" :alt="name" />
         </v-avatar>
         <v-avatar size="30" color="secondary" v-else>
-          <span>{{name.slice(0,1)}}</span>
+          <span>{{ name.slice(0, 1) }}</span>
         </v-avatar>
       </v-btn>
     </v-app-bar>
@@ -43,7 +43,6 @@
 <script>
 import { mapMutations, mapState } from "vuex";
 
-const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "NavBar",
   data: () => ({
@@ -53,30 +52,45 @@ export default {
     profile_picture: "",
   }),
   async created() {
+    const web_domain = "http://127.0.0.1:8000";
     const api_dir = "/coco-api/v1.0/navbar-info/";
-    console.log(this.authentication.accessToken)
+    let configs = {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        Authorization: `Bearer ${this.authentication.accessToken}`,
+      },
+    };
     let nav_data = await fetch(web_domain + api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
-        Authorization: `Bearer ${this.authentication.accessToken}`
-      }
+        Authorization: `Bearer ${this.authentication.accessToken}`,
+      },
     });
-    nav_data = await nav_data.json();
-    this.unread_notifications = nav_data.unread_notifications;
-    this.unread_messages = nav_data.unread_messages;
-    this.name = nav_data.name;
-    this.profile_picture = nav_data.profile_picture.length? web_domain+nav_data.profile_picture:'';
-    this.setSelfuser(nav_data.username);
+
+    if (nav_data.status === 200) {
+      nav_data = await nav_data.json();
+      console.log(nav_data);
+      this.unread_notifications = nav_data.unread_notifications;
+      this.unread_messages = nav_data.unread_messages;
+      this.name = nav_data.name;
+      this.profile_picture = nav_data.profile_picture.length
+        ? web_domain + nav_data.profile_picture
+        : "";
+      this.setSelfuser(nav_data.username);
+    } else{
+      this.destroyAuthcredentials();
+      this.$router.push({name: 'Login'})
+    }
   },
   mounted() {
     const logo = document.getElementById("logo-btn");
     logo.classList.remove("v-btn--active", "v-btn--contained");
   },
   methods: {
-     ...mapMutations(["setSelfuser"]),
+    ...mapMutations(["setSelfuser","destroyAuthcredentials"]),
   },
-   computed: {
-  ...mapState(["authentication"]), 
+  computed: {
+    ...mapState(["authentication"]),
   },
 };
 </script>

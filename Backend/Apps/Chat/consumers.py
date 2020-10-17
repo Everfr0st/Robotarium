@@ -13,7 +13,6 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-        print("user connected")
         self.accept()
 
     def disconnect(self, close_code):

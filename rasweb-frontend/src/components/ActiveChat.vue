@@ -37,7 +37,7 @@
             >mdi-window-minimize</v-icon
           >
         </v-btn>
-        <v-btn @click="deleteChatfromlist(chat)" color="white" icon small>
+        <v-btn @click="deleteChatfromlist(chat); " color="white" icon small>
           <v-icon small>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -46,19 +46,10 @@
           style="position: absolute; top: -8px; left: -10%; z-index: 1000"
           fluid
           class="ma-0 pa-0"
-          v-for="(message, index) in messages"
-          :key="index"
+          v-if="messages.length"
         >
-          <div v-if="index === 0" class="chat-date">
-            {{ message.send.split("-")[0] }}
-          </div>
-          <div v-else class="chat-date">
-            {{
-              message.send.split("-")[0] ==
-              messages[index - 1].send.split("-")[0]
-                ? ""
-                : message.send.split("-")[0]
-            }}
+          <div class="chat-date">
+            {{ date_send }}
           </div>
         </v-container>
         <v-container class="chat-messages">
@@ -142,51 +133,52 @@
 import { mapState } from "vuex";
 import { mapMutations } from "vuex";
 const web_domain = "http://127.0.0.1:8000";
-var vm = {
-  messages: [],
-  typing: false,
-};
+var connected = false;
 export default {
   name: "ActiveChat",
   data: () => ({
     websocket: undefined,
     message: "",
-    created: undefined,
+    date_send: "",
     room: undefined,
-    typing: vm.typing,
+    typing: false,
     loading: true,
-    messages: vm.messages,
+    messages: [],
     position: 255,
-    temp_msgobj: null,
   }),
   props: ["chat", "index"],
   computed: {
     ...mapState(["chats", "self_user", "ws_base"]),
   },
-  updated() {
-    vm = this;
-    
-  },
   created() {
     let response;
-    vm = this;
-    ApiComunication(this.self_user, this.chat.username).then((response) => {
-      if (response.conversation_created == undefined) {
-        this.messages = response;
-        this.room = response[0].conversation;
-      } else if (
-        response.error == undefined &&
-        response.conversation_created != undefined
-      ) {
-        this.room = response.conversation;
-        this.created = response.conversation_created;
-      } else {
-        console.error("Unexpected error have ocurred!!");
-        this.created = response.conversation_created;
-      }
-      this.loading = false;
-    })
-    .then(function(){
+    this.clearData();
+    ApiComunication(this.self_user, this.chat.username)
+      .then((response) => {
+        if (response.conversation_created == undefined) {
+          this.messages = response;
+          this.date_send = response[response.length - 1].send.split("-")[0];
+          this.room = response[0].conversation;
+        } else if (
+          response.error == undefined &&
+          response.conversation_created != undefined
+        ) {
+          this.room = response.conversation;
+          //this.created = response.conversation_created;
+        } else {
+          console.error("Unexpected error have ocurred!!");
+          //this.created = response.conversation_created;
+        }
+        this.loading = false;
+        if (this.room != undefined) {
+          this.connect();
+          connected = true;
+        }
+      })
+      .then(function () {
+        response = "";
+      });
+    /*.then(function(){
       if (vm.room != undefined) {
       vm.websocket = new WebSocket(
         "ws://" + vm.ws_base + "/ws/chat/" + vm.room + "/"
@@ -210,12 +202,12 @@ export default {
         console.error("Chat socket closed unexpectedly");
       };
     }
-    })
-    ;
+    });*/
   },
   mounted() {},
   beforeDestroy() {
-    this.messages = [];
+    this.clearData();
+    this.websocket.close();
   },
   methods: {
     ...mapMutations(["deleteChatfromlist"]),
@@ -253,23 +245,60 @@ export default {
       this.message = "";
     },
     typingMessage() {
+      let sender = this.self_user;
       if (this.message.length) {
         this.websocket.send(
           JSON.stringify({
             type: "type_message",
-            sender: vm.self_user,
+            sender: sender,
             typing: true,
           })
         );
-      } else{
+      } else {
         this.websocket.send(
           JSON.stringify({
             type: "type_message",
-            sender: vm.self_user,
+            sender: sender,
             typing: false,
           })
         );
       }
+    },
+    connect() {
+      this.websocket = new WebSocket(
+        "ws://" + this.ws_base + "/ws/chat/" + this.room + "/"
+      );
+      this.websocket.onopen = () => {
+        //console.info("conectado exitosamente!", this.room);
+        this.websocket.onmessage = ({ data }) => {
+          // this.messages.unshift(JSON.parse(data));
+          //console.log(JSON.parse(data))
+          const socket_data = JSON.parse(data);
+          if (
+            socket_data.type === "type_message" &&
+            socket_data.sender != this.self_user
+          ) {
+            this.typing = socket_data.typing;
+          } else if (socket_data.type === "chat_message") {
+            this.messages.unshift(socket_data);
+            this.date_send = socket_data.send.split("-")[0];
+          }
+        };
+
+        this.websocket.onclose = () => {
+          console.error("An error have ocurred!");
+        };
+      };
+    },
+    clearData() {
+      this.messages = [];
+      this.websocket = undefined;
+      this.message = "";
+      this.date_send = "";
+      this.room = undefined;
+      this.typing = false;
+      this.loading = true;
+      this.position = 255;
     },
   },
 };
@@ -330,7 +359,7 @@ async function ApiComunication(sender, receiver) {
   max-width: 60%;
   float: rigth;
   color: white;
-  padding: 5px 5px 18px 5px;
+  padding: 5px 5px 5% 5px;
   position: relative;
 }
 .outgoing-message::after {
@@ -350,7 +379,7 @@ async function ApiComunication(sender, receiver) {
   background: #be0707;
   width: auto;
   max-width: 60%;
-  padding: 5px 5px 18px 5px;
+  padding: 5px 5px 5% 5px;
   position: relative;
 }
 .incomming-message::after {

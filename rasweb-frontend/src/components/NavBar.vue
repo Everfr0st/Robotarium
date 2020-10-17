@@ -69,7 +69,6 @@ export default {
 
     if (nav_data.status === 200) {
       nav_data = await nav_data.json();
-      console.log(nav_data);
       this.unread_notifications = nav_data.unread_notifications;
       this.unread_messages = nav_data.unread_messages;
       this.name = nav_data.name;

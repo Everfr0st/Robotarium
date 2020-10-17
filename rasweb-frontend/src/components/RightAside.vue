@@ -68,7 +68,6 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import store from "@/store/index.js";
 import {setDialogPosition} from "@/auxfunctions/DomFunctions.js";
 
 
@@ -84,7 +83,7 @@ export default {
     },
   }),
   computed:{
-    ...mapState(["authentication"])
+    ...mapState(["authentication", "dialog"])
   },
   methods: {
     ...mapMutations(["setAccountInfo", "setChatInfo", "addChat2List"]),
@@ -99,7 +98,7 @@ export default {
        }
       },
       showDialog(){
-        let username = store.state.dialog.username;
+        let username = this.dialog.username;
         let dialog = document.getElementsByClassName("user-detail-dialog");
         if (dialog[0].style.display == "none"){
           setDialogPosition(username);

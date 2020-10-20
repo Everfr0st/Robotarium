@@ -76,17 +76,16 @@ const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "RightAside",
   data: () => ({
-    users: [],
     loaded: false,
     attrs: {
       boilerplate: false,
     },
   }),
   computed:{
-    ...mapState(["authentication", "dialog"])
+    ...mapState(["users","authentication", "dialog"])
   },
   methods: {
-    ...mapMutations(["setAccountInfo", "setChatInfo", "addChat2List"]),
+    ...mapMutations(["setUsers","setAccountInfo", "setChatInfo", "addChat2List"]),
     hideDialog() {
       
       let chatlist = document.getElementById("chat-list");
@@ -115,7 +114,7 @@ export default {
       }
     });
     response = await response.json();
-    this.users = response;
+    this.setUsers(response);
     this.loaded = true;
   },
 };

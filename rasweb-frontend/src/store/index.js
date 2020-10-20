@@ -21,6 +21,7 @@ export default new Vuex.Store({
       online: '',
     },
     chats: [],
+    users: [],
     ws_base : '127.0.0.1:8000',
     domain_base : 'http://127.0.0.1:8000'
 
@@ -50,6 +51,9 @@ export default new Vuex.Store({
       state.dialog.username = user.username;
       state.dialog.profile_picture = user.profile_picture;
       state.dialog.online = user.color;
+    },
+    setUsers(state, users){
+      state.users = users;
     },
     addChat2List(state, chat) {
       let chat_in_list = state.chats.indexOf(chat)

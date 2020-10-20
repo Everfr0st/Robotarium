@@ -37,7 +37,7 @@
             >mdi-window-minimize</v-icon
           >
         </v-btn>
-        <v-btn @click="deleteChatfromlist(chat); " color="white" icon small>
+        <v-btn @click="clearData(); deleteChatfromlist(index); " color="white" icon small>
           <v-icon small>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -78,7 +78,7 @@
           >
             <v-card-text
               :class="
-                message.sender == self_user
+                message.sender == self_user.username
                   ? 'ml-auto outgoing-message'
                   : 'incomming-message'
               "
@@ -133,7 +133,9 @@
 import { mapState } from "vuex";
 import { mapMutations } from "vuex";
 const web_domain = "http://127.0.0.1:8000";
-var connected = false;
+var aux_messages;
+var aux_room; 
+var aux_webSocket;
 export default {
   name: "ActiveChat",
   data: () => ({
@@ -142,9 +144,9 @@ export default {
     date_send: "",
     room: undefined,
     typing: false,
-    loading: true,
     messages: [],
     position: 255,
+    loading: true,
   }),
   props: ["chat", "index"],
   computed: {
@@ -152,8 +154,7 @@ export default {
   },
   created() {
     let response;
-    this.clearData();
-    ApiComunication(this.self_user, this.chat.username)
+    ApiComunication(this.self_user.username, this.chat.username)
       .then((response) => {
         if (response.conversation_created == undefined) {
           this.messages = response;
@@ -169,14 +170,12 @@ export default {
           console.error("Unexpected error have ocurred!!");
           //this.created = response.conversation_created;
         }
-        this.loading = false;
         if (this.room != undefined) {
+          console.log(this.room)
           this.connect();
-          connected = true;
         }
-      })
-      .then(function () {
-        response = "";
+        aux_room = this.room;
+        this.loading = false;
       });
     /*.then(function(){
       if (vm.room != undefined) {
@@ -204,9 +203,20 @@ export default {
     }
     });*/
   },
-  mounted() {},
-  beforeDestroy() {
-    this.clearData();
+  beforeUpdate() {
+    console.log(this.room, this.self_user.username)
+    if(this.room == aux_room){
+      aux_messages = this.messages;
+    } else{
+      this.room = aux_room;
+      this.messages = aux_messages;
+      
+      //this.websocket = aux_webSocket;
+      //this.connect();
+    }
+
+  },
+  beforeDestroy () {   
     this.websocket.close();
   },
   methods: {
@@ -237,7 +247,7 @@ export default {
         JSON.stringify({
           type: "chat_message",
           conversation: this.room,
-          sender: this.self_user,
+          sender: this.self_user.username,
           text: this.message,
           read: false,
         })
@@ -245,7 +255,7 @@ export default {
       this.message = "";
     },
     typingMessage() {
-      let sender = this.self_user;
+      let sender = this.self_user.username;
       if (this.message.length) {
         this.websocket.send(
           JSON.stringify({
@@ -268,6 +278,7 @@ export default {
       this.websocket = new WebSocket(
         "ws://" + this.ws_base + "/ws/chat/" + this.room + "/"
       );
+      aux_webSocket = this.websocket;
       this.websocket.onopen = () => {
         //console.info("conectado exitosamente!", this.room);
         this.websocket.onmessage = ({ data }) => {
@@ -276,7 +287,7 @@ export default {
           const socket_data = JSON.parse(data);
           if (
             socket_data.type === "type_message" &&
-            socket_data.sender != this.self_user
+            socket_data.sender != this.self_user.username
           ) {
             this.typing = socket_data.typing;
           } else if (socket_data.type === "chat_message") {
@@ -285,21 +296,14 @@ export default {
           }
         };
 
-        this.websocket.onclose = () => {
-          console.error("An error have ocurred!");
-        };
+   
       };
+      this.websocket.onclose = () =>{
+        console.log(`room ${this.room} closes`)
+      }
     },
-    clearData() {
-      this.messages = [];
-      this.websocket = undefined;
-      this.message = "";
-      this.date_send = "";
-      this.room = undefined;
-      this.typing = false;
-      this.loading = true;
-      this.position = 255;
-    },
+    clearData(){
+    }
   },
 };
 

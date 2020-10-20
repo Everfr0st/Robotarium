@@ -75,7 +75,7 @@ export default {
       this.profile_picture = nav_data.profile_picture.length
         ? web_domain + nav_data.profile_picture
         : "";
-      this.setSelfuser(nav_data.username);
+      this.setSelfuser(nav_data);
     } else{
       this.destroyAuthcredentials();
       this.$router.push({name: 'Login'})

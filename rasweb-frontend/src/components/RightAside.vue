@@ -1,5 +1,5 @@
 <template >
-  <div class="ma-0 pa-0">
+  <div class="ma-0 pa-0 users-list">
     <v-container class="pa-0">
       <v-row class="ml-8">
         <h3 style="padding-top: 5px" align-center>Usuarios</h3>
@@ -130,5 +130,24 @@ export default {
   border-radius: 5px;
   background-color: #e7e7e7;
   cursor: pointer;
+}
+.users-list{
+  position: fixed;
+  right: 0px;
+  top: 12%;
+  width: 23%;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.users-list::-webkit-scrollbar {
+  width: 5px; /* Tamaño del scroll en vertical */
+  height: 5px; /* Tamaño del scroll en horizontal */
+  /* display: none; Ocultar scroll */
+}
+/* Ponemos un color de fondo y redondeamos las esquinas del thumb */
+.users-list::-webkit-scrollbar-thumb {
+  background: #be0707;
+  border-radius: 4px;
 }
 </style>

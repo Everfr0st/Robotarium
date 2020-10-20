@@ -13,6 +13,8 @@ from django.contrib.auth import authenticate, login
 
 from ..Chat.models import Message
 
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+
 
 class SignUp(TemplateView):
     def get(self, request, **kwargs):  # change to Post Method
@@ -102,6 +104,10 @@ class NavBar(generics.RetrieveAPIView):  # , LoginRequiredMixin):
 
     def get(self, request, **kwargs):
         user = request.user
+        user_online = UserOnline.objects.get(user_id=user.pk)
+        user_online.is_online = True
+        user_online.save()
+
         try:
             profile_picture = UserProfilePhoto.objects.get(
                 user_id=user.pk).profile_picture.url
@@ -124,6 +130,7 @@ class NavBar(generics.RetrieveAPIView):  # , LoginRequiredMixin):
 
 class UsersList(generics.RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
+
     def get(self, request, **kwargs):
         domain = "http://127.0.0.1:8000"
         users_list = []
@@ -173,5 +180,12 @@ class UserDetail(TemplateView):
         )
 
 
-class LogOut(LogoutView):
-    pass
+class Logout(generics.DestroyAPIView):
+    model = OutstandingToken
+
+    def delete(self, request, *args, **kwargs):
+        user_online = UserOnline.objects.get(user_id=request.user.pk)
+        user_online.is_online = False
+        user_online.save()
+        OutstandingToken.objects.filter(user_id=request.user.pk, token=kwargs["token"]).delete()
+        return JsonResponse({'logout': True})

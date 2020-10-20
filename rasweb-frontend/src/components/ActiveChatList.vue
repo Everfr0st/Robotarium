@@ -1,12 +1,9 @@
 <template>
   <v-container class="chat-list"  >
-    <v-row   justify="end" class="pa-0">
-      
+    <v-row   justify="end" class="pa-0">   
       <div v-for="(chat,index) in chats" :key="index">
           <ActiveChat v-if="chats.length<=3" :chat="chat" :index="index"/>
       </div>
-      
-      
     </v-row>
 
   </v-container>

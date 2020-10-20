@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # Self apps
     'Apps.User',
     'Apps.Inventory',
+    'Apps.Post',
     'Apps.Chat',
 
     # Third party apps
@@ -154,3 +155,18 @@ CHANNEL_LAYERS = {
         },
     },
 }
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'localhost:6379',
+        'OPTIONS': {
+            'DB': 1
+            }
+        }
+}
+# Número de segundos de inactividad antes de que un usuario se marca fuera de línea
+USER_ONLINE_TIMEOUT = 300
+
+# Número de segundos que vamos a hacer seguimiento de los usuarios inactivos, para antes de su
+# visto por última vez. Se elimina de la memoria caché
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7

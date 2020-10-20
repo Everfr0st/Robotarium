@@ -9,7 +9,11 @@ export default new Vuex.Store({
       refreshToken: localStorage.getItem("refresh_token"),
       user_is_authenticated: !!localStorage.getItem("token"),
     },
-    self_user: '',
+    self_user: {
+      username: '',
+      profile_picture: '',
+      name: '',
+    },
     dialog: {
       name: '',
       username: '',
@@ -36,8 +40,10 @@ export default new Vuex.Store({
       localStorage.removeItem('token');
       localStorage.removeItem('refresh_token');
     },
-    setSelfuser(state, username) {
-      state.self_user = username;
+    setSelfuser(state, user) {
+      state.self_user.username = user.username;
+      state.self_user.profile_picture = user.profile_picture;
+      state.self_user.name = user.name;
     },
     setAccountInfo(state, user) {
       state.dialog.name = user.name;
@@ -51,11 +57,11 @@ export default new Vuex.Store({
         state.chats.push(chat)
       }
     },
-    deleteChatfromlist(state, chat) {
-      let chat_in_list = state.chats.indexOf(chat)
-      if (chat_in_list != -1) {
-        state.chats.splice(chat_in_list, 1);
-      }
+    deleteChatfromlist(state, index) {
+      state.chats.splice(index, 1);
+    
+      //this.$delete(this.chats, index);
+
     },
   },
   actions: {

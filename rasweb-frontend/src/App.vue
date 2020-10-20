@@ -1,28 +1,27 @@
 <template>
-  <v-app>
-    <div v-if="authentication.user_is_authenticated || authentication.accessToken">
-    
-    <NavBar />
-    <v-main>
-      <v-container fluid>
-        <v-row wrap>
-          <v-col sm="12" md="3" lg="3" color="primary">
-            <LeftAside />
-          </v-col>
-          <v-col sm="12" md="6" color="red">
-            <router-view />
-          </v-col>
-          <v-col class="user-list" sm="12" md="3" lg="3">
-            <RightAside />
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-main>
-    <v-btn color="error" @click="Logout()">
-      Cerrar sesión
-    </v-btn>
-    <UserDetailDialog />
-    <ActiveChatList />
+  <v-app style="min-width: 800px;">
+    <div
+      v-if="authentication.user_is_authenticated || authentication.accessToken"
+    >
+      <NavBar />
+      <v-main>
+        <v-container fluid>
+          <v-row wrap>
+            <v-col sm="12" md="3" lg="3" color="primary">
+              <LeftAside />
+            </v-col>
+            <v-col sm="12" md="6" color="red">
+              <router-view />
+            </v-col>
+            <v-col class="user-list" sm="12" md="3" lg="3">
+              <RightAside />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
+      <v-btn color="error" @click="Logout()"> Cerrar sesión </v-btn>
+      <UserDetailDialog />
+      <ActiveChatList />
     </div>
 
     <div v-else>
@@ -38,7 +37,7 @@ import NavBar from "@/components/NavBar.vue";
 import UserDetailDialog from "@/components/UserDetailDialog.vue";
 import ActiveChatList from "@/components/ActiveChatList.vue";
 
-import {mapState, mapMutations} from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "App",
@@ -54,17 +53,25 @@ export default {
   data: () => ({
     //
   }),
-  computed:{
-    ...mapState(["authentication"])
+  computed: {
+    ...mapState(["authentication", "self_user"]),
   },
   methods: {
     ...mapMutations(["destroyAuthcredentials"]),
-    Logout(){
-      this.destroyAuthcredentials()
-      this.$router.push({name: 'Login'})
-      
-    }
-  }
+    async Logout() {
+      const web_domain = "http://127.0.0.1:8000";
+      const api_dir = "/coco-api/v1.0/logout/";
+      let response = await fetch(web_domain + api_dir + this.authentication.accessToken, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.authentication.accessToken}`,
+        },
+      });
+
+      this.destroyAuthcredentials();
+      this.$router.push({ name: "Login" });
+    },
+  },
 };
 </script>
 

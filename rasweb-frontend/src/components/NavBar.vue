@@ -33,7 +33,7 @@
           <img :src="profile_picture" :alt="name" />
         </v-avatar>
         <v-avatar size="30" color="secondary" v-else>
-          <span>{{ name.slice(0, 1) }}</span>
+          <span>{{ name? name.slice(0, 1):username.slice(0,1) }}</span>
         </v-avatar>
       </v-btn>
     </v-app-bar>
@@ -50,6 +50,7 @@ export default {
     unread_notifications: 0,
     name: "",
     profile_picture: "",
+    username: '',
   }),
   async created() {
     const web_domain = "http://127.0.0.1:8000";

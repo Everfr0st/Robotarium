@@ -3,5 +3,5 @@
 **/migrations/*
 Pipfile
 Backend/db.sqlite3
-Backend/Files/profile_pictures/**
+Backend/Files/**
 **/node_modules/*

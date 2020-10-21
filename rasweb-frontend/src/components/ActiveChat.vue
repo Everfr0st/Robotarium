@@ -330,6 +330,7 @@ async function ApiComunication(sender, receiver) {
   overflow: hidden;
   position: absolute;
   bottom: 10px;
+  z-index: 100000;
 }
 .chat-header {
   background-color: #be0707;

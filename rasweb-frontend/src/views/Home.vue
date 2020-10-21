@@ -13,7 +13,7 @@
           <v-row class="pl-3" justify="start" align="center">
             <v-avatar>
               <v-avatar size="50" color="blue" v-if="self_user.profile_picture">
-                <img :src="self_user.profile_picture" :alt="name" />
+                <img :src="self_user.profile_picture" :alt="self_user.name" />
               </v-avatar>
               <v-avatar size="50" color="secondary" v-else>
                 <span v-if="self_user.name" style="color: white"
@@ -38,7 +38,7 @@
           </v-row>
           <v-divider class="mt-2 mb-2"></v-divider>
 
-          <v-row v-if="tagUsers" justify="center">
+          <v-row v-if="tagUsers" class="pt-0" justify="center">
             <v-form style="width: 96%">
               <v-container>
                 <v-row>
@@ -49,21 +49,19 @@
                     color="accent lighten-2"
                     label="¿Con quién vas a anunciar?"
                     item-text="name"
-                    item-value="name"
+                    item-value="username"
                     multiple
                   >
+                  
                     <template v-slot:selection="data">
                       <v-chip
                         v-bind="data.attrs"
                         :input-value="data.selected"
-                        close
-                        @click="data.select"
-                        @click:close="remove(data.item)"
-                      >
+                                              >
                         <v-avatar left v-if="data.item.profile_picture">
                           <img
                             :src="data.item.profile_picture"
-                            :alt="dialog.name"
+                            :alt="data.item.name"
                           />
                         </v-avatar>
                         <v-avatar left color="secondary" v-else>
@@ -93,11 +91,13 @@
                         ></v-list-item-content>
                       </template>
                       <template v-else>
-   
-                        <v-list-item-avatar left v-if="data.item.profile_picture">
+                        <v-list-item-avatar
+                          left
+                          v-if="data.item.profile_picture"
+                        >
                           <img
                             :src="data.item.profile_picture"
-                            :alt="dialog.name"
+                            :alt="data.item.name"
                           />
                         </v-list-item-avatar>
                         <v-list-item-avatar left color="secondary" v-else>
@@ -204,7 +204,7 @@
               </v-card>
             </v-dialog>
 
-            <v-btn text class="ml-2" @click="tagUsers=!tagUsers;">
+            <v-btn text class="ml-2" @click="tagUsers = !tagUsers">
               <template>
                 <img
                   class="mr-1"
@@ -213,7 +213,10 @@
                   src="@/assets/icons/tag_friend.svg"
                 />
               </template>
-              Etiquetar usuarios <span v-if="tagUserslist.length">({{tagUserslist.length}})</span>
+              Etiquetar usuarios
+              <span v-if="tagUserslist.length"
+                >({{ tagUserslist.length }})</span
+              >
             </v-btn>
             <v-btn
               :disabled="loading"
@@ -229,15 +232,35 @@
         <v-divider class="mt-2 mb-2"></v-divider>
       </v-container>
     </v-card>
+    
+      <PubList />
+    
+    <v-snackbar v-model="snackbar" :timeout="timeout">
+      {{ message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="error"
+          outlined
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import { mapState } from "vuex";
+import PubList from "@/components/PubList.vue";
+
 export default {
   name: "Home",
-
+  components: {
+    PubList,
+  },
   data: () => ({
     content: "",
     photos: [],
@@ -246,6 +269,10 @@ export default {
     dialog: false,
     loading: false,
     tagUsers: false,
+    snackbar: false,
+    timeout: 5000,
+    message: "",
+    attrs: ''
   }),
   computed: {
     ...mapState(["users", "self_user", "authentication"]),
@@ -265,8 +292,13 @@ export default {
         formdata.append("username", this.self_user.username);
         formdata.append("content", this.content);
         formdata.append("num_photos", this.photos.length);
+        formdata.append("num_users", this.tagUserslist.length);
         this.files.forEach((file) => {
           formdata.append(`photo_${this.files.indexOf(file)}`, file);
+        });
+        console.log(this.tagUserslist);
+        this.tagUserslist.forEach((user) => {
+          formdata.append(`user_${this.tagUserslist.indexOf(user)}`, user);
         });
 
         const options = {
@@ -278,13 +310,24 @@ export default {
 
         let response = await fetch(web_domain + api_dir, options);
         response = await response.json();
+        if (!response.created) {
+          this.message =
+            "Ha sucedido un error inesperado, intenta de nuevo más tarde.";
+          this.snackbar = true;
+        } else {
+          this.loading = false;
+          this.content = "";
+          this.photos = [];
+          this.files = [];
+          this.tagUserslist = [];
+          this.tagUsers = false;
+          var divContent = document.getElementById("create-post");
+          divContent.innerText = "";
+        }
+      } else {
+        this.message = "Debes agregar contenido a tu publicación!";
+        this.snackbar = true;
       }
-      this.loading = false;
-      this.content = "";
-      this.photos = [];
-      this.files = [];
-      var divContent = document.getElementById("create-post");
-      divContent.innerText = "";
     },
     setImagearray(photos) {
       photos.forEach((photo) => {
@@ -292,12 +335,12 @@ export default {
         this.files.push(photo);
       });
     },
-    remove (item) {
-        const index = this.tagUserslist.indexOf(item.name)
-        if (index >= 0) this.tagUserslist.splice(index, 1)
-      },
+    remove(item) {
+      const index = this.users.indexOf(item);
+      if (index >= 0) this.users.splice(index, 1);
+    },
   },
-  components: {},
+  
 };
 </script>
 

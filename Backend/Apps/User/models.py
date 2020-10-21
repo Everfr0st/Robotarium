@@ -11,7 +11,7 @@ class UserOnline(models.Model):
 
 class UserProfilePhoto(models.Model):
     def user_directory_path(instance, filename):
-        filename = 'user_{0}{1}'.format(instance.pk, datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))
+        filename = 'user_{0}'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S%f"))
         return 'profile_pictures/{0}'.format(filename + ".jpg")
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to=user_directory_path,blank=True)

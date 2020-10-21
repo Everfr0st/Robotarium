@@ -10,7 +10,7 @@
             <v-col sm="12" md="3" lg="3" color="primary">
               <LeftAside />
             </v-col>
-            <v-col sm="12" md="6" color="red">
+            <v-col class="ml-2" sm="12" md="6" color="red">
               <router-view />
             </v-col>
             <v-col class="user-list" sm="12" md="3" lg="3">
@@ -77,6 +77,10 @@ export default {
 
 <style scoped>
 .user-list {
+  position: fixed;
+  right: 0px;
+  top: 12%;
+  width: 24%;
   max-height: 85vh;
   height: 85vh;
   border-left: 1px solid #e7e7e7;

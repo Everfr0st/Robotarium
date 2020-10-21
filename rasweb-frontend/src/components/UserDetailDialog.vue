@@ -110,7 +110,7 @@ export default {
 
 <style>
 .user-detail-dialog {
-  position: absolute;
+  position: fixed;
   top: 0px;
   display: none;
   transition: all ease 500ms;

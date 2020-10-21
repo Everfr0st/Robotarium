@@ -208,8 +208,8 @@ export default {
     if(this.room == aux_room){
       aux_messages = this.messages;
     } else{
-      this.room = aux_room;
-      this.messages = aux_messages;
+      //this.room = aux_room;
+      //this.messages = aux_messages;
       
       //this.websocket = aux_webSocket;
       //this.connect();

@@ -10,4 +10,5 @@ python-memcached
 Pillow
 djangorestframework
 djangorestframework_simplejwt
+django-cors-headers
 psycopg2

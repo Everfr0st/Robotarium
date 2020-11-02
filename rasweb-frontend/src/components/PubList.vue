@@ -102,12 +102,11 @@ export default {
         Authorization: `Bearer ${this.authentication.accessToken}`,
       },
     });
-
+    console.log(response)
     if (response.status == 200) {
       response = await response.json();
       this.posts = response;
       this.loading = false;
-      console.log(this.posts);
     }
   },
 };

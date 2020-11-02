@@ -43,7 +43,7 @@ export default new Vuex.Store({
     },
     setSelfuser(state, user) {
       state.self_user.username = user.username;
-      state.self_user.profile_picture = state.domain_base + user.profile_picture;
+      state.self_user.profile_picture = user.profile_picture? state.domain_base + user.profile_picture: "";
       state.self_user.name = user.name;
     },
     setAccountInfo(state, user) {

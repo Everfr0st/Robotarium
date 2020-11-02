@@ -2,6 +2,7 @@
 **.pyc
 **/migrations/*
 Pipfile
+Pipfile.lock
 Backend/db.sqlite3
 Backend/Files/**
 **/node_modules/*

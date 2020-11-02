@@ -33,10 +33,11 @@
           <img :src="profile_picture" :alt="name" />
         </v-avatar>
         <v-avatar size="30" color="secondary" v-else>
-          <span>{{ name? name.slice(0, 1):username.slice(0,1) }}</span>
+          <span style="color: white;">{{ name.length? name.slice(0, 1):username.slice(0,1) }}</span>
         </v-avatar>
       </v-btn>
     </v-app-bar>
+    
   </div>
 </template>
 
@@ -73,9 +74,11 @@ export default {
       this.unread_notifications = nav_data.unread_notifications;
       this.unread_messages = nav_data.unread_messages;
       this.name = nav_data.name;
+      this.username = nav_data.username;
       this.profile_picture = nav_data.profile_picture.length
         ? web_domain + nav_data.profile_picture
         : "";
+      console.log(this.profile_picture)
       this.setSelfuser(nav_data);
     } else{
       this.destroyAuthcredentials();

@@ -33,7 +33,7 @@
           <img :src="profile_picture" :alt="name" />
         </v-avatar>
         <v-avatar size="30" color="secondary" v-else>
-          <span style="color: white;">{{ name.trim().length? name.slice(0,1):username.slice(0,1) }}</span>
+          <span style="color: white;">{{ name.trim().length? name.slice(0,1) + name.split(" ")[1].slice(0,1):username.slice(0,1) }}</span>
         </v-avatar>
       </v-btn>
     </v-app-bar>

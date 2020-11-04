@@ -22,44 +22,39 @@
                 :alt="post.name ? post.name : '@' + post.username"
               />
               <span style="color: white" v-else>{{
-                post.name ? post.name.slice(0, 1) : post.username.slice(0, 1)
+                post.name.trim().length ? post.name.slice(0, 1).toUpperCase() + post.name.split(" ")[1].slice(0, 1).toUpperCase() : post.username.slice(0, 2).toUpperCase()
               }}</span>
             </v-avatar>
-            <p class="ml-3 mr-1">
+            <p :title="post.name" v-if="post.name.trim().length" class="ml-3">
               {{ post.name }}
             </p>
-            <p style="color: grey; font-size: 14pt">@{{ post.username }}</p>
+            <p :title="'@'+post.username" :class="post.name.trim().length? 'ml-1':'ml-3'" style="color: grey; font-size: 14pt">@{{ post.username }}</p>
           </v-card-title>
           <v-card-subtitle
             style="
               position: absolute;
               left: 35px;
-              bottom: -12px;
+              bottom: -15px;
               font-size: 9pt;
             "
           >
             <v-icon size="15">mdi-progress-clock</v-icon>
+            <span :title="post.created">
+
             {{ post.created }}
+            </span>
           </v-card-subtitle>
         </v-row>
         <v-row>
-          <v-card-text style="padding: 0px">
+          <v-card-text style="padding: 0px; font-size: 12pt;">
             {{ post.content }}
-            <p v-if="post.tag_users.length">
-              Con
-              <a
-                color="accent"
-                text
-                v-for="(tag_user, index) in post.tag_users"
-                :key="index"
-              >
-                @{{ tag_user
-                }}<span v-if="index < post.tag_users.length - 1">,</span>
-              </a>
-            </p>
           </v-card-text>
+          <v-card-actions class="pa-0 mt-1">
+              <v-icon size="30" color="accent" class="mr-1">mdi-account-supervisor</v-icon>    
+              <UserInTag v-for="(tag_user, index) in post.tag_users" :key="index" :user="tag_user" />
+          </v-card-actions>
         </v-row>
-        <v-row class="pr-7" >
+        <v-row class="pr-7 mt-2" >
           <v-carousel style="border-radius: 5px; z-index: 0;">
             <v-carousel-item
               v-for="(photo, index) in post.photos"
@@ -85,6 +80,8 @@
 
 <script>
 import { mapState } from "vuex";
+import UserInTag from "@/components/subcomponents/UserInTag.vue";
+
 export default {
   name: "PubList",
   data: () => ({
@@ -92,6 +89,9 @@ export default {
     posts: [],
     loading: true,
   }),
+  components: {
+    UserInTag
+  },
   computed: {
     ...mapState(["authentication", "domain_base"]),
   },

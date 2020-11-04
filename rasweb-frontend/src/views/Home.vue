@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card elevation="0">
+    <v-card elevation="3" class="mb-4" style="border-radius: 15px;">
       <v-container fluid>
         <v-progress-linear
           v-if="loading"
@@ -16,18 +16,17 @@
                 <img :src="self_user.profile_picture" :alt="self_user.name" />
               </v-avatar>
               <v-avatar size="50" color="secondary" v-else>
-                <span v-if="self_user.name.trim().length" style="color: white"
+                <span v-if="self_user.name.trim().length" style="color: white; font-size: 14pt;"
                   >{{ self_user.name.split(" ")[0].slice(0, 1)
                   }}{{ self_user.name.split(" ")[1].slice(0, 1) }}</span
                 >
-                <span v-else style="color: white">{{
+                <span v-else style="color: white; font-size; 14pt;">{{
                   self_user.username.slice(0, 2).toUpperCase()
                 }}</span>
               </v-avatar>
             </v-avatar>
             <span class="ml-2" style="width: 90%">
               <div
-                data-placeholder="Edit me"
                 contenteditable="true"
                 class="create"
                 id="create-post"
@@ -190,15 +189,16 @@
                   <v-spacer></v-spacer>
                   <v-btn
                     v-if="photos.length"
-                    color="primary"
+                    color="error"
+                    outlined
                     @click="
                       photos = [];
                       files = [];
                     "
                     >Eliminar todas</v-btn
                   >
-                  <v-btn color="accent" outlined @click="dialog = false">
-                    Listo!
+                  <v-btn class="mr-1" :color="photos.length? 'accent': 'primary'" @click="dialog = false">
+                    {{photos.length? 'Listo': 'Cerrar'}}
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -222,14 +222,11 @@
               :disabled="loading"
               @click="submitPost()"
               color="primary"
-              rounded
-              class="ml-auto mr-3"
+              class="ml-auto mr-3 submit-post"
               >Publicar</v-btn
             >
           </v-row>
         </form>
-
-        <v-divider class="mt-2 mb-2"></v-divider>
       </v-container>
     </v-card>
     
@@ -279,7 +276,7 @@ export default {
     ...mapState(["users", "self_user", "authentication", "domain_base"]),
   },
   created(){
-    document.title = "Inicio @" + this.self_user.username + " · UAO-RAS"
+    document.title = "Inicio · UAO-RAS"
   },
   methods: {
     AddContent() {
@@ -346,8 +343,14 @@ export default {
 </script>
 
 <style scoped>
+
 .create {
+  background: rgba(197,7,7,0.1);
+  padding: 1.5%;
+  
+  border-radius: 10px;
   width: auto;
+  max-width: 99%;
   min-height: 16pt;
   height: auto;
   max-height: 100px;
@@ -365,7 +368,61 @@ export default {
 [contenteditable][placeholder]:empty:before {
   content: attr(placeholder);
   position: absolute;
-  color: gray;
+  color: #4A4A4A;
   background-color: transparent;
+}
+.create::-webkit-scrollbar {
+  width: 3px; /* Tamaño del scroll en vertical */
+  height: 3px; /* Tamaño del scroll en horizontal */
+  /* display: none; Ocultar scroll */
+}
+/* Ponemos un color de fondo y redondeamos las esquinas del thumb */
+.create::-webkit-scrollbar-thumb {
+  background: #be0707;
+  border-radius: 4px;
+}
+.theme--light.v-divider {
+    border-color: #be0707 !important; 
+}
+.submit-post{
+  background: rgba(89, 4, 4, 1);
+  background: -moz-linear-gradient(
+    left,
+    rgba(89, 4, 4, 1) 0%,
+    rgba(192, 7, 7, 1) 55%,
+    rgba(192, 7, 7, 1) 100%
+  );
+  background: -webkit-gradient(
+    left top,
+    right top,
+    color-stop(0%, rgba(89, 4, 4, 1)),
+    color-stop(55%, rgba(192, 7, 7, 1)),
+    color-stop(100%, rgba(192, 7, 7, 1))
+  );
+  background: -webkit-linear-gradient(
+    left,
+    rgba(89, 4, 4, 1) 0%,
+    rgba(192, 7, 7, 1) 55%,
+    rgba(192, 7, 7, 1) 100%
+  );
+  background: -o-linear-gradient(
+    left,
+    rgba(89, 4, 4, 1) 0%,
+    rgba(192, 7, 7, 1) 55%,
+    rgba(192, 7, 7, 1) 100%
+  );
+  background: -ms-linear-gradient(
+    left,
+    rgba(89, 4, 4, 1) 0%,
+    rgba(192, 7, 7, 1) 55%,
+    rgba(192, 7, 7, 1) 100%
+  );
+  background: linear-gradient(
+    to right,
+    rgba(89, 4, 4, 1) 0%,
+    rgba(192, 7, 7, 1) 55%,
+    rgba(192, 7, 7, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#590404', endColorstr='#c00707', GradientType=1 );
 }
 </style>

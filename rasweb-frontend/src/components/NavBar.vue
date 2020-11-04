@@ -33,7 +33,7 @@
           <img :src="profile_picture" :alt="name" />
         </v-avatar>
         <v-avatar size="30" color="secondary" v-else>
-          <span style="color: white;">{{ name.length? name.slice(0, 1):username.slice(0,1) }}</span>
+          <span style="color: white;">{{ name.trim().length? name.slice(0,1):username.slice(0,1) }}</span>
         </v-avatar>
       </v-btn>
     </v-app-bar>
@@ -78,7 +78,6 @@ export default {
       this.profile_picture = nav_data.profile_picture.length
         ? web_domain + nav_data.profile_picture
         : "";
-      console.log(this.profile_picture)
       this.setSelfuser(nav_data);
     } else{
       this.destroyAuthcredentials();

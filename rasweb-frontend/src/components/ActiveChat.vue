@@ -37,7 +37,15 @@
             >mdi-window-minimize</v-icon
           >
         </v-btn>
-        <v-btn @click="clearData(); deleteChatfromlist(index); " color="white" icon small>
+        <v-btn
+          @click="
+            clearData();
+            deleteChatfromlist(index);
+          "
+          color="white"
+          icon
+          small
+        >
           <v-icon small>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -66,6 +74,8 @@
                   chat.username.slice(0, 1).toUpperCase()
                 }}</span>
               </v-avatar>
+    
+
               <span class="ml-1">Escribiendo...</span>
             </v-row>
           </v-card-text>
@@ -134,7 +144,7 @@ import { mapState } from "vuex";
 import { mapMutations } from "vuex";
 const web_domain = "http://127.0.0.1:8000";
 var aux_messages;
-var aux_room; 
+var aux_room;
 var aux_webSocket;
 export default {
   name: "ActiveChat",
@@ -143,7 +153,7 @@ export default {
     message: "",
     date_send: "",
     room: undefined,
-    typing: false,
+    typing: true,
     messages: [],
     position: 255,
     loading: true,
@@ -154,8 +164,8 @@ export default {
   },
   created() {
     let response;
-    ApiComunication(this.self_user.username, this.chat.username)
-      .then((response) => {
+    ApiComunication(this.self_user.username, this.chat.username).then(
+      (response) => {
         if (response.conversation_created == undefined) {
           this.messages = response;
           this.date_send = response[response.length - 1].send.split("-")[0];
@@ -171,12 +181,13 @@ export default {
           //this.created = response.conversation_created;
         }
         if (this.room != undefined) {
-          console.log(this.room)
+          console.log(this.room);
           this.connect();
         }
         aux_room = this.room;
         this.loading = false;
-      });
+      }
+    );
     /*.then(function(){
       if (vm.room != undefined) {
       vm.websocket = new WebSocket(
@@ -204,19 +215,18 @@ export default {
     });*/
   },
   beforeUpdate() {
-    console.log(this.room, this.self_user.username)
-    if(this.room == aux_room){
+    console.log(this.room, this.self_user.username);
+    if (this.room == aux_room) {
       aux_messages = this.messages;
-    } else{
+    } else {
       this.room = aux_room;
       this.messages = aux_messages;
-      
+
       //this.websocket = aux_webSocket;
       //this.connect();
     }
-
   },
-  beforeDestroy () {   
+  beforeDestroy() {
     this.websocket.close();
   },
   methods: {
@@ -295,15 +305,12 @@ export default {
             this.date_send = socket_data.send.split("-")[0];
           }
         };
-
-   
       };
-      this.websocket.onclose = () =>{
-        console.log(`room ${this.room} closes`)
-      }
+      this.websocket.onclose = () => {
+        console.log(`room ${this.room} closes`);
+      };
     },
-    clearData(){
-    }
+    clearData() {},
   },
 };
 
@@ -418,4 +425,7 @@ async function ApiComunication(sender, receiver) {
   border-radius: 5px;
   margin: 10px 0px 10px 40%;
 }
+
+
+
 </style>

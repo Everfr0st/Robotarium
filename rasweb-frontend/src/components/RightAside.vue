@@ -2,24 +2,27 @@
   <div class="ma-0 pa-0 users-list">
     <v-container class="pa-0">
       <v-row class="ml-8">
-        <h3 style="padding-top: 5px" align-center>Usuarios</h3>
-        <v-spacer></v-spacer>
-        <v-btn fab text small color="grey" class="mr-8">
-          <v-icon>mdi-account-search</v-icon>
-        </v-btn>
+        <v-text-field
+          class="search-user"
+          v-model="search"
+          append-icon="mdi-account-search"
+          label="Buscar"
+          single-line
+          hide-details
+          @keyup="searchUser()"
+        ></v-text-field>
       </v-row>
       <div v-if="loaded" id="chat-list" @mouseleave="hideDialog()">
-        <v-list
-          
-          
-          two-line
-        >
+        <v-list style="margin-left: 20px; width: 90%" two-line>
           <template v-for="(user, index) in users">
             <v-list-item
               :key="index"
               class="user-list"
               :id="'user_' + user.username"
-              @mouseenter="setAccountInfo(user); showDialog();"
+              @mouseenter="
+                setAccountInfo(user);
+                showDialog();
+              "
               @click="addChat2List(user)"
             >
               <v-badge
@@ -68,8 +71,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import {setDialogPosition} from "@/auxfunctions/DomFunctions.js";
-
+import { setDialogPosition } from "@/auxfunctions/DomFunctions.js";
 
 const web_domain = "http://127.0.0.1:8000";
 
@@ -77,41 +79,60 @@ export default {
   name: "RightAside",
   data: () => ({
     loaded: false,
+    search: "",
     attrs: {
       boilerplate: false,
     },
   }),
-  computed:{
-    ...mapState(["users","authentication", "dialog"])
+  computed: {
+    ...mapState(["users", "authentication", "dialog"]),
   },
   methods: {
-    ...mapMutations(["setUsers","setAccountInfo", "setChatInfo", "addChat2List"]),
+    ...mapMutations([
+      "setUsers",
+      "setAccountInfo",
+      "setChatInfo",
+      "addChat2List",
+    ]),
     hideDialog() {
-      
       let chatlist = document.getElementById("chat-list");
-      let chatlist_position =chatlist.getBoundingClientRect();
+      let chatlist_position = chatlist.getBoundingClientRect();
       let dialog = document.getElementsByClassName("user-detail-dialog");
-      if (event.clientY > chatlist_position.bottom || event.clientY < chatlist_position.top)
-       { 
-        dialog[0].style="display: none;"
-       }
-      },
-      showDialog(){
-        let username = this.dialog.username;
-        let dialog = document.getElementsByClassName("user-detail-dialog");
-        if (dialog[0].style.display == "none"){
-          setDialogPosition(username);
-        }
-        
+      if (
+        event.clientY > chatlist_position.bottom ||
+        event.clientY < chatlist_position.top
+      ) {
+        dialog[0].style = "display: none;";
       }
+    },
+    showDialog() {
+      let username = this.dialog.username;
+      let dialogdiv = document.getElementsByClassName("user-detail-dialog");
+     // setDialogPosition(username);
+      console.log(dialogdiv)
+    },
+    searchUser() {
+        let usersList = document.getElementsByClassName("v-list-item__title");
+        let userslistContainers = document.getElementsByClassName("user-list");
+        for (var i = 0; i < usersList.length; i++) {
+          var txtValue = usersList[i].textContent || usersList[i].innerText;
+          if (txtValue.toUpperCase().indexOf(this.search.toUpperCase()) > -1) {
+            userslistContainers[i].style.display = "";
+            console.log(userslistContainers[i])
+          } else {
+            userslistContainers[i].style.display = "none";
+          }
+        }
+      
+    },
   },
   async created() {
     const api_dir = "/coco-api/v1.0/users-list";
     let response = await fetch(web_domain + api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
-        Authorization: `Bearer ${this.authentication.accessToken}`
-      }
+        Authorization: `Bearer ${this.authentication.accessToken}`,
+      },
     });
     response = await response.json();
     this.setUsers(response);
@@ -124,13 +145,15 @@ export default {
 .btn-menu {
   background-color: rgba(190, 7, 7, 0.4);
 }
-
+.user-list {
+  padding: 0px;
+}
 .user-list:hover {
   border-radius: 5px;
   background-color: #e7e7e7;
   cursor: pointer;
 }
-.users-list{
+.users-list {
   position: fixed;
   right: 0px;
   top: 12%;
@@ -148,5 +171,9 @@ export default {
 .users-list::-webkit-scrollbar-thumb {
   background: #be0707;
   border-radius: 4px;
+}
+.search-user {
+  max-width: 87%;
+  background: white;
 }
 </style>

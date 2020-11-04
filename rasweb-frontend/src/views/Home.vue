@@ -16,7 +16,7 @@
                 <img :src="self_user.profile_picture" :alt="self_user.name" />
               </v-avatar>
               <v-avatar size="50" color="secondary" v-else>
-                <span v-if="self_user.name" style="color: white"
+                <span v-if="self_user.name.trim().length" style="color: white"
                   >{{ self_user.name.split(" ")[0].slice(0, 1)
                   }}{{ self_user.name.split(" ")[1].slice(0, 1) }}</span
                 >
@@ -272,10 +272,14 @@ export default {
     snackbar: false,
     timeout: 5000,
     message: "",
-    attrs: ''
+    attrs: '',
+    api_dir : "/coco-api/v1.0/new-post/"
   }),
   computed: {
-    ...mapState(["users", "self_user", "authentication"]),
+    ...mapState(["users", "self_user", "authentication", "domain_base"]),
+  },
+  created(){
+    document.title = "Inicio @" + this.self_user.username + " · UAO-RAS"
   },
   methods: {
     AddContent() {
@@ -285,9 +289,6 @@ export default {
     async submitPost() {
       if (this.content.length || this.files.length) {
         this.loading = true;
-        const web_domain = "http://127.0.0.1:8000";
-        const api_dir = "/coco-api/v1.0/new-post/";
-
         const formdata = new FormData();
         formdata.append("username", this.self_user.username);
         formdata.append("content", this.content);
@@ -308,7 +309,7 @@ export default {
         };
         delete options.headers["Content-Type"];
 
-        let response = await fetch(web_domain + api_dir, options);
+        let response = await fetch(this.domain_base + this.api_dir, options);
         response = await response.json();
         if (!response.created) {
           this.message =

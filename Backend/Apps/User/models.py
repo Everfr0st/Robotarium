@@ -8,6 +8,10 @@ class UserOnline(models.Model):
     is_online = models.BooleanField(default=False)
     updated = models.DateField(auto_now=True)
 
+    def __str__(self):
+        message = self.user.username 
+        message += ' is Online' if self.is_online else ' is Offline'
+        return  message
 
 class UserProfilePhoto(models.Model):
     def user_directory_path(instance, filename):

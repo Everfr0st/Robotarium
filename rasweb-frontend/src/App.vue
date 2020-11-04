@@ -10,10 +10,10 @@
             <v-col sm="12" md="3" lg="3" color="primary">
               <LeftAside />
             </v-col>
-            <v-col class="ml-2" sm="12" md="6" color="red">
+            <v-col class="ml-5" sm="12" md="6" color="red">
               <router-view />
             </v-col>
-            <v-col class="user-list" sm="12" md="3" lg="3">
+            <v-col class="user-container-list">
               <RightAside />
             </v-col>
           </v-row>
@@ -76,11 +76,11 @@ export default {
 </script>
 
 <style scoped>
-.user-list {
+.user-container-list {
   position: fixed;
   right: 0px;
   top: 12%;
-  width: 24%;
+  width: 22%;
   max-height: 85vh;
   height: 85vh;
   border-left: 1px solid #e7e7e7;
@@ -89,13 +89,13 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
 }
-.user-list::-webkit-scrollbar {
+.user-container-list::-webkit-scrollbar {
   width: 3px; /* Tamaño del scroll en vertical */
   height: 3px; /* Tamaño del scroll en horizontal */
   /* display: none; Ocultar scroll */
 }
 /* Ponemos un color de fondo y redondeamos las esquinas del thumb */
-.user-list::-webkit-scrollbar-thumb {
+.user-container-list::-webkit-scrollbar-thumb {
   background: #be0707;
   border-radius: 4px;
 }

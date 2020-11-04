@@ -7,6 +7,7 @@ from django.conf import settings
 from Apps.User import urls as user_urls
 from Apps.Chat import urls as chat_urls
 from Apps.Post import urls as post_urls
+from Apps.LiveStream import urls as live_urls
 
 url_base = 'coco-api/v1.0/'
 
@@ -21,4 +22,8 @@ urlpatterns = [
 
                   # Chat app views
                   path(url_base, include(chat_urls)),
+
+                  # LiveStream app views
+                  path(url_base, include(live_urls)),
+
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,14 +1,15 @@
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 
-from Apps.Chat import routing
+from Apps.Chat import routing as chat_routing
+from Apps.LiveStream import routing as chat_routing
 
 
 application = ProtocolTypeRouter({
     # (http->django views is added by default)
     'websocket': AuthMiddlewareStack(
         URLRouter(
-            routing.websocket_urlpatterns
+            chat_routing.websocket_urlpatterns
         )
     ),
 })

@@ -10,7 +10,7 @@
             <v-col sm="12" md="3" lg="2" color="primary">
               <LeftAside />
             </v-col>
-            <v-col class="ml-5" sm="12" md="6" color="red">
+            <v-col class="ml-5" sm="12" md="6" lg="7" color="red">
               <router-view />
             </v-col>
             <v-col class="user-container-list">

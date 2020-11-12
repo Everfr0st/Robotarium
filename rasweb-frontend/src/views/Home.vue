@@ -25,15 +25,16 @@
                 }}</span>
               </v-avatar>
             </v-avatar>
-            <span class="ml-2" style="width: 90%">
-              <div
+            <v-col>
+                <div
                 contenteditable="true"
                 class="create"
                 id="create-post"
                 placeholder="¿Deseas anunciar algo?"
                 @keyup="AddContent()"
               ></div>
-            </span>
+            </v-col>
+            
           </v-row>
           <v-divider class="mt-2 mb-2"></v-divider>
 
@@ -350,12 +351,12 @@ export default {
   
   border-radius: 10px;
   width: auto;
-  max-width: 99%;
   min-height: 16pt;
   height: auto;
   max-height: 100px;
   overflow: auto;
   overflow-x: hidden;
+  overflow-wrap: break-word;
 }
 .create:hover {
   cursor: text;

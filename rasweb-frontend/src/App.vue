@@ -7,7 +7,7 @@
       <v-main>
         <v-container fluid>
           <v-row wrap>
-            <v-col sm="12" md="3" lg="3" color="primary">
+            <v-col sm="12" md="3" lg="2" color="primary">
               <LeftAside />
             </v-col>
             <v-col class="ml-5" sm="12" md="6" color="red">

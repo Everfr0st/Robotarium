@@ -60,7 +60,7 @@ export default {
     ...mapMutations(["destroyAuthcredentials"]),
     async Logout() {
       const web_domain = "http://127.0.0.1:8000";
-      const api_dir = "/coco-api/v1.0/logout/";
+      const api_dir = "/robotarium-api/v1.0/logout/";
       let response = await fetch(web_domain + api_dir + this.authentication.accessToken, {
         method: "DELETE",
         headers: {

@@ -1,19 +1,14 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login
 from django.db.models import Q
 from django.http import JsonResponse
-
 from django.views.generic import TemplateView
-from django.contrib.auth.views import LogoutView
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 from .auxmethods import get_semester_name
 from .models import *
-from django.contrib.auth import authenticate, login
-
 from ..Chat.models import Message
-
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 
 class SignUp(TemplateView):

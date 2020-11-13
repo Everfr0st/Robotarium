@@ -22,7 +22,7 @@ import WebSocketLive from "@/components/subcomponents/WebSocketLive.vue";
 export default {
   data: () => ({
     liveId: "",
-    api_dir: "/coco-api/v1.0/retrieve-liveId/",
+    api_dir: "/robotarium-api/v1.0/retrieve-liveId/",
   }),
   components:{
     WebSocketLive

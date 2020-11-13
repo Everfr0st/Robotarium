@@ -11,4 +11,5 @@ Pillow
 djangorestframework
 djangorestframework_simplejwt
 django-cors-headers
+asgiref~=3.2
 #psycopg2

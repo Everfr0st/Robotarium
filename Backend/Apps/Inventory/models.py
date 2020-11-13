@@ -9,13 +9,19 @@ class Inventory(models.Model):
         return 'inventory/{0}'.format(filename + ".jpg")
 
     name = models.CharField(max_length=40)
-    code = models.CharField(max_length=5)
+    code = models.CharField(max_length=5, unique=True)
     quantity = models.IntegerField()
     photo = models.ImageField(upload_to=element_directory_path,blank=True)
     added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+
+    def serializer(self):
+        json = {
+            "name": self.name,
+            
+        }
 
 class Schedule(models.Model):
     date = models.DateField()

@@ -271,7 +271,7 @@ export default {
     timeout: 5000,
     message: "",
     attrs: '',
-    api_dir : "/coco-api/v1.0/new-post/"
+    api_dir : "/robotarium-api/v1.0/new-post/"
   }),
   computed: {
     ...mapState(["users", "self_user", "authentication", "domain_base"]),
@@ -295,7 +295,6 @@ export default {
         this.files.forEach((file) => {
           formdata.append(`photo_${this.files.indexOf(file)}`, file);
         });
-        console.log(this.tagUserslist);
         this.tagUserslist.forEach((user) => {
           formdata.append(`user_${this.tagUserslist.indexOf(user)}`, user);
         });

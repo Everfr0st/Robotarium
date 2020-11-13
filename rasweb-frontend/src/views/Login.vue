@@ -21,7 +21,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-const web_domain = "http://127.0.0.1:8000/coco-api/v1.0/";
+const web_domain = "http://127.0.0.1:8000/robotarium-api/v1.0/";
 
 export default {
   name: "Login",

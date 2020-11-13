@@ -85,7 +85,7 @@ export default {
       counter = 0;
     } else {
       let username = store.state.dialog.username;
-      const api_dir = "/coco-api/v1.0/user-detail?username=" + username;
+      const api_dir = "/robotarium-api/v1.0/user-detail?username=" + username;
       let response = await fetch(web_domain + api_dir, {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
       });

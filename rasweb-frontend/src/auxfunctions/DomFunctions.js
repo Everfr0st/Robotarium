@@ -2,9 +2,7 @@ export function setDialogPosition(username) {
     try {
         let div_user = document.getElementById("user_" + username);
         let dialog_userdiv = document.getElementById("dialog_" + username);
-        console.log(div_user, dialog_userdiv)
         if (dialog_userdiv != null) {
-            console.log(dialog_userdiv)
 
             let divuser_position = div_user.getBoundingClientRect();
             let dialogposition = {

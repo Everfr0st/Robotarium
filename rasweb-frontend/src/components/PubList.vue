@@ -85,7 +85,7 @@ import UserInTag from "@/components/subcomponents/UserInTag.vue";
 export default {
   name: "PubList",
   data: () => ({
-    api_dir: "/coco-api/v1.0/post-list/",
+    api_dir: "/robotarium-api/v1.0/post-list/",
     posts: [],
     loading: true,
   }),
@@ -102,7 +102,6 @@ export default {
         Authorization: `Bearer ${this.authentication.accessToken}`,
       },
     });
-    console.log(response)
     if (response.status == 200) {
       response = await response.json();
       this.posts = response;

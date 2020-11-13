@@ -26,7 +26,6 @@ export default {
         ...mapState(["users"])
     },
     created(){
-        console.log("ENTRA")
         for(let i = 0; i < this.users.length; i++){
             if (this.users[i].username.indexOf(this.user) > -1) {
             this.tagUser = this.users[i];

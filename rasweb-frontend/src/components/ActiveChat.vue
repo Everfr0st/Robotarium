@@ -181,7 +181,6 @@ export default {
           //this.created = response.conversation_created;
         }
         if (this.room != undefined) {
-          console.log(this.room);
           this.connect();
         }
         aux_room = this.room;
@@ -215,7 +214,6 @@ export default {
     });*/
   },
   beforeUpdate() {
-    console.log(this.room, this.self_user.username);
     if (this.room == aux_room) {
       aux_messages = this.messages;
     } else {
@@ -250,7 +248,6 @@ export default {
       } catch {}
     },
     showDate(Date) {
-      console.log(Date);
     },
     sendMessage() {
       this.websocket.send(
@@ -315,7 +312,7 @@ export default {
 };
 
 async function ApiComunication(sender, receiver) {
-  const api_dir = `/coco-api/v1.0/chat/chat-messages`;
+  const api_dir = `/robotarium-api/v1.0/chat/chat-messages`;
   let response = await fetch(
     web_domain + api_dir + `?sender=${sender}&receiver=${receiver}`,
     {

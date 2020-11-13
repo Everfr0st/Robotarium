@@ -73,19 +73,19 @@
 import { mapState, mapMutations } from "vuex";
 import { setDialogPosition } from "@/auxfunctions/DomFunctions.js";
 
-const web_domain = "http://127.0.0.1:8000";
 
 export default {
   name: "RightAside",
   data: () => ({
     loaded: false,
     search: "",
+     api_dir: "/robotarium-api/v1.0/users-list",
     attrs: {
       boilerplate: false,
     },
   }),
   computed: {
-    ...mapState(["users", "authentication", "dialog"]),
+    ...mapState(["users", "authentication", "dialog", "domain_base"]),
   },
   methods: {
     ...mapMutations([
@@ -127,8 +127,7 @@ export default {
     },
   },
   async created() {
-    const api_dir = "/coco-api/v1.0/users-list";
-    let response = await fetch(web_domain + api_dir, {
+    let response = await fetch(this.domain_base + this.api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
         Authorization: `Bearer ${this.authentication.accessToken}`,

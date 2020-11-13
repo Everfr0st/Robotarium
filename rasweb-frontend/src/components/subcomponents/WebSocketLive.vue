@@ -12,7 +12,7 @@ import {mapState} from "vuex";
 export default {
     data: () => ({
     liveId: "",
-    api_dir: "/coco-api/v1.0/retrieve-liveId/",
+    api_dir: "/robotarium-api/v1.0/retrieve-liveId/",
     img_text: '',
     canvas_obj: '',
   }),
@@ -31,7 +31,6 @@ export default {
       this.websocket = new WebSocket(
         "ws://" + this.ws_base + "/ws/live/main-stream"
       );
-      console.log("ws://" + this.ws_base + "/ws/live/main-stream")
       let aux_webSocket = this.websocket;
       this.websocket.onopen = () => {
         console.info("conectado exitosamente!");
@@ -41,7 +40,6 @@ export default {
           const socket_data = JSON.parse(data);
           this.img_text = socket_data.img_data;
 
-          console.log(socket_data.img_data)
         };
       };
       this.websocket.onclose = () => {

@@ -17,11 +17,7 @@ class Inventory(models.Model):
     def __str__(self):
         return self.name
 
-    def serializer(self):
-        json = {
-            "name": self.name,
-            
-        }
+
 
 class Schedule(models.Model):
     date = models.DateField()

@@ -148,7 +148,9 @@
               <v-card>
                 <v-container class="ma-0 pa-0" style="overflow: hidden">
                   <v-row>
-                    <v-carousel v-if="photos.length">
+                    <v-carousel 
+                    
+                     v-if="photos.length">
                       <v-carousel-item
                         v-for="(photo, i) in photos"
                         :key="i"

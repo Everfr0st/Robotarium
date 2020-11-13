@@ -9,7 +9,7 @@
       :key="row">
       <v-col v-for="col in 3" :key="col">
         
-        <CardInventory :stand="stand" :col="col" :row="row" />
+        <CardInventory class="card" :stand="stand" :col="col" :row="row" />
       </v-col>
 
     </v-row>
@@ -32,8 +32,8 @@ export default {
     ...mapState(["domain_base", "authentication"]),
   },
   props: ["stand", "levels"],
-  async created() {
-    let response = await fetch(
+  created() {
+   /* let response = await fetch(
       this.domain_base + this.api_dir + "&code=" + this.stand,
       {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -60,7 +60,15 @@ export default {
           aux_array = [];
         }
       }
-    }
+    }*/
   },
 };
 </script>
+
+<style scoped>
+  .card{
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+</style>

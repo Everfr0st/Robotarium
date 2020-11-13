@@ -55,7 +55,7 @@
           </v-card-actions>
         </v-row>
         <v-row class="pr-7 mt-2" >
-          <v-carousel style="border-radius: 5px; z-index: 0;">
+          <v-carousel :continuous="false" style="border-radius: 5px; z-index: 0;">
             <v-carousel-item
               v-for="(photo, index) in post.photos"
               :key="index"

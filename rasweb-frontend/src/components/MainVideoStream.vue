@@ -1,19 +1,31 @@
 <template>
-  <div>
-    <v-row class="pa-2">
+  <div class="ma-2">
+    <v-row>
       <v-icon class="live" left>mdi-access-point</v-icon>
       <h3>En vivo</h3>
     </v-row>
-    <div class="responsive-content">
-      <iframe
-        class="skeleton"
-        :src="'https://www.youtube.com/embed/' + liveId"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <WebSocketLive />
+    <v-row class="live-container">
+      <v-col class="ma-0 pa-0">
+        <WebSocketLive number="one" />
+      </v-col>
+      <v-col class="ma-0 pa-0">
+        <WebSocketLive number="two" />
+      </v-col>
+      <div class="live-bar" v-if="live.isActive">
+        <v-row>
+          <p>
+            <v-icon class="ml-3 mb-1 live" color="primary" small
+              >mdi-checkbox-blank-circle</v-icon
+            >
+            En vivo
+
+            <span class="live-time-elapsed">
+              {{ live.time_elapsed }}
+            </span>
+          </p>
+        </v-row>
+      </div>
+    </v-row>
   </div>
 </template>
 <script>
@@ -24,11 +36,11 @@ export default {
     liveId: "",
     api_dir: "/robotarium-api/v1.0/retrieve-liveId/",
   }),
-  components:{
-    WebSocketLive
+  components: {
+    WebSocketLive,
   },
   computed: {
-    ...mapState(["domain_base", "authentication"]),
+    ...mapState(["domain_base", "authentication", "live"]),
   },
   async created() {
     let options = {
@@ -45,37 +57,6 @@ export default {
 </script>
 
 <style scoped>
-.skeleton {
-  background: linear-gradient(90deg, #ededed, #ffffff, #ededed);
-  animation-name: load;
-  animation-duration: 1.5s;
-  animation-iteration-count: infinite;
-  animation-direction: forwards;
-  animation-timing-function: ease;
-  background-size: 150% 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-@keyframes load {
-  from {
-    background-position: 100% 0%;
-  }
-  to {
-    background-position: -100% 0%;
-  }
-}
-
-.responsive-content {
-  position: relative;
-  height: 0;
-  overflow: hidden;
-  padding-bottom: 56.2%;
-  margin-bottom: 20px;
-}
-
 .live {
   animation-name: live_animation;
   animation-duration: 1.5s;
@@ -91,5 +72,29 @@ export default {
   to {
     color: #be070700;
   }
+}
+.live-container {
+  position: relative;
+  border-radius: 5px;
+}
+.live-bar {
+  position: absolute;
+  bottom: 6px;
+  padding: 3px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  height: 30px;
+  width: 100%;
+  -webkit-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -ms-user-select:none;
+}
+p {
+  font-size: 12pt;
+  color: white;
+}
+.live-time-elapsed {
+  font-size: 10pt;
+  margin-left: 5px;
 }
 </style>

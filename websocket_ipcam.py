@@ -15,7 +15,7 @@ async def send_data(uri):
 
 		_pause = 0.05
 		while True:
-			frame = cvw.imread('http://192.168.8.100:8080/photo.jpg')
+			frame = cv2.imread('http://192.168.8.100:8080/photo.jpg')
 			time_end = time.time()
 			delta_time = timedelta(seconds= int(time_end - time_start)) 
 

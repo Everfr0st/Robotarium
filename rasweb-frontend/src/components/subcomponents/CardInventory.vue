@@ -37,9 +37,12 @@
             </v-card-subtitle>
           </header>
             <v-card-actions class="actions">
-              <v-btn elevation="1" outlined color="primary">
+              <v-row justify="center">
+                <v-btn elevation="1" outlined color="primary">
                 Reservar
               </v-btn>
+              </v-row>
+              
             </v-card-actions>
           </v-carousel-item>
         </v-carousel>

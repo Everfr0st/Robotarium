@@ -11,5 +11,5 @@ Pillow
 djangorestframework
 djangorestframework_simplejwt
 django-cors-headers
-asgiref~=3.2
+asgiref~=3.2  --use-feature=2020-resolver
 #psycopg2

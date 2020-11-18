@@ -253,7 +253,7 @@
 
 <script>
 // @ is an alias to /src
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import PubList from "@/components/PubList.vue";
 
 export default {
@@ -279,9 +279,11 @@ export default {
     ...mapState(["users", "self_user", "authentication", "domain_base"]),
   },
   created(){
-    document.title = "Inicio · UAO-RAS"
+    document.title = "Inicio · UAO-RAS";
+    this.setViewname = "Inicio";
   },
   methods: {
+    ...mapMutations(["setViewname"]),
     AddContent() {
       var divContent = document.getElementById("create-post");
       this.content = divContent.innerText;

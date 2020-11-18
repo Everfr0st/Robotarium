@@ -1,27 +1,28 @@
 <template>
   <div>
-    <v-layout wrap>
-      <v-flex v-for="(item, index) in elements" :key="index">
+    <v-container wrap>
+      <v-row
+         justify="left"
+        v-for="(item, index) in elements"
+        :key="index"
+        wrap
+      >
         <v-btn
+        align="left"
           color="primary secondary--text"
           class="ma-2"
           text
-          block
-          elevation="2"
           :to="{ name: item.link }"
           exact
           rounded
         >
-          <v-row  class="pa-4">
-            <h2>
-<v-icon left>{{ item.icon }}</v-icon>
-              {{ item.title }}   
-            </h2>
-                
-          </v-row>
+          <v-icon left>{{ item.icon }}</v-icon>
+          <h3>
+            {{ item.title }}
+          </h3>
         </v-btn>
-      </v-flex>
-    </v-layout>
+      </v-row>
+    </v-container>
   </div>
 </template>
 

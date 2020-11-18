@@ -27,13 +27,28 @@ async def send_data(uri):
 			
 			k = cv2.waitKey(1)
 			
-			message = {"type": "live_info", "img_data": jpg_as_text, 'time_elapsed': str(delta_time)}
+			message = {
+				"type": "live_info", 
+				"img_data": jpg_as_text, 
+				'time_elapsed': str(delta_time),
+				"started": True,
+				"finished": False,
+			}
 			message = json.dumps(message)
 			await websocket.send(message)
 			await websocket.recv()
 			time.sleep(_pause)
 			
 			if k == 27: 
+				message = {
+					"type": "live_info", 
+					'time_elapsed': '',
+					"started": False,
+					"finished": True,
+				}
+				message = json.dumps(message)
+				await websocket.send(message)
+				await websocket.recv()
 				break
 		cap.release()
 		cv2.destroyAllWindows()

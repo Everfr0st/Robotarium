@@ -38,8 +38,12 @@ export default {
           this.$router.push({ name: "Home" });
       }
   },
+  created() {
+    document.title = "Login · UAO-RAS";
+    this.setViewname("Login")
+  },
   methods: {
-    ...mapMutations(["updateAuthcredentials"]),
+    ...mapMutations(["updateAuthcredentials", "setViewname"]),
     async loginSubmit() {
         let form_data = {
           username: this.username,

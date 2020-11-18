@@ -22,12 +22,14 @@ export default new Vuex.Store({
     },
     live:{
       time_elapsed: '',
-      isActive: '',
+      started: false,
+      finished: false,
     },
     chats: [],
     users: [],
     ws_base : '127.0.0.1:8000',
-    domain_base : 'http://127.0.0.1:8000'
+    domain_base : 'http://127.0.0.1:8000',
+    view: '',
 
   },
   mutations: {
@@ -72,8 +74,12 @@ export default new Vuex.Store({
 
     },
     updateLiveObj(state, liveObj){
-      state.live.time_elapsed = liveObj.time_elapsed;
-      state.live.isActive = liveObj.isActive;
+      
+      state.live = liveObj
+    },
+    setViewname(state, view){
+      state.view = view;
+      console.log(view)
     }
   },
   actions: {

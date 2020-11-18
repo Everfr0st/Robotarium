@@ -37,11 +37,9 @@
             </v-card-subtitle>
           </header>
             <v-card-actions class="actions">
-              <v-row justify="center">
-                <v-btn elevation="1" outlined color="primary">
+                <v-btn  elevation="1" outlined color="primary">
                 Reservar
               </v-btn>
-              </v-row>
               
             </v-card-actions>
           </v-carousel-item>
@@ -90,7 +88,7 @@ export default {
 
 <style scoped>
     .actions{
-        
+        padding: 0px auto;
         position: absolute;
         bottom: 0px;
     }

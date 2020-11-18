@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Stand {{stand}}</h3>
+    <h3>Vitrina {{stand}}</h3>
     <v-container
       class="pa-0"
       

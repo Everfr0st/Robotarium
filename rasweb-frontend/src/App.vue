@@ -1,19 +1,22 @@
 <template>
   <v-app style="min-width: 800px;">
+    
     <div
       v-if="authentication.user_is_authenticated || authentication.accessToken"
     >
       <NavBar />
+     
       <v-main>
         <v-container fluid>
           <v-row wrap>
-            <v-col sm="12" md="3" lg="2" color="primary">
+            <v-col sm="12" md="3" lg="2">
               <LeftAside />
+               
             </v-col>
-            <v-col class="ml-5" sm="12" md="6" lg="7" color="red">
+            <v-col sm="12" md="6" :lg="view =='Robotarium'?'':'7'">
               <router-view />
             </v-col>
-            <v-col class="user-container-list">
+            <v-col v-if="view !='Robotarium'" class="user-container-list">
               <RightAside />
             </v-col>
           </v-row>
@@ -54,7 +57,7 @@ export default {
     //
   }),
   computed: {
-    ...mapState(["authentication", "self_user"]),
+    ...mapState(["authentication", "self_user", "view"]),
   },
   methods: {
     ...mapMutations(["destroyAuthcredentials"]),
@@ -83,7 +86,6 @@ export default {
   width: 22%;
   max-height: 85vh;
   height: 85vh;
-  border-left: 1px solid #e7e7e7;
   padding: 0px;
   margin: 0px;
   overflow-y: auto;

@@ -1,15 +1,11 @@
 <template>
-  <div style="position: relative;">
+  <div v-if="live.started"  style="position: relative;">
     <div class="camera-name">
 
     <h3 >Cámara {{number == 'one'? '1': '2'}}</h3>
     </div>
-    <v-skeleton-loader
-      v-if="!isActive && !live.isActive"
-      min-height="300"
-      type="card"
-    ></v-skeleton-loader>
-    <img v-if="isActive" :src="'data:image/png;base64,'+img_text" />
+    
+    <img :src="'data:image/png;base64,'+img_text" />
   </div>
 </template>
 
@@ -18,10 +14,8 @@ import {mapState, mapMutations} from "vuex";
 export default {
     data: () => ({
     liveId: "",
-    api_dir: "/robotarium-api/v1.0/retrieve-liveId/",
+    api_dir: "/ws/live-main-stream/",
     img_text: '',
-    canvas_obj: '',
-    isActive : false,
   }),
   props: ["number"],
   computed:{
@@ -34,11 +28,14 @@ export default {
   mounted(){
     
   },
+  destroyed(){
+    this.websocket.close();
+  },
   methods: {
     ...mapMutations(["updateLiveObj"]),
     connect() { 'ws://127.0.0.1:8000{}/'
       this.websocket = new WebSocket(
-        "ws://" + this.ws_base + "/ws/live-main-stream/" + this.number + "/"
+        "ws://" + this.ws_base + this.api_dir + this.number + "/"
       );
       let aux_webSocket = this.websocket;
       this.websocket.onopen = () => {
@@ -48,13 +45,14 @@ export default {
           //console.log(JSON.parse(data))
           const socket_data = JSON.parse(data);
           this.img_text = socket_data.img_data;
-          this.isActive = true;
           if (this.number == "one"){
             let liveObj = {
               'time_elapsed': socket_data.time_elapsed,
-              'isActive': this.isActive
+              'started': socket_data.started,
+              'finished': socket_data.finished
             }
-            this.updateLiveObj(liveObj)
+            
+            this.updateLiveObj(liveObj);
           }
 
         };
@@ -62,11 +60,13 @@ export default {
       this.websocket.onclose = () => {
         if (this.number == "one"){
             let liveObj = {
+              'started': false,
               'time_elapsed': '',
-              'isActive': false
             }
             this.updateLiveObj(liveObj)
+            
           }
+          console.log("cerrando websocket.")
        
       };
     },

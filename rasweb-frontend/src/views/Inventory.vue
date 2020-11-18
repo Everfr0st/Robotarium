@@ -8,7 +8,7 @@
 
 <script>
 import Stand from "@/components/Stand.vue";
-
+import {mapMutations} from "vuex";
 export default {
     name: "Inventory",
     components:{
@@ -16,6 +16,10 @@ export default {
     },
     created(){
         document.title = "Inventario · UAO-RAS"
+        this.setViewname("Inventario");
+    },
+    methods:{
+        ...mapMutations(["setViewname"])
     }
 }
 </script>

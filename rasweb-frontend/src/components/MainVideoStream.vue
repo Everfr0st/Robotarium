@@ -2,15 +2,16 @@
   <div class="ma-2 pr-5">
     <v-row>
       <v-icon :class="live.started && !live.finished ? 'live' : ''" left
-        >mdi-access-point</v-icon
+        >{{live.started && !live.finished ? 'mdi-access-point' : 'mdi-access-point-off'}}</v-icon
       >
       <h3>{{ live.started && !live.finished ? "En vivo" : "Robotarium" }}</h3>
     </v-row>
-    <v-row v-if="live.finished">
+    <v-row v-if="true">
       <v-card class="body">
         <div class="static">
           <div>
-            <h2 class="ml-2">Transmisión finalizada</h2>
+            
+            <h2 class="ml-2 ">Transmisión finalizada</h2>
           </div>
         </div>
         <div class="scan"></div>

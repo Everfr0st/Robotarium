@@ -8,7 +8,7 @@ from .serializer import InventorySerializer
 
 
 class InventoryListApi(generics.ListAPIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = InventorySerializer
     model = Inventory
 

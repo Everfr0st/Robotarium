@@ -348,12 +348,12 @@ export default {
 
 .create {
   background: rgba(197,7,7,0.1);
-  padding: 1.5%;
+  padding: 10px;
   
   border-radius: 10px;
   width: auto;
-  min-height: 16pt;
   height: auto;
+  min-height: 18pt;
   max-height: 100px;
   overflow: auto;
   overflow-x: hidden;
@@ -369,7 +369,7 @@ export default {
 
 [contenteditable][placeholder]:empty:before {
   content: attr(placeholder);
-  position: absolute;
+  position: relative;
   color: #4A4A4A;
   background-color: transparent;
 }

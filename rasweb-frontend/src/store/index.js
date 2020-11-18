@@ -20,6 +20,10 @@ export default new Vuex.Store({
       profile_picture: '',
       online: '',
     },
+    live:{
+      time_elapsed: '',
+      isActive: '',
+    },
     chats: [],
     users: [],
     ws_base : '127.0.0.1:8000',
@@ -67,6 +71,10 @@ export default new Vuex.Store({
       //this.$delete(this.chats, index);
 
     },
+    updateLiveObj(state, liveObj){
+      state.live.time_elapsed = liveObj.time_elapsed;
+      state.live.isActive = liveObj.isActive;
+    }
   },
   actions: {
  

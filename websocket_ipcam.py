@@ -11,11 +11,11 @@ import sys
 async def send_data(uri):
 	async with websockets.connect(uri) as websocket:
 		time_start = time.time()
-		cap = cv2.VideoCapture(0)
+		#cap = cv2.VideoCapture('http://192.168.8.100:8080/photo.jpg')
 
 		_pause = 0.05
 		while True:
-			ret, frame = cap.read()
+			frame = cv2.imread('http://192.168.8.100:8080/photo.jpg')
 			time_end = time.time()
 			delta_time = timedelta(seconds= int(time_end - time_start)) 
 
@@ -38,8 +38,6 @@ async def send_data(uri):
 		cap.release()
 		cv2.destroyAllWindows()
 
-print('conectando a :')
-print('ws://127.0.0.1:8000/ws/live-main-stream/{}/'.format(sys.argv[1]))
 asyncio.get_event_loop().run_until_complete(send_data('ws://127.0.0.1:8000/ws/live-main-stream/{}/'.format(sys.argv[1])))
     
     

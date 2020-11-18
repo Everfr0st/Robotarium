@@ -13,7 +13,7 @@
       min-height="200"
       transition="fade-transition"
     >
-      <v-card  color="#979797f5">
+      <v-card v-if="isActive"  color="#979797f5">
         <v-carousel
           :continuous="false"
           hide-delimiters

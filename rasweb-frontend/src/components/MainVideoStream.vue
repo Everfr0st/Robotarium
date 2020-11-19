@@ -6,7 +6,7 @@
       >
       <h3>{{ live.started && !live.finished ? "En vivo" : "Robotarium" }}</h3>
     </v-row>
-    <v-row v-if="true">
+    <v-row v-if="live.finished">
       <v-card class="body">
         <div class="static">
           <div>

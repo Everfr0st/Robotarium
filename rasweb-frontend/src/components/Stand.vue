@@ -1,24 +1,18 @@
 <template>
-  <div>
-    <h3>Vitrina {{stand}}</h3>
-    <v-container
-      class="pa-0"
-      
-    >
-    <v-row v-for="row in parseInt(levels)"
-      :key="row">
-      <v-col v-for="col in 3" :key="col">
-        
-        <CardInventory class="card" :stand="stand" :col="col" :row="row" />
-      </v-col>
-
-    </v-row>
+  <div class="ml-4">
+    <h3>Vitrina {{ stand }}</h3>
+    <v-container class="pa-0">
+      <v-row v-for="row in parseInt(levels)" :key="row">
+        <v-col v-for="col in 3" :key="col" class="item-card">
+          <CardInventory class="card" :stand="stand" :col="col" :row="row" />
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
-import CardInventory from "@/components/subcomponents/CardInventory.vue"
+import CardInventory from "@/components/subcomponents/CardInventory.vue";
 export default {
   name: "Stand",
   data: () => ({
@@ -33,7 +27,7 @@ export default {
   },
   props: ["stand", "levels"],
   created() {
-   /* let response = await fetch(
+    /* let response = await fetch(
       this.domain_base + this.api_dir + "&code=" + this.stand,
       {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -66,9 +60,12 @@ export default {
 </script>
 
 <style scoped>
-  .card{
-    width: 100%;
-    height: auto;
-    overflow: hidden;
+.card {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+.item-card {
+  max-width: 33%;
 }
 </style>

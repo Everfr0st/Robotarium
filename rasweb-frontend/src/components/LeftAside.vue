@@ -2,7 +2,6 @@
   <div>
     <v-container wrap>
       <v-row
-         justify="left"
         v-for="(item, index) in elements"
         :key="index"
         wrap

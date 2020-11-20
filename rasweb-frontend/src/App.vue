@@ -10,8 +10,7 @@
         <v-container fluid>
           <v-row wrap>
             <v-col sm="12" md="3" lg="2">
-              <LeftAside />
-               
+              <LeftAside />   
             </v-col>
             <v-col sm="12" md="6" :lg="view =='Robotarium'?'':'7'">
               <router-view />

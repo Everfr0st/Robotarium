@@ -15,7 +15,7 @@
       </v-date-picker>
     </v-card>
     <v-dialog  max-width="500px" v-model="showDialog">
-      <HourReserve :date="date" :item="item"/>
+      <HourReserve v-if="showDialog" :date="date" :item="item"/>
     </v-dialog>
   </div>
 </template>

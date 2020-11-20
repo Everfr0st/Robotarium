@@ -4,39 +4,54 @@
       <v-card-title>
         Franja horaria permitida: 8am - 12m y 2pm - 6pm
       </v-card-title>
-      <v-sheet height="600">
+      <v-sheet height="500" style="overflow: hidden">
         <v-calendar
           ref="calendar"
           v-model="date"
-          first-time="08:00"
+          first-time="06:00"
           :event-more="true"
           color="primary"
           type="day"
           event-overlap-mode="stack"
           :events="events"
           :event-color="getEventColor"
-          :event-ripple="false"
           @mousedown:event="startDrag"
           @mousedown:time="startTime"
           @mousemove:time="mouseMove"
           @mouseup:time="endDrag"
-          @mouseleave.native="cancelDrag"
           @mouseup:event="setEvent"
         >
-          <template   v-slot:event="{ event, timed, eventSummary }">
-            <v-row :title="!valid? 'Ajusta tu franja horaria':''" class="pa-0 ml-1 pt-2">
-              <v-icon v-if="!valid" class="ml-3" color="error">mdi-alert</v-icon
+          <template v-slot:event="{ event, timed, eventSummary }">
+            <v-row
+              :title="!event.valid ? 'Ajusta tu franja horaria' : ''"
+              class="pa-0 ml-1 pt-2"
+            >
+              <v-icon v-if="!event.valid" class="ml-3" color="error"
+                >mdi-alert</v-icon
               >
               <div class="v-event-draggable" v-html="eventSummary()"></div>
             </v-row>
 
             <div
               v-if="timed"
-              class="v-event-drag-bottom"
+              :class="!event.request ? 'v-event-drag-bottom' : ''"
               @mousedown.stop="extendBottom(event)"
             ></div>
           </template>
         </v-calendar>
+        <v-card-actions>
+          <v-btn
+            class="submit-reserve"
+            fab
+            dark
+            :loading="loading"
+            :disabled="disabled"
+            color="accent"
+            @click="submitReserve()"
+          >
+            <v-icon dark> mdi-calendar-check </v-icon>
+          </v-btn>
+        </v-card-actions>
       </v-sheet>
     </v-card>
     <v-snackbar v-model="snackbar" timeout="5000">
@@ -57,14 +72,16 @@ export default {
   data: () => ({
     value: "",
     events: [],
+    selfUserEvents: [],
     colors: [
-      "#2196F3",
-      "#3F51B5",
-      "#673AB7",
-      "#00BCD4",
-      "#4CAF50",
-      "#FF9800",
-      "#757575",
+      "#8E24AA",
+      "#3949AB",
+      "#01579B",
+      "#01579B",
+      "#FB8C00",
+      "#6D4C41",
+      "#37474F",
+      "#616161",
     ],
     dragEvent: null,
     dragStart: null,
@@ -75,9 +92,23 @@ export default {
     snackbar: false,
     valid: true,
     message: "",
+    api_dir: "/robotarium-api/v1.0/reserve-list/",
+    api_response: [],
+    index: null,
+    loading: false,
+    disabled: false,
+    reserveSubmit: ''
   }),
+  async created(event) {
+    const response = await this.getApiInfo();
+    this.getEvents(response);
+    console.log("creando");
+  },
+  beforeDestroy() {
+    console.log("Destruyendo");
+  },
   computed: {
-    ...mapState(["self_user"]),
+    ...mapState(["self_user", "domain_base", "authentication"]),
   },
   methods: {
     startDrag({ event, timed }) {
@@ -93,7 +124,7 @@ export default {
         const start = this.dragEvent.start;
 
         this.dragTime = mouse - start;
-      } else if (this.events.length < 1) {
+      } else if (this.selfUserEvents.length < 1) {
         this.createStart = this.roundTime(mouse);
         this.createEvent = {
           name: `${this.self_user.name} separa el elemento: ${this.item.name}`,
@@ -101,9 +132,14 @@ export default {
           start: this.createStart,
           end: this.createStart + 0.5 * 3600 * 1000,
           timed: true,
+          valid: true,
+          request: false,
         };
 
         this.events.push(this.createEvent);
+        this.index = this.events.indexOf(this.createEvent);
+        this.selfUserEvents.push(this.createEvent);
+        this.checkAvailability();
       }
     },
     extendBottom(event) {
@@ -113,8 +149,7 @@ export default {
     },
     mouseMove(tms) {
       const mouse = this.toTime(tms);
-
-      if (this.dragEvent && this.dragTime !== null) {
+      if (this.dragEvent && this.dragTime !== null && !this.dragEvent.request) {
         const start = this.dragEvent.start;
         const end = this.dragEvent.end;
         const duration = end - start;
@@ -124,6 +159,7 @@ export default {
 
         this.dragEvent.start = newStart;
         this.dragEvent.end = newEnd;
+        this.checkAvailability();
       } else if (this.createEvent && this.createStart !== null) {
         const mouseRounded = this.roundTime(mouse, false);
         const min = Math.min(mouseRounded, this.createStart);
@@ -189,7 +225,47 @@ export default {
         ? `rgba(${r}, ${g}, ${b}, 0.7)`
         : event.color;
     },
+    getEvents(response) {
+      response.forEach((element) => {
+        let aux_vec = [];
+        const schedule_date = element.schedule.date.split("-");
+        const schedule_time_start = element.schedule.start_time.split(":");
+        const schedule_time_end = element.schedule.end_time.split(":");
 
+        aux_vec[0] = schedule_date[0];
+        aux_vec[1] = schedule_date[1];
+        aux_vec[2] = schedule_date[2];
+        aux_vec[3] = schedule_time_start[0];
+        aux_vec[4] = schedule_time_start[1];
+        const date2time_start = this.dateTotime(aux_vec);
+
+        aux_vec[3] = schedule_time_end[0];
+        aux_vec[4] = schedule_time_end[1];
+        const date2time_end = this.dateTotime(aux_vec);
+
+        this.createEvent = {
+          name: `${element.user.name} separó el elemento: ${element.element}`,
+          color: this.rndElement(this.colors),
+          start: date2time_start,
+          end: date2time_end,
+          timed: true,
+          valid: true,
+          request: true,
+        };
+
+        this.events.push(this.createEvent);
+        this.api_response.push(this.createEvent);
+      });
+    },
+    dateTotime(date) {
+      return new Date(
+        date[0],
+        parseInt(date[1], 10) - 1,
+        date[2],
+        date[3],
+        date[4]
+      ).getTime();
+    },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
@@ -197,35 +273,128 @@ export default {
       return arr[this.rnd(0, arr.length - 1)];
     },
     setEvent(event) {
-      let tempObj = {
-        date: this.date,
-        start_time: event.eventParsed.start.time,
-        end_time: event.eventParsed.end.time,
-      };
-      console.log(tempObj);
-      let aux_start_hours = parseInt(tempObj.start_time.split(":")[0], 10);
-      let aux_start_min = parseInt(tempObj.start_time.split(":")[1], 10);
-      let aux_end_hours = parseInt(tempObj.end_time.split(":")[0], 10);
-      let aux_end_min = parseInt(tempObj.end_time.split(":")[1], 10);
-
-      let start = 0;
-      let end = 0;
-      if (
-        aux_start_hours < 8 ||
-        (aux_start_hours >= 12 && aux_start_hours < 14) ||
-        aux_start_hours >= 18 ||
-        ((aux_end_hours > 12 || (aux_end_hours == 12 && aux_end_min == 30)) &&
-          aux_end_hours <= 14) ||
-        aux_end_hours > 18 ||
-        (aux_end_hours == 18 && aux_end_min == 30)
-      ) {
-        this.snackbar = true;
-        this.valid = false;
-        this.message = "Franja horaria no permitida!";
-      } else {
-        this.snackbar = false;
-        this.valid = true;
+      if(!event.event.request){
+        this.reserveSubmit = event;
+        this.checkAvailability();
       }
+    },
+    checkAvailability() {
+      let allowedSchedule = {
+        date: this.date,
+        start1: "08:00",
+        end1: "12:00",
+        start2: "14:00",
+        end2: "21:00",
+      };
+
+      let getTime1 = this.dateTotime(
+        this.convertDataIntoArray(allowedSchedule.date, allowedSchedule.start1)
+      );
+      let getTime2 = this.dateTotime(
+        this.convertDataIntoArray(allowedSchedule.date, allowedSchedule.end1)
+      );
+      let getTime3 = this.dateTotime(
+        this.convertDataIntoArray(allowedSchedule.date, allowedSchedule.start2)
+      );
+      let getTime4 = this.dateTotime(
+        this.convertDataIntoArray(allowedSchedule.date, allowedSchedule.end2)
+      );
+      try {
+        let auxEvent = this.events[this.index];
+        if (
+          (auxEvent.start >= getTime1 &&
+            auxEvent.start < getTime2 &&
+            auxEvent.end <= getTime2) ||
+          (auxEvent.start >= getTime3 &&
+            auxEvent.start < getTime4 &&
+            auxEvent.end <= getTime4)
+        ) {
+          if (this.index == 0) {
+            this.snackbar = false;
+            this.events[this.index].valid = true;
+            this.disabled = false;
+          } else {
+            for (var i = 0; i < this.index; i++) {
+              if (
+                auxEvent.end - auxEvent.start <
+                this.events[i].end - this.events[i].start
+              ) {
+                if (
+                  (auxEvent.start >= this.events[i].start &&
+                    auxEvent.start < this.events[i].end) ||
+                  (auxEvent.end > this.events[i].start &&
+                    auxEvent.end < this.events[i].end &&
+                    this.index != 0)
+                ) {
+                  this.snackbar = true;
+                  this.events[this.index].valid = false;
+                  this.message = "Franja horaria no permitida!";
+                  this.disabled = true;
+                  break;
+                } else {
+                  this.snackbar = false;
+                  this.events[this.index].valid = true;
+                  this.disabled = false;
+                }
+              } else {
+                if (
+                  (this.events[i].start >= auxEvent.start &&
+                    this.events[i].start < auxEvent.end) ||
+                  (this.events[i].end > auxEvent.start &&
+                    this.events[i].end < auxEvent.end &&
+                    this.index != 0)
+                ) {
+                  this.snackbar = true;
+                  this.events[this.index].valid = false;
+                  this.message = "Franja horaria no permitida!";
+                  this.disabled = true;
+                  break;
+                } else {
+                  this.snackbar = false;
+                  this.events[this.index].valid = true;
+                  this.disabled = false;
+                }
+              }
+            }
+          }
+        } else {
+          this.snackbar = true;
+          this.events[this.index].valid = false;
+          this.message = "Franja horaria no permitida!";
+          this.disabled = true;
+        }
+      } catch (error) {}
+    },
+    convertDataIntoArray(date, time) {
+      let aux_vec = [];
+      let dateAsArray = date.split("-");
+      let timeAsArray = time.split(":");
+      dateAsArray.forEach((element) => {
+        aux_vec.push(element);
+      });
+      timeAsArray.forEach((element) => {
+        aux_vec.push(element);
+      });
+      return aux_vec;
+    },
+    async getApiInfo() {
+      let response = await fetch(
+        this.domain_base +
+          this.api_dir +
+          `?date=${this.date}&name=${this.item.name}&code=${this.item.code}`,
+        {
+          method: "GET", // *GET, POST, PUT, DELETE, etc.
+          headers: {
+            Authorization: `Bearer ${this.authentication.accessToken}`,
+          },
+        }
+      );
+      response = await response.json();
+      return response;
+    },
+    submitReserve() {
+      console.log(this.reserveSubmit);
+      this.loading = true;
     },
   },
 };
@@ -271,5 +440,10 @@ div {
 }
 .v-event-drag-bottom:hover::after {
   display: block;
+}
+.submit-reserve {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
 }
 </style>

@@ -44,7 +44,7 @@
             </v-card-actions>
 
         <v-dialog  v-model="dialog">
-          <Schedule :item="element"/>
+          <Schedule v-if="dialog" :item="element"/>
         </v-dialog>
           </v-carousel-item>
         </v-carousel>

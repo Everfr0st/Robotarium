@@ -1,7 +1,7 @@
 <template>
     <div>
-        <Stand stand="A" levels="5" />
-        <Stand class="mt-4" stand="B" levels="6" />
+        <Stand class="pa-0" stand="A" levels="5" />
+        <Stand class="mt-4 pa-0" stand="B" levels="6" />
 
     </div>
 </template>

@@ -35,9 +35,9 @@ class Schedule(models.Model):
         }
         return json_bj
 class Reserve(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    schedule = models.OneToOneField(Schedule, on_delete=models.CASCADE)
-    element = models.OneToOneField(Inventory, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    element = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
 
@@ -46,7 +46,10 @@ class Reserve(models.Model):
 
     def serializer(self):
         json_obj = {
-            'user': self.user.username,
+            'user': {
+                'username': self.user.username,
+                'name': '{0} {1}'.format(self.user.first_name, self.user.last_name)
+            },
             'schedule': self.schedule.serializer(),
             'element': self.element.name,
             'quantity': self.quantity,

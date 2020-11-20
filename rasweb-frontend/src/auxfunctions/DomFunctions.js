@@ -43,7 +43,6 @@ export function getCookie(name) {
 
 
 
-
 /*@click = function (e) {
     const messageInputDom = document.querySelector('#chat-message-input');
     const message = messageInputDom.value;

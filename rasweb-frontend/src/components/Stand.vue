@@ -1,5 +1,5 @@
 <template>
-  <div class="ml-4">
+  <div>
     <h3>Vitrina {{ stand }}</h3>
     <v-container class="pa-0">
       <v-row v-for="row in parseInt(levels)" :key="row">

@@ -11,9 +11,10 @@
       }"
       min-height="200"
       transition="fade-transition"
+      v-if="isActive"
     >
       <v-card 
-      v-if="isActive" color="#bdbdbdd7" 
+       color="#bdbdbdd7" 
       @mouseover="showActions=true;"
       @mouseleave="showActions=false">
         <v-carousel

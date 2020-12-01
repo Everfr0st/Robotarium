@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-chip  link  color="primary">
+        <v-chip class="ma-1"  link  color="primary">
             <v-avatar left color="secondary" @mouseenter="active=true;" @mouseleave="active=false;">
             <img v-if="tagUser.profile_picture" :src="tagUser.profile_picture" :alt="tagUser.name?tagUser.name:'@'+tagUser.username" />
             <span v-else style="color: white; font-size: 8pt;">

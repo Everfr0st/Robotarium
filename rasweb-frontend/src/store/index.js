@@ -25,11 +25,13 @@ export default new Vuex.Store({
       started: false,
       finished: false,
     },
+    robotarium:'',
     chats: [],
     users: [],
     ws_base : '127.0.0.1:8000',
     domain_base : 'http://127.0.0.1:8000',
     view: '',
+
 
   },
   mutations: {
@@ -79,6 +81,9 @@ export default new Vuex.Store({
     },
     setViewname(state, view){
       state.view = view;
+    },
+    setRobotariumInfo(state,robotariumInfo){
+      state.robotarium = robotariumInfo;
     }
   },
   actions: {

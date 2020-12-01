@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'Apps.Post',
     'Apps.Chat',
     'Apps.LiveStream',
+    'Apps.Robotarium',
 
     # Third party apps
     'corsheaders',

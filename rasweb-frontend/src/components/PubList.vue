@@ -50,7 +50,7 @@
             {{ post.content }}
           </v-card-text>
           <v-card-actions class="pa-0 mt-1">
-              <v-icon size="30" color="accent" class="mr-1">mdi-account-supervisor</v-icon>    
+              <v-icon size="30" color="secondary" class="mr-1">mdi-account-supervisor</v-icon>    
               <UserInTag v-for="(tag_user, index) in post.tag_users" :key="index" :user="tag_user" />
           </v-card-actions>
         </v-row>

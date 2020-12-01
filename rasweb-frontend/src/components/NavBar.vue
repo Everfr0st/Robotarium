@@ -1,12 +1,23 @@
 <template>
   <div>
     <v-app-bar app class="NavBar" dark>
-      <a href="/">
-        <v-img
+      <v-btn
+      align="left"
+          color="primary"
+          class="pt-2"
+          text
+          elevation="0"
+          fab
+      :to="{ name: 'Home' }" id="logo-btn"
+    >
+      <v-img
               max-height="50"
               max-width="50"
               src="@/assets/logo/LogoSir.svg"
             ></v-img>
+    </v-btn>
+      <a href="/">
+        
       </a>
       <v-spacer></v-spacer>
 
@@ -91,7 +102,7 @@ export default {
   },
   mounted() {
     const logo = document.getElementById("logo-btn");
-    //logo.classList.remove("v-btn--active", "v-btn--contained");
+    logo.classList.remove("v-btn--active", "v-btn--contained");
   },
   methods: {
     ...mapMutations(["setSelfuser", "destroyAuthcredentials"]),

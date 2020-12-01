@@ -12,16 +12,16 @@
         <form action="">
           <v-row class="pl-3" justify="start" align="center">
             <v-avatar>
-              <v-avatar size="50" color="blue" v-if="self_user.profile_picture">
-                <img :src="self_user.profile_picture" :alt="self_user.name" />
+              <v-avatar size="50" color="blue" v-if="selfUser.profilePicture">
+                <img :src="selfUser.profilePicture" :alt="selfUser.name" />
               </v-avatar>
               <v-avatar size="50" color="secondary" v-else>
-                <span v-if="self_user.name.trim().length" style="color: white; font-size: 14pt;"
-                  >{{ self_user.name.split(" ")[0].slice(0, 1)
-                  }}{{ self_user.name.split(" ")[1].slice(0, 1) }}</span
+                <span v-if="selfUser.name.trim().length" style="color: white; font-size: 14pt;"
+                  >{{ selfUser.name.split(" ")[0].slice(0, 1)
+                  }}{{ selfUser.name.split(" ")[1].slice(0, 1) }}</span
                 >
                 <span v-else style="color: white; font-size; 14pt;">{{
-                  self_user.username.slice(0, 2).toUpperCase()
+                  selfUser.username.slice(0, 2).toUpperCase()
                 }}</span>
               </v-avatar>
             </v-avatar>
@@ -58,9 +58,9 @@
                         v-bind="data.attrs"
                         :input-value="data.selected"
                                               >
-                        <v-avatar left v-if="data.item.profile_picture">
+                        <v-avatar left v-if="data.item.profilePicture">
                           <img
-                            :src="data.item.profile_picture"
+                            :src="data.item.profilePicture"
                             :alt="data.item.name"
                           />
                         </v-avatar>
@@ -93,10 +93,10 @@
                       <template v-else>
                         <v-list-item-avatar
                           left
-                          v-if="data.item.profile_picture"
+                          v-if="data.item.profilePicture"
                         >
                           <img
-                            :src="data.item.profile_picture"
+                            :src="data.item.profilePicture"
                             :alt="data.item.name"
                           />
                         </v-list-item-avatar>
@@ -276,7 +276,7 @@ export default {
     api_dir : "/robotarium-api/v1.0/new-post/"
   }),
   computed: {
-    ...mapState(["users", "self_user", "authentication", "domain_base"]),
+    ...mapState(["users", "selfUser", "authentication", "domainBase"]),
   },
   created(){
     document.title = "Inicio · UAO-RAS";
@@ -292,7 +292,7 @@ export default {
       if (this.content.length || this.files.length) {
         this.loading = true;
         const formdata = new FormData();
-        formdata.append("username", this.self_user.username);
+        formdata.append("username", this.selfUser.username);
         formdata.append("content", this.content);
         formdata.append("num_photos", this.photos.length);
         formdata.append("num_users", this.tagUserslist.length);
@@ -310,7 +310,7 @@ export default {
         };
         delete options.headers["Content-Type"];
 
-        let response = await fetch(this.domain_base + this.api_dir, options);
+        let response = await fetch(this.domainBase + this.api_dir, options);
         response = await response.json();
         if (!response.created) {
           this.message =

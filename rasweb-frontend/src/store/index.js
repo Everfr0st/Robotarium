@@ -7,9 +7,9 @@ export default new Vuex.Store({
     authentication: {
       accessToken: localStorage.getItem("token"),
       refreshToken: localStorage.getItem("refresh_token"),
-      user_is_authenticated: !!localStorage.getItem("token"),
+      userIsAuthenticated: !!localStorage.getItem("token"),
     },
-    self_user: {
+    selfUser: {
       username: '',
       profile_picture: '',
       name: '',
@@ -17,19 +17,19 @@ export default new Vuex.Store({
     dialog: {
       name: '',
       username: '',
-      profile_picture: '',
+      profilePicture: '',
       online: '',
     },
     live:{
-      time_elapsed: '',
+      timeElapsed: '',
       started: false,
       finished: false,
     },
     robotarium:'',
     chats: [],
     users: [],
-    ws_base : '127.0.0.1:8000',
-    domain_base : 'http://127.0.0.1:8000',
+    wsBase : '127.0.0.1:8000',
+    domainBase : 'http://127.0.0.1:8000',
     view: '',
 
 
@@ -38,26 +38,26 @@ export default new Vuex.Store({
     updateAuthcredentials(state, { access, refresh, auth }) {
       state.authentication.accessToken = access;
       state.authentication.refreshToken = refresh;
-      state.authentication.user_is_authenticated = auth;
+      state.authentication.userIsAuthenticated = auth;
       localStorage.setItem('refresh_token', state.authentication.refreshToken)
       localStorage.setItem('token', state.authentication.accessToken)
     },
     destroyAuthcredentials(state){
       state.authentication.accessToken = null;
       state.authentication.refreshToken = null;
-      state.authentication.user_is_authenticated = false;
+      state.authentication.userIsAuthenticated = false;
       localStorage.removeItem('token');
       localStorage.removeItem('refresh_token');
     },
     setSelfuser(state, user) {
-      state.self_user.username = user.username;
-      state.self_user.profile_picture = user.profile_picture? state.domain_base + user.profile_picture: "";
-      state.self_user.name = user.name;
+      state.selfUser.username = user.username;
+      state.selfUser.profilePicture = user.profilePicture? state.domainBase + user.profilePicture: "";
+      state.selfUser.name = user.name;
     },
     setAccountInfo(state, user) {
       state.dialog.name = user.name;
       state.dialog.username = user.username;
-      state.dialog.profile_picture = user.profile_picture;
+      state.dialog.profilePicture = user.profilePicture;
       state.dialog.online = user.color;
     },
     setUsers(state, users){

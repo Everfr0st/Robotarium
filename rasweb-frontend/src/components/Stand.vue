@@ -23,12 +23,12 @@ export default {
     CardInventory,
   },
   computed: {
-    ...mapState(["domain_base", "authentication"]),
+    ...mapState(["domainBase", "authentication"]),
   },
   props: ["stand", "levels"],
   created() {
     /* let response = await fetch(
-      this.domain_base + this.api_dir + "&code=" + this.stand,
+      this.domainBase + this.api_dir + "&code=" + this.stand,
       {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         headers: {

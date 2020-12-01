@@ -114,7 +114,7 @@ export default {
   beforeDestroy() {
   },
   computed: {
-    ...mapState(["self_user", "domain_base", "authentication"]),
+    ...mapState(["selfUser", "domainBase", "authentication"]),
   },
   methods: {
     startDrag({ event, timed }) {
@@ -133,7 +133,7 @@ export default {
       } else if (this.selfUserEvents.length < 1) {
         this.createStart = this.roundTime(mouse);
         this.createEvent = {
-          name: `${this.self_user.name} separa el elemento: ${this.item.name}`,
+          name: `${this.selfUser.name} separa el elemento: ${this.item.name}`,
           color: this.rndElement(this.colors),
           start: this.createStart,
           end: this.createStart + 0.5 * 3600 * 1000,
@@ -297,7 +297,7 @@ export default {
             code: this.item.code,
           },
           user: {
-            username: this.self_user.username,
+            username: this.selfUser.username,
           },
         };
       }
@@ -403,7 +403,7 @@ export default {
     },
     async getApiInfo() {
       let response = await fetch(
-        this.domain_base +
+        this.domainBase +
           this.api_dir +
           `?date=${this.date}&name=${this.item.name}&code=${this.item.code}`,
         {
@@ -421,7 +421,7 @@ export default {
         this.loading = true;
         let formData = JSON.stringify(this.reserveSubmit);
         let response;
-        fetch(this.domain_base + this.api_post, {
+        fetch(this.domainBase + this.api_post, {
           method: "POST",
           headers: {
             "Content-type": "application/json",

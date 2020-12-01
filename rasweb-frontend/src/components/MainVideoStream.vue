@@ -38,7 +38,7 @@
             En vivo
 
             <span class="live-time-elapsed">
-              {{ live.time_elapsed }}
+              {{ live.timeElapsed }}
             </span>
           </p>
         </v-row>
@@ -58,7 +58,7 @@ export default {
     WebSocketLive,
   },
   computed: {
-    ...mapState(["domain_base", "authentication", "live"]),
+    ...mapState(["domainBase", "authentication", "live"]),
   },
   async created() {
     let options = {
@@ -67,7 +67,7 @@ export default {
         Authorization: `Bearer ${this.authentication.accessToken}`,
       },
     };
-    let response = await fetch(this.domain_base + this.api_dir, options);
+    let response = await fetch(this.domainBase + this.api_dir, options);
     response = await response.json();
     this.liveId = response.live_id;
   },

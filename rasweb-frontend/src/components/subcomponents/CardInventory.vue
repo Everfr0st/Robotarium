@@ -73,11 +73,11 @@ export default {
     showActions: false
   }),
   computed: {
-    ...mapState(["domain_base", "authentication"]),
+    ...mapState(["domainBase", "authentication"]),
   },
   async created() {
     let response = await fetch(
-      this.domain_base +
+      this.domainBase +
         this.api_dir +
         this.stand +
         "-" +

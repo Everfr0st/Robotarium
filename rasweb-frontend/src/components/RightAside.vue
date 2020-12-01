@@ -85,7 +85,7 @@ export default {
     },
   }),
   computed: {
-    ...mapState(["users", "authentication", "dialog", "domain_base"]),
+    ...mapState(["users", "authentication", "dialog", "domainBase"]),
   },
   methods: {
     ...mapMutations([
@@ -125,7 +125,7 @@ export default {
     },
   },
   async created() {
-    let response = await fetch(this.domain_base + this.api_dir, {
+    let response = await fetch(this.domainBase + this.api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
         Authorization: `Bearer ${this.authentication.accessToken}`,

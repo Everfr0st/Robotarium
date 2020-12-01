@@ -2,7 +2,7 @@
   <v-app style="min-width: 800px;">
     
     <div
-      v-if="authentication.user_is_authenticated || authentication.accessToken"
+      v-if="authentication.userIsAuthenticated || authentication.accessToken"
     >
       <NavBar />
      
@@ -56,7 +56,7 @@ export default {
     //
   }),
   computed: {
-    ...mapState(["authentication", "self_user", "view"]),
+    ...mapState(["authentication", "selfUser", "view"]),
   },
   methods: {
     ...mapMutations(["destroyAuthcredentials"]),

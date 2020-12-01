@@ -10,8 +10,8 @@
         class="white--text chat-header"
       >
         <v-badge bottom overlap dot :color="chat.color">
-          <v-avatar size="30" v-if="chat.profile_picture">
-            <img :src="chat.profile_picture" :alt="chat.name" />
+          <v-avatar size="30" v-if="chat.profilePicture">
+            <img :src="chat.profilePicture" :alt="chat.name" />
           </v-avatar>
           <v-avatar color="secondary" size="30" v-else>
             <span v-if="chat.name" style="color: white">{{
@@ -63,8 +63,8 @@
         <v-container class="chat-messages">
           <v-card-text class="ma-0 pa-0" v-if="typing">
             <v-row class="ml-0">
-              <v-avatar size="20" v-if="chat.profile_picture">
-                <img :src="chat.profile_picture" :alt="chat.name" />
+              <v-avatar size="20" v-if="chat.profilePicture">
+                <img :src="chat.profilePicture" :alt="chat.name" />
               </v-avatar>
               <v-avatar color="secondary" size="20" v-else>
                 <span v-if="chat.name" style="color: white">{{
@@ -88,7 +88,7 @@
           >
             <v-card-text
               :class="
-                message.sender == self_user.username
+                message.sender == selfUser.username
                   ? 'ml-auto outgoing-message'
                   : 'incomming-message'
               "
@@ -160,11 +160,11 @@ export default {
   }),
   props: ["chat", "index"],
   computed: {
-    ...mapState(["chats", "self_user", "ws_base"]),
+    ...mapState(["chats", "selfUser", "wsBase"]),
   },
   created() {
     let response;
-    ApiComunication(this.self_user.username, this.chat.username).then(
+    ApiComunication(this.selfUser.username, this.chat.username).then(
       (response) => {
         if (response.conversation_created == undefined) {
           this.messages = response;
@@ -190,7 +190,7 @@ export default {
     /*.then(function(){
       if (vm.room != undefined) {
       vm.websocket = new WebSocket(
-        "ws://" + vm.ws_base + "/ws/chat/" + vm.room + "/"
+        "ws://" + vm.wsBase + "/ws/chat/" + vm.room + "/"
       );
       vm.websocket.onopen = function (e) {
         console.info("conectado exitosamente!");
@@ -199,7 +199,7 @@ export default {
         const socket_data = JSON.parse(e.data);
         if (
           socket_data.type === "type_message" && 
-          socket_data.sender != vm.self_user 
+          socket_data.sender != vm.selfUser 
         ) {
           vm.typing = socket_data.typing;
         } else if (socket_data.type === "chat_message") {
@@ -254,7 +254,7 @@ export default {
         JSON.stringify({
           type: "chat_message",
           conversation: this.room,
-          sender: this.self_user.username,
+          sender: this.selfUser.username,
           text: this.message,
           read: false,
         })
@@ -262,7 +262,7 @@ export default {
       this.message = "";
     },
     typingMessage() {
-      let sender = this.self_user.username;
+      let sender = this.selfUser.username;
       if (this.message.length) {
         this.websocket.send(
           JSON.stringify({
@@ -283,7 +283,7 @@ export default {
     },
     connect() {
       this.websocket = new WebSocket(
-        "ws://" + this.ws_base + "/ws/chat/" + this.room + "/"
+        "ws://" + this.wsBase + "/ws/chat/" + this.room + "/"
       );
       aux_webSocket = this.websocket;
       this.websocket.onopen = () => {
@@ -294,7 +294,7 @@ export default {
           const socket_data = JSON.parse(data);
           if (
             socket_data.type === "type_message" &&
-            socket_data.sender != this.self_user.username
+            socket_data.sender != this.selfUser.username
           ) {
             this.typing = socket_data.typing;
           } else if (socket_data.type === "chat_message") {

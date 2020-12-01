@@ -16,10 +16,11 @@ export default {
     liveId: "",
     api_dir: "/ws/live-main-stream/",
     img_text: "",
+    liveObj: '',
   }),
   props: ["number",],
   computed: {
-    ...mapState(["ws_base", "live", "robotarium"]),
+    ...mapState(["wsBase", "live", "robotarium", "domainBase"]),
   },
   created() {
     this.connect();
@@ -32,8 +33,8 @@ export default {
     ...mapMutations(["updateLiveObj"]),
     connect() {
       let dir = this.number.trim().length
-        ? this.ws_base + this.api_dir + this.number
-        : this.ws_base + this.api_dir + this.robotarium.robot;
+        ? this.wsBase + this.api_dir + this.number
+        : this.wsBase + this.api_dir + this.robotarium.robot;
         console.log(dir)
       this.websocket = new WebSocket("ws://" + dir + "/"); //Manage secure websocket
       this.websocket.onopen = () => {

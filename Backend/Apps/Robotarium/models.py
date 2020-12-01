@@ -4,11 +4,11 @@ from datetime import datetime
 
 
 class Robot(models.Model):
-    def element_directory_path(self):
-        filename = 'robot_{0}'.format(self.pk)
+    def element_directory_path(self, filename):
+        filename = 'robot_{0}'.format(self.id)
         return 'robotarium/{0}'.format(filename + ".jpg")
-    
-    name = models.CharField(max_length=30)
+
+    name = models.CharField(max_length=30, unique=True)
     available = models.BooleanField(default=False)
     photo = models.ImageField(upload_to=element_directory_path, blank=True)
     last_usage = models.DateTimeField(auto_now=True)

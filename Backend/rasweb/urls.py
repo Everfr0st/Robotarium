@@ -9,6 +9,7 @@ from Apps.Chat import urls as chat_urls
 from Apps.Post import urls as post_urls
 from Apps.LiveStream import urls as live_urls
 from Apps.Inventory import urls as inventory_urls
+from Apps.Robotarium import urls as robotarium_urls
 
 url_base = 'robotarium-api/v1.0/'
 
@@ -29,5 +30,8 @@ urlpatterns = [
 
                   # Inventory app apis
                   path(url_base, include(inventory_urls)),
+
+                  # Robotarium app apis
+                  path(url_base, include(robotarium_urls)),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

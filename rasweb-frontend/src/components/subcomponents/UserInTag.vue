@@ -2,7 +2,7 @@
     <div>
         <v-chip class="ma-1"  link  color="primary">
             <v-avatar left color="secondary" @mouseenter="active=true;" @mouseleave="active=false;">
-            <img v-if="tagUser.profile_picture" :src="tagUser.profile_picture" :alt="tagUser.name?tagUser.name:'@'+tagUser.username" />
+            <img v-if="tagUser.profilePicture" :src="tagUser.profilePicture" :alt="tagUser.name?tagUser.name:'@'+tagUser.username" />
             <span v-else style="color: white; font-size: 8pt;">
                 {{tagUser.name.trim().length?tagUser.name.trim().slice(0, 1)+tagUser.name.trim().split(" ")[1].slice(0, 1):tagUser.username.toUpperCase().slice(0,2)}}
             </span>

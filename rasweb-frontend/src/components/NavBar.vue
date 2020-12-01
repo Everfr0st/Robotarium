@@ -72,12 +72,6 @@ export default {
   async created() {
     const web_domain = "http://127.0.0.1:8000";
     const api_dir = "/robotarium-api/v1.0/navbar-info/";
-    let configs = {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        Authorization: `Bearer ${this.authentication.accessToken}`,
-      },
-    };
     let nav_data = await fetch(web_domain + api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {

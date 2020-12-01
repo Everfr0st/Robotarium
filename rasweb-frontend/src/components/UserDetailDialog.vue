@@ -7,8 +7,8 @@
     <v-card elevation="5" class="pa-0">
       <v-row wrap justify="center" class="pt-3">
         <v-badge bordered bottom overlap :color="dialog.online">
-          <v-avatar size="45" v-if="dialog.profile_picture">
-            <img :src="dialog.profile_picture" :alt="dialog.name" />
+          <v-avatar size="45" v-if="dialog.profilePicture">
+            <img :src="dialog.profilePicture" :alt="dialog.name" />
           </v-avatar>
           <v-avatar color="secondary" size="45" v-else>
             <span v-if="dialog.name" style="color: white"
@@ -43,7 +43,7 @@
             color: dialog.online,
             name: dialog.name,
             online: dialog.online ==='green'?true:false,
-            profile_picture: dialog.profile_picture,
+            profilePicture: dialog.profilePicture,
             username: dialog.username,
           })" small class="mr-1" color="primary">
             <v-icon left>mdi-send</v-icon>

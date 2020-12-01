@@ -17,8 +17,8 @@
           <v-card-title style="padding: 0px">
             <v-avatar size="40" color="secondary">
               <img
-                v-if="post.profile_picture"
-                :src="domain_base + post.profile_picture"
+                v-if="post.profilePicture"
+                :src="domainBase + post.profilePicture"
                 :alt="post.name ? post.name : '@' + post.username"
               />
               <span style="color: white" v-else>{{
@@ -59,7 +59,7 @@
             <v-carousel-item
               v-for="(photo, index) in post.photos"
               :key="index"
-              :src="`${domain_base}/coco-files/${photo}`"
+              :src="`${domainBase}/coco-files/${photo}`"
               reverse-transition="fade-transition"
               transition="fade-transition"
             ></v-carousel-item>
@@ -93,10 +93,10 @@ export default {
     UserInTag
   },
   computed: {
-    ...mapState(["authentication", "domain_base"]),
+    ...mapState(["authentication", "domainBase"]),
   },
   async created() {
-    let response = await fetch(this.domain_base + this.api_dir, {
+    let response = await fetch(this.domainBase + this.api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
         Authorization: `Bearer ${this.authentication.accessToken}`,

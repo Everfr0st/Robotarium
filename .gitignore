@@ -1,6 +1,7 @@
 # Robotarium
 **.pyc
 **/migrations/*
+!**/migrations/__init__.py
 **/.idea/
 Pipfile
 Pipfile.lock

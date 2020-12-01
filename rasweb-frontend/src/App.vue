@@ -12,7 +12,7 @@
             <v-col sm="12" md="3" lg="2">
               <LeftAside />   
             </v-col>
-            <v-col sm="12" md="6" :lg="view =='Robotarium'?'10':'7'">
+            <v-col sm="12" md="9" :lg="view =='Robotarium'?'10':'7'">
               <router-view />
             </v-col>
             <v-col v-if="view !=='Robotarium'" class="user-container-list">

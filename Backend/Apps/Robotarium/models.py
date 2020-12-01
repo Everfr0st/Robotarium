@@ -9,6 +9,7 @@ class Robot(models.Model):
         return 'robotarium/{0}'.format(filename + ".jpg")
 
     name = models.CharField(max_length=30, unique=True)
+    ip = models.CharField(max_length=30, unique=True)
     available = models.BooleanField(default=False)
     photo = models.ImageField(upload_to=element_directory_path, blank=True)
     last_usage = models.DateTimeField(auto_now=True)

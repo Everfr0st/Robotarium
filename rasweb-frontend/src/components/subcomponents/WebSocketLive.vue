@@ -1,11 +1,15 @@
 <template>
-  <div v-if="liveObj.started" style="position: relative">
-    <div class="camera-name">
+  <div v-if="live.started  || robot" style="position: relative">
+    <div class="stream-name">
       <h3 v-if="number.trim().length">Cámara {{ number == "one" ? "1" : "2" }}</h3>
-      <h3 v-else>{{ robotarium }}</h3>
+      <h3 v-else>{{ robotarium.robot }}</h3>
     </div>
-
-    <img :src="'data:image/png;base64,' + img_text" />
+    <img v-if="img_text" :src="'data:image/png;base64,' + img_text" />
+    <v-skeleton-loader
+      class="mx-auto"
+      max-width="300"
+      type="image"
+    ></v-skeleton-loader>
   </div>
 </template>
 
@@ -16,9 +20,8 @@ export default {
     liveId: "",
     api_dir: "/ws/live-main-stream/",
     img_text: "",
-    liveObj: '',
   }),
-  props: ["number",],
+  props: ["number","robot"],
   computed: {
     ...mapState(["wsBase", "live", "robotarium", "domainBase"]),
   },
@@ -35,7 +38,6 @@ export default {
       let dir = this.number.trim().length
         ? this.wsBase + this.api_dir + this.number
         : this.wsBase + this.api_dir + this.robotarium.robot;
-        console.log(dir)
       this.websocket = new WebSocket("ws://" + dir + "/"); //Manage secure websocket
       this.websocket.onopen = () => {
         console.info("conectado exitosamente!");
@@ -72,9 +74,9 @@ export default {
 <style scoped>
 img {
   width: 100%;
-  height: auto;
+  height: 100%;
 }
-.camera-name {
+.stream-name {
   background: rgba(0, 0, 0, 0.3);
   width: 100%;
   position: absolute;

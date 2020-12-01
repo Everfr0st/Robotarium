@@ -19,7 +19,7 @@
       
     </v-row>
     <v-row v-else-if="!live.started">
-      <v-skeleton-loader width="100%" min-heigth="350" type="card"></v-skeleton-loader>
+      <v-skeleton-loader width="100%" min-heigth="340" type="image"></v-skeleton-loader>
     </v-row>
 
     <v-row class="live-container">

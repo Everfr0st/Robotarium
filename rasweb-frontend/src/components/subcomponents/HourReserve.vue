@@ -2,7 +2,7 @@
   <div>
     <v-card>
       <v-card-title>
-        Franja horaria permitida: 8am - 12m y 2pm - 6pm
+        Franja horaria permitida: 8am - 12m y 2pm - 8pm
       </v-card-title>
       <v-sheet height="500" style="overflow: hidden">
         <v-calendar
@@ -34,7 +34,11 @@
 
             <div
               v-if="timed"
-              :class="!event.request ? 'v-event-drag-bottom' : ''"
+              :class="
+                !event.request && !reservation_created
+                  ? 'v-event-drag-bottom'
+                  : ''
+              "
               @mousedown.stop="extendBottom(event)"
             ></div>
           </template>
@@ -45,11 +49,13 @@
             fab
             dark
             :loading="loading"
-            :disabled="disabled"
-            color="accent"
+            v-if="!disabled"
+            :color="reservation_created ? 'success' : 'accent'"
             @click="submitReserve()"
           >
-            <v-icon dark> mdi-calendar-check </v-icon>
+            <v-icon dark>{{
+              reservation_created ? "mdi-check" : "mdi-calendar-check"
+            }}</v-icon>
           </v-btn>
         </v-card-actions>
       </v-sheet>
@@ -93,19 +99,19 @@ export default {
     valid: true,
     message: "",
     api_dir: "/robotarium-api/v1.0/reserve-list/",
+    api_post: "/robotarium-api/v1.0/create-reservation/",
     api_response: [],
     index: null,
     loading: false,
     disabled: false,
-    reserveSubmit: ''
+    reserveSubmit: "",
+    reservation_created: false,
   }),
   async created(event) {
     const response = await this.getApiInfo();
     this.getEvents(response);
-    console.log("creando");
   },
   beforeDestroy() {
-    console.log("Destruyendo");
   },
   computed: {
     ...mapState(["self_user", "domain_base", "authentication"]),
@@ -149,7 +155,12 @@ export default {
     },
     mouseMove(tms) {
       const mouse = this.toTime(tms);
-      if (this.dragEvent && this.dragTime !== null && !this.dragEvent.request) {
+      if (
+        this.dragEvent &&
+        this.dragTime !== null &&
+        !this.dragEvent.request &&
+        !this.reservation_created
+      ) {
         const start = this.dragEvent.start;
         const end = this.dragEvent.end;
         const duration = end - start;
@@ -273,9 +284,22 @@ export default {
       return arr[this.rnd(0, arr.length - 1)];
     },
     setEvent(event) {
-      if(!event.event.request){
-        this.reserveSubmit = event;
+      if (!event.event.request) {
         this.checkAvailability();
+        this.reserveSubmit = {
+          schedule: {
+            date: this.date,
+            start: new Date(event.event.start).toString().substr(16, 5),
+            end: new Date(event.event.end).toString().substr(16, 5),
+          },
+          element: {
+            name: this.item.name,
+            code: this.item.code,
+          },
+          user: {
+            username: this.self_user.username,
+          },
+        };
       }
     },
     checkAvailability() {
@@ -393,8 +417,42 @@ export default {
       return response;
     },
     submitReserve() {
-      console.log(this.reserveSubmit);
-      this.loading = true;
+      if (!this.reservation_created) {
+        this.loading = true;
+        let formData = JSON.stringify(this.reserveSubmit);
+        let response;
+        fetch(this.domain_base + this.api_post, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((response) => {
+            this.reservation_created = response.created;
+            if (this.reservation_created) {
+              this.message = "Reserva guardada exitosamente";
+            } else {
+              this.message =
+                "Un error inesperado ha ocurrido. Intenta de nuevo más tarde.";
+            }
+            this.loading = false;
+            this.snackbar = true;
+          })
+          .catch(() => {
+            this.message =
+              "Un error inesperado ha ocurrido. Intenta de nuevo más tarde.";
+            this.loading = false;
+            this.snackbar = true;
+          });
+      } else {
+        this.snackbar = true;
+        this.message =
+          "Ya realizaste la reserva. Revisa tu correo para más información.";
+      }
     },
   },
 };

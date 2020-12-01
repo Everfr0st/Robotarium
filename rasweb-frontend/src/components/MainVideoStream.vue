@@ -27,7 +27,7 @@
         <WebSocketLive number="one" />
       </v-col>
       <v-col class="ma-0 pa-0">
-        <WebSocketLive number="one" />
+        <WebSocketLive number="two" />
       </v-col>
       <div class="live-bar" v-if="live.started">
         <v-row>

@@ -11,12 +11,11 @@ class Inventory(models.Model):
     name = models.CharField(max_length=40)
     code = models.CharField(max_length=5, unique=True)
     quantity = models.IntegerField()
-    photo = models.ImageField(upload_to=element_directory_path,blank=True)
+    photo = models.ImageField(upload_to=element_directory_path, blank=True)
     added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return "{0} ({1})".format(self.name, self.quantity)
-
 
 
 class Schedule(models.Model):
@@ -34,6 +33,8 @@ class Schedule(models.Model):
             'end_time': self.end_time
         }
         return json_bj
+
+
 class Reserve(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
@@ -56,7 +57,3 @@ class Reserve(models.Model):
             'created': self.created,
         }
         return json_obj
-
-
-
-

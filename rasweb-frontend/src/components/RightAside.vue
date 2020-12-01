@@ -109,7 +109,6 @@ export default {
       let username = this.dialog.username;
       let dialogdiv = document.getElementsByClassName("user-detail-dialog");
      // setDialogPosition(username);
-      console.log(dialogdiv)
     },
     searchUser() {
         let usersList = document.getElementsByClassName("v-list-item__title");
@@ -118,7 +117,6 @@ export default {
           var txtValue = usersList[i].textContent || usersList[i].innerText;
           if (txtValue.toUpperCase().indexOf(this.search.toUpperCase()) > -1) {
             userslistContainers[i].style.display = "";
-            console.log(userslistContainers[i])
           } else {
             userslistContainers[i].style.display = "none";
           }

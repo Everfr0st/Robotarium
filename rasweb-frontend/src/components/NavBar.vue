@@ -1,11 +1,13 @@
 <template>
   <div>
     <v-app-bar app class="NavBar" dark>
-      <div class="d-flex align-center">
-        <v-btn :to="{ name: 'Home' }" id="logo-btn">
-          <h1>LOGO</h1>
-        </v-btn>
-      </div>
+      <a href="/">
+        <v-img
+              max-height="50"
+              max-width="50"
+              src="@/assets/logo/LogoSir.svg"
+            ></v-img>
+      </a>
       <v-spacer></v-spacer>
 
       <v-btn fab text>
@@ -33,11 +35,14 @@
           <img :src="profile_picture" :alt="name" />
         </v-avatar>
         <v-avatar size="30" color="secondary" v-else>
-          <span style="color: white;">{{ name.trim().length? name.slice(0,1) + name.split(" ")[1].slice(0,1):username.slice(0,1) }}</span>
+          <span style="color: white">{{
+            name.trim().length
+              ? name.slice(0, 1) + name.split(" ")[1].slice(0, 1)
+              : username.slice(0, 1)
+          }}</span>
         </v-avatar>
       </v-btn>
     </v-app-bar>
-    
   </div>
 </template>
 
@@ -51,7 +56,7 @@ export default {
     unread_notifications: 0,
     name: "",
     profile_picture: "",
-    username: '',
+    username: "",
   }),
   async created() {
     const web_domain = "http://127.0.0.1:8000";
@@ -79,17 +84,17 @@ export default {
         ? web_domain + nav_data.profile_picture
         : "";
       this.setSelfuser(nav_data);
-    } else{
+    } else {
       this.destroyAuthcredentials();
-      this.$router.push({name: 'Login'})
+      this.$router.push({ name: "Login" });
     }
   },
   mounted() {
     const logo = document.getElementById("logo-btn");
-    logo.classList.remove("v-btn--active", "v-btn--contained");
+    //logo.classList.remove("v-btn--active", "v-btn--contained");
   },
   methods: {
-    ...mapMutations(["setSelfuser","destroyAuthcredentials"]),
+    ...mapMutations(["setSelfuser", "destroyAuthcredentials"]),
   },
   computed: {
     ...mapState(["authentication"]),

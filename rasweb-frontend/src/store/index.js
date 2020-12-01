@@ -79,7 +79,6 @@ export default new Vuex.Store({
     },
     setViewname(state, view){
       state.view = view;
-      console.log(view)
     }
   },
   actions: {

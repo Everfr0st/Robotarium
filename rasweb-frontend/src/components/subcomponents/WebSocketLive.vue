@@ -66,7 +66,6 @@ export default {
             this.updateLiveObj(liveObj)
             
           }
-          console.log("cerrando websocket.")
        
       };
     },

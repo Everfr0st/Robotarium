@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # Self apps
     'Apps.User',
@@ -72,7 +73,7 @@ ROOT_URLCONF = 'rasweb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR + '/Templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-LA'
 
 TIME_ZONE = 'America/Bogota'
 
@@ -166,9 +167,19 @@ CACHES = {
             }
         }
 }
+
+SITE_ID = 1
 # Número de segundos de inactividad antes de que un usuario se marca fuera de línea
 USER_ONLINE_TIMEOUT = 300
 
 # Número de segundos que vamos a hacer seguimiento de los usuarios inactivos, para antes de su
 # visto por última vez. Se elimina de la memoria caché
 USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
+
+# Mail interface
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "semillero.robotica@uao.edu.co" # Cambiar por correo del semillero
+EMAIL_HOST_PASSWORD = "mcljpyepirjkzjhp" # Contraseña de aplicación

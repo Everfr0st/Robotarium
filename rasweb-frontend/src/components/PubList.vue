@@ -49,9 +49,9 @@
           <v-card-text style="padding: 0px; font-size: 12pt;">
             {{ post.content }}
           </v-card-text>
-          <v-card-actions class="pa-0 mt-1">
-              <v-icon size="30" color="secondary" class="mr-1">mdi-account-supervisor</v-icon>    
-              <UserInTag v-for="(tag_user, index) in post.tag_users" :key="index" :user="tag_user" />
+          <v-card-actions v-if="users.length" class="pa-0 mt-1">
+              <v-icon size="30" color="secondary" class="mr-1">mdi-account-supervisor</v-icon>   
+              <UserInTag  v-for="(tag_user, index) in post.tag_users" :key="index" :user="tag_user" />
           </v-card-actions>
         </v-row>
         <v-row class="pr-7 mt-2" >
@@ -93,7 +93,7 @@ export default {
     UserInTag
   },
   computed: {
-    ...mapState(["authentication", "domainBase"]),
+    ...mapState(["authentication", "domainBase", "users"]),
   },
   async created() {
     let response = await fetch(this.domainBase + this.api_dir, {

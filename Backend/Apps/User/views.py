@@ -129,7 +129,7 @@ class UsersList(generics.RetrieveAPIView):
     def get(self, request, **kwargs):
         domain = "http://127.0.0.1:8000"
         users_list = []
-        users_query = User.objects.all().exclude(id=request.user.pk)
+        users_query = User.objects.all().order_by("username")
         for user in users_query:
             user_dic = {
                 "name": "{0} {1}".format(user.first_name,

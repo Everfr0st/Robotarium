@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from rasweb.mailing import sendMail
 from .models import *
 from .serializer import InventorySerializer, ReserveSerializer
 
@@ -53,10 +54,12 @@ class ReserveListApi(generics.ListAPIView):
 
 class CreateReservationApi(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
+        print(request.data)
         data = json.loads(request.data)
         schedule = data["schedule"]
         element = data["element"]
         user = data["user"]
+
         schedule_record, element_in_db, user_in_db, reservation = None, None, None, None
         try:
             schedule_record = Schedule.objects.get(
@@ -81,15 +84,55 @@ class CreateReservationApi(generics.CreateAPIView):
             user_in_db = User.objects.get(username=user["username"])
         except User.DoesNotExists:
             pass
+        reservation = Reserve.objects.create(
+            user=user_in_db,
+            schedule=schedule_record,
+            element=element_in_db,
+            quantity=element_in_db.quantity,
+        )
+        self.mail_configs(reservation)
         try:
-            Reserve.objects.create(
-                user=user_in_db,
-                schedule=schedule_record,
-                element=element_in_db,
-                quantity=element_in_db.quantity,
-            )
+
             return JsonResponse({'created': True})
         except:
             return JsonResponse({'created': False})
 
+    def mail_configs(self, reservation):
+        username = reservation.user.username
+        subject = '{0} {1}, reservaste el elemento {2}'.format(
+            reservation.user.first_name,
+            reservation.user.last_name,
+            reservation.element.name
+        )
+        try:
+            date_formated = reservation.schedule.date.strftime("%d de %b. de %Y")
+            start_formated = reservation.schedule.start_time.strftime("%I :%M %p")
+            end_formated = reservation.schedule.end_time.strftime("%I:%M %p")
+        except:
+            date_formated = datetime.strptime(reservation.schedule.date, '%Y-%m-%d').strftime("%d de %b. de %Y")
+            start_formated = str(reservation.schedule.start_time)
+            end_formated = str(reservation.schedule.end_time)
 
+        description = 'Descarga el archivo con formato .ics y sincroniza tu calendario con el evento que tienes el {0} de {1} a {2}' \
+            .format(
+            date_formated,
+            start_formated,
+            end_formated
+        )
+        context = {
+            'username': username,
+            'subject': subject,
+            'description': description
+
+        }
+        configs = {
+            'Template': 'MailTemplates/reservation-mail.html',
+            'subject': 'Detalles de tu reserva',
+            'to': [reservation.user.email],
+        }
+        file_configs = {
+            'file_name': 'reservation-{0}{1}.ics'.format(reservation.user.first_name, reservation.pk),
+            'content': reservation.generate_event(),
+            'type': 'text/calendar'
+        }
+        sendMail(configs, context, file_configs)

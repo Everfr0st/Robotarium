@@ -53,13 +53,24 @@ export default {
   },
 
   data: () => ({
-    //
+    api_dir: "/robotarium-api/v1.0/users-list",
   }),
   computed: {
-    ...mapState(["authentication", "selfUser", "view"]),
+    ...mapState(["authentication", "selfUser", "view", "domainBase"]),
+  },
+  async created() {
+    let response = await fetch(this.domainBase + this.api_dir, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        Authorization: `Bearer ${this.authentication.accessToken}`,
+      },
+    });
+    response = await response.json();
+    this.setUsers(response);
+    this.loaded = true;
   },
   methods: {
-    ...mapMutations(["destroyAuthcredentials"]),
+    ...mapMutations(["destroyAuthcredentials", "setUsers"]),
     async Logout() {
       const web_domain = "http://127.0.0.1:8000";
       const api_dir = "/robotarium-api/v1.0/logout/";

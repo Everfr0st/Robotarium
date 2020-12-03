@@ -8,11 +8,17 @@
         </v-col>
       </v-row>
     </v-container>
+    {{reservation}}
+     <v-dialog v-model="reservation.showDialog">
+          <Schedule v-if="reservation.showDialog" :item="reservation.element"/>
+      </v-dialog>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
 import CardInventory from "@/components/subcomponents/CardInventory.vue";
+import Schedule from "@/components/subcomponents/Schedule.vue";
+
 export default {
   name: "Stand",
   data: () => ({
@@ -21,9 +27,10 @@ export default {
   }),
   components: {
     CardInventory,
+    Schedule
   },
   computed: {
-    ...mapState(["domainBase", "authentication"]),
+    ...mapState(["domainBase", "authentication", "reservation"]),
   },
   props: ["stand", "levels"],
   created() {

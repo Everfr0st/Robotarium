@@ -19,7 +19,6 @@
           @mousedown:time="startTime"
           @mousemove:time="mouseMove"
           @mouseup:time="endDrag"
-          @mouseup:event="setEvent"
         >
           <template v-slot:event="{ event, timed, eventSummary }">
             <v-row
@@ -158,7 +157,6 @@ export default {
       if (
         this.dragEvent &&
         this.dragTime !== null &&
-        !this.dragEvent.request &&
         !this.reservation_created
       ) {
         const start = this.dragEvent.start;
@@ -184,11 +182,12 @@ export default {
       }
     },
     endDrag() {
+      this.setEvent(this.events[this.index]);
       this.dragTime = null;
       this.dragEvent = null;
       this.createEvent = null;
       this.createStart = null;
-      this.extendOriginal = null;
+      this.extendOriginal = null;     
     },
     cancelDrag() {
       if (this.createEvent) {
@@ -284,13 +283,11 @@ export default {
       return arr[this.rnd(0, arr.length - 1)];
     },
     setEvent(event) {
-      if (!event.event.request) {
-        this.checkAvailability();
-        this.reserveSubmit = {
+      this.reserveSubmit = {
           schedule: {
             date: this.date,
-            start: new Date(event.event.start).toString().substr(16, 5),
-            end: new Date(event.event.end).toString().substr(16, 5),
+            start: new Date(event.start).toString().substr(16, 8),
+            end: new Date(event.end).toString().substr(16, 8),
           },
           element: {
             name: this.item.name,
@@ -300,6 +297,11 @@ export default {
             username: this.selfUser.username,
           },
         };
+    
+      if (!event.request) {
+        this.checkAvailability();
+        
+        console.log(this.reserveSubmit)
       }
     },
     checkAvailability() {
@@ -418,6 +420,7 @@ export default {
     },
     submitReserve() {
       if (!this.reservation_created) {
+        console.log(this.reserveSubmit)
         this.loading = true;
         let formData = JSON.stringify(this.reserveSubmit);
         let response;

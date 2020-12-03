@@ -14,7 +14,7 @@
         </v-btn>
       </v-date-picker>
     </v-card>
-    <v-dialog  max-width="500px" v-model="showDialog">
+    <v-dialog  max-width="500px" v-model="showDialog"> 
       <HourReserve v-if="showDialog" :date="date" :item="item"/>
     </v-dialog>
   </div>
@@ -22,10 +22,11 @@
 
 <script>
 import HourReserve from "@/components/subcomponents/HourReserve.vue";
+
 export default {
   name: "Schedule",
   components:{
-    HourReserve,
+    HourReserve
   },
   props: ["item"],
   data: () => ({
@@ -59,7 +60,9 @@ export default {
       }
     },
     reserve(){
+      
       this.showDialog = true;
+      
     }
   },
 };

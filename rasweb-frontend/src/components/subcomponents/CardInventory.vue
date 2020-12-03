@@ -39,14 +39,10 @@
               </v-card-subtitle>
             </header>
             <v-card-actions class="actions" v-if="showActions">
-              <v-btn title="Reservar" fab color="accent" @click="dialog = true">
+              <v-btn title="Reservar" fab color="accent" @click="showCalendar(element);">
                 <v-icon>mdi-calendar-plus</v-icon>
               </v-btn>
             </v-card-actions>
-
-        <v-dialog  v-model="dialog">
-          <Schedule v-if="dialog" :item="element"/>
-        </v-dialog>
           </v-carousel-item>
         </v-carousel>
       </v-card>
@@ -55,7 +51,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import Schedule from "@/components/subcomponents/Schedule.vue";
 export default {
   name: "CardInventory",
@@ -69,7 +65,6 @@ export default {
     isActive: false,
     api_dir: "/robotarium-api/v1.0/item-detail/?format=json&code=",
     api_data: "",
-    dialog: false,
     showActions: false
   }),
   computed: {
@@ -94,6 +89,16 @@ export default {
     this.api_data = response;
     this.isActive = true;
   },
+  methods:{
+    ...mapMutations(["setReservation"]),
+    showCalendar(element){
+      let reservationObj = {
+        element: element,
+        showDialog: true,
+      }
+      this.setReservation(reservationObj);
+    }
+  }
 };
 </script>
 

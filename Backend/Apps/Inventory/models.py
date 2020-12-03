@@ -1,6 +1,9 @@
+from django.contrib.sites.models import Site
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
+from datetime import datetime, timedelta
+from icalendar import Calendar, Event as ICalEvent
+from pytz import UTC
 
 
 class Inventory(models.Model):
@@ -16,6 +19,7 @@ class Inventory(models.Model):
 
     def __str__(self):
         return "{0} ({1})".format(self.name, self.quantity)
+
 
 
 class Schedule(models.Model):
@@ -57,3 +61,25 @@ class Reserve(models.Model):
             'created': self.created,
         }
         return json_obj
+
+    def generate_event(self):
+        cal = Calendar()
+        site = Site.objects.get_current()
+        start = str(self.schedule.date) + ' ' + str(self.schedule.start_time)
+        end = str(self.schedule.date) + ' ' + str(self.schedule.end_time)
+        start_date = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        end_date = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
+
+        cal.add('prodid', '-//UAO-RAS Reservation//{}//'.format(site.domain))
+        cal.add('version', '2.0')
+
+        ical_event = ICalEvent()
+        ical_event.add('summary', '@{0} reservó el elemento {1}'.format(self.user.username, self.element.name))
+        ical_event.add('dtstart', start_date)
+        ical_event.add('dtend', end_date)
+        ical_event.add('dtstamp', start_date - timedelta(minutes=30))
+        ical_event.add('priority', 5)
+        ical_event['uid'] = str(self.id)
+
+        cal.add_component(ical_event)
+        return cal.to_ical()

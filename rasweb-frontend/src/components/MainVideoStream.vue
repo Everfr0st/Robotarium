@@ -1,25 +1,29 @@
 <template>
-  <div class="ma-2 pr-5">
+  <div class="ma-2 pl-1 pr-5">
     <v-row>
-      <v-icon :class="live.started && !live.finished ? 'live' : ''" left
-        >{{live.started && !live.finished ? 'mdi-access-point' : 'mdi-access-point-off'}}</v-icon
-      >
+      <v-icon :class="live.started && !live.finished ? 'live' : ''" left>{{
+        live.started && !live.finished
+          ? "mdi-access-point"
+          : "mdi-access-point-off"
+      }}</v-icon>
       <h3>{{ live.started && !live.finished ? "En vivo" : "Robotarium" }}</h3>
     </v-row>
     <v-row v-if="live.finished">
       <v-card class="body">
         <div class="static">
           <div>
-            
-            <h2 class="ml-2 ">Transmisión finalizada</h2>
+            <h2 class="ml-2">Transmisión finalizada</h2>
           </div>
         </div>
         <div class="scan"></div>
       </v-card>
-      
     </v-row>
     <v-row v-else-if="!live.started">
-      <v-skeleton-loader width="100%" min-heigth="340" type="image"></v-skeleton-loader>
+      <v-skeleton-loader
+        width="100%"
+        min-heigth="340"
+        type="image"
+      ></v-skeleton-loader>
     </v-row>
 
     <v-row class="live-container">

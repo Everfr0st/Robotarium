@@ -30,8 +30,11 @@ class PostList(generics.ListAPIView):
             dic_post["created"] = post.created.strftime("%b %d, %Y")
             dic_post["photos"] = list(PostPhoto.objects.filter(post=post).values_list('photo', flat=True))
             dic_post["tag_users"] = list(User.objects.filter(
-                id__in=list(TagUser.objects.filter(post=post).values_list('user', flat=True))).values_list('username',
-                                                                                                           flat=True))
+                    id__in=list(
+                        TagUser.objects.filter(post=post).values_list('user', flat=True)
+                    )
+                ).values_list('username', flat=True)
+            )
             post_list.append(dic_post)
 
         return JsonResponse(post_list, safe=False)

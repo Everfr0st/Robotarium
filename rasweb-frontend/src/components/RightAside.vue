@@ -16,6 +16,7 @@
         <v-list style="margin-left: 20px; width: 90%" two-line>
           <template v-for="(user, index) in users">
             <v-list-item
+              v-if="user.username != selfUser.username"            
               :key="index"
               class="user-list"
               :id="'user_' + user.username"
@@ -24,6 +25,7 @@
                 showDialog();
               "
               @click="addChat2List(user)"
+
             >
               <v-badge
                 bordered
@@ -73,27 +75,26 @@
 import { mapState, mapMutations } from "vuex";
 import { setDialogPosition } from "@/auxfunctions/DomFunctions.js";
 
-
 export default {
   name: "RightAside",
   data: () => ({
     loaded: false,
     search: "",
-     api_dir: "/robotarium-api/v1.0/users-list",
     attrs: {
       boilerplate: false,
     },
   }),
   computed: {
-    ...mapState(["users", "authentication", "dialog", "domainBase"]),
+    ...mapState([
+      "users",
+      "authentication",
+      "dialog",
+      "domainBase",
+      "selfUser",
+    ]),
   },
   methods: {
-    ...mapMutations([
-      "setUsers",
-      "setAccountInfo",
-      "setChatInfo",
-      "addChat2List",
-    ]),
+    ...mapMutations(["setAccountInfo", "setChatInfo", "addChat2List"]),
     hideDialog() {
       let chatlist = document.getElementById("chat-list");
       let chatlist_position = chatlist.getBoundingClientRect();
@@ -108,31 +109,22 @@ export default {
     showDialog() {
       let username = this.dialog.username;
       let dialogdiv = document.getElementsByClassName("user-detail-dialog");
-     // setDialogPosition(username);
+      // setDialogPosition(username);
     },
     searchUser() {
-        let usersList = document.getElementsByClassName("v-list-item__title");
-        let userslistContainers = document.getElementsByClassName("user-list");
-        for (var i = 0; i < usersList.length; i++) {
-          var txtValue = usersList[i].textContent || usersList[i].innerText;
-          if (txtValue.toUpperCase().indexOf(this.search.toUpperCase()) > -1) {
-            userslistContainers[i].style.display = "";
-          } else {
-            userslistContainers[i].style.display = "none";
-          }
+      let usersList = document.getElementsByClassName("v-list-item__title");
+      let userslistContainers = document.getElementsByClassName("user-list");
+      for (var i = 0; i < usersList.length; i++) {
+        var txtValue = usersList[i].textContent || usersList[i].innerText;
+        if (txtValue.toUpperCase().indexOf(this.search.toUpperCase()) > -1) {
+          userslistContainers[i].style.display = "";
+        } else {
+          userslistContainers[i].style.display = "none";
         }
-      
+      }
     },
   },
-  async created() {
-    let response = await fetch(this.domainBase + this.api_dir, {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        Authorization: `Bearer ${this.authentication.accessToken}`,
-      },
-    });
-    response = await response.json();
-    this.setUsers(response);
+  created() {
     this.loaded = true;
   },
 };

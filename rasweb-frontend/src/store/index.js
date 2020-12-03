@@ -25,6 +25,7 @@ export default new Vuex.Store({
       started: false,
       finished: false,
     },
+    reservation:'',
     robotarium:'',
     chats: [],
     users: [],
@@ -84,6 +85,9 @@ export default new Vuex.Store({
     },
     setRobotariumInfo(state,robotariumInfo){
       state.robotarium = robotariumInfo;
+    },
+    setReservation(state,reservation){
+      state.reservation = reservation;
     }
   },
   actions: {

@@ -90,6 +90,9 @@ export default {
   data: () => ({
     username: "",
     password: "",
+    fistName: "",
+    lastName: "",
+    
     loading: false,
     incorrectAuth: false,
     snackbar: false,

@@ -13,4 +13,4 @@ djangorestframework_simplejwt
 django-cors-headers
 asgiref~=3.2  --use-feature=2020-resolver
 icalendar
-#psycopg2
+psycopg2--binary

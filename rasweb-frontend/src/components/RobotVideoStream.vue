@@ -1,12 +1,11 @@
 <template>
   <div>
-    
       <v-card class="pa-3 mr-4">
         <v-autocomplete
           v-model="robot"
           :items="robots"
           chips
-          color="accent lighten-2"
+          color="accent"
           label="Selecciona un robot"
           item-text="name"
           item-value="name, available"
@@ -33,7 +32,6 @@
                   }}</span>
                 </v-avatar>
               </v-badge>
-
               {{ data.item.name }}
             </v-chip>
           </template>

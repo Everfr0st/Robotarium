@@ -18,7 +18,7 @@
                 class="google-logo"
                 src="https://img.icons8.com/color/452/google-logo.png"
               ></v-img>
-              Inicia sesión con Google
+              Regístrate con Google
             </v-btn>
 
             <v-row class="pa-3 mr-1">
@@ -45,7 +45,7 @@
                 :append-icon="view ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="view = !view;"
               ></v-text-field>
-              <p class="forgot-password">¿Olvidaste tu contraseña?</p>
+              
               <v-progress-linear
                 v-if="loading"
                 color="accent"
@@ -54,12 +54,12 @@
                 height="6"
               ></v-progress-linear>
               <v-btn class="mr-4" color="primary" block type="submit">
-                Iniciar sesión
+                Regístrate
               </v-btn>
             </form>
             <v-row class="mt-2" justify="center">
                 <p style="margin-top: 2px;" >¿No tienes una cuenta?</p>
-                <v-btn class="ml-1" :to="{ name: 'SignUp' }" small text color="primary">Regístrate</v-btn>
+                <v-btn class="ml-1"  small text color="primary">Regístrate</v-btn>
             </v-row>
           </v-col>
           <v-col class="image-login">
@@ -108,8 +108,8 @@ export default {
     }
   },
   created() {
-    document.title = "Login · UAO-RAS";
-    this.setViewname("Login");
+    document.title = "SignUp · UAO-RAS";
+    this.setViewname("SignUp");
   },
   methods: {
     ...mapMutations(["updateAuthcredentials", "setViewname"]),

@@ -18,8 +18,6 @@ class Robot(models.Model):
         return self.name + ' is available' if self.available else self.name + " isn't available"
 
 
-
-
 class RobotUsage(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     robot = models.ForeignKey(Robot, on_delete=models.DO_NOTHING)

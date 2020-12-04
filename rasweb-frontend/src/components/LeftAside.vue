@@ -8,7 +8,7 @@
       >
         <v-btn
         align="left"
-          color="primary secondary--text"
+          color="primary"
           class="ma-2"
           text
           :to="{ name: item.link }"
@@ -53,5 +53,8 @@ export default {
 <style scoped>
 .btn-menu {
   background-color: rgba(190, 7, 7, 0.4);
+}
+.primary--text{
+  color: black;
 }
 </style>

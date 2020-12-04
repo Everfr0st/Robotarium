@@ -1,5 +1,5 @@
 <template>
-  <div class="ml-6">
+  <div >
     <v-lazy
       transition="fade-transition"
       :options="{ threshold: 0.5 }"
@@ -10,7 +10,7 @@
         <v-row
           wrap
           justify="start"
-          class="pa-0"
+          class="pa-0 ma-2"
           align="center"
           style="position: relative"
         >
@@ -45,7 +45,7 @@
             </span>
           </v-card-subtitle>
         </v-row>
-        <v-row>
+        <v-row class="ma-3">
           <v-card-text style="padding: 0px; font-size: 12pt;">
             {{ post.content }}
           </v-card-text>
@@ -54,8 +54,8 @@
               <UserInTag  v-for="(tag_user, index) in post.tag_users" :key="index" :user="tag_user" />
           </v-card-actions>
         </v-row>
-        <v-row class="pr-7 mt-2" >
-          <v-carousel :continuous="false" style="border-radius: 5px; z-index: 0;">
+        <v-row class="ma-3" >
+          <v-carousel :continuous="false" class="carousel-pub-list" style="border-radius: 5px;">
             <v-carousel-item
               v-for="(photo, index) in post.photos"
               :key="index"
@@ -110,3 +110,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-image__image {
+  height: auto;
+}
+</style>

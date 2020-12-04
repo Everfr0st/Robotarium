@@ -1,7 +1,7 @@
 <template >
-  <div class="ma-0 pa-0 users-list">
+  <div class="user-container-list">
     <v-container class="pa-0">
-      <v-row class="ml-8">
+      <v-row class="ml-2">
         <v-text-field
           class="search-user"
           v-model="search"
@@ -13,10 +13,10 @@
         ></v-text-field>
       </v-row>
       <div v-if="loaded" id="chat-list" @mouseleave="hideDialog()">
-        <v-list style="margin-left: 20px; width: 90%" two-line>
+        <v-list two-line>
           <template v-for="(user, index) in users">
             <v-list-item
-              v-if="user.username != selfUser.username"            
+              v-if="user.username != selfUser.username"
               :key="index"
               class="user-list"
               :id="'user_' + user.username"
@@ -25,7 +25,6 @@
                 showDialog();
               "
               @click="addChat2List(user)"
-
             >
               <v-badge
                 bordered
@@ -83,6 +82,7 @@ export default {
     attrs: {
       boilerplate: false,
     },
+    api_dir: "/robotarium-api/v1.0/users-list",
   }),
   computed: {
     ...mapState([
@@ -94,7 +94,7 @@ export default {
     ]),
   },
   methods: {
-    ...mapMutations(["setAccountInfo", "setChatInfo", "addChat2List"]),
+    ...mapMutations(["setAccountInfo", "setChatInfo", "addChat2List", "setUsers"]),
     hideDialog() {
       let chatlist = document.getElementById("chat-list");
       let chatlist_position = chatlist.getBoundingClientRect();
@@ -124,9 +124,18 @@ export default {
       }
     },
   },
-  created() {
-    this.loaded = true;
+  async created() {
+      let response = await fetch(this.domainBase + this.api_dir, {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          Authorization: `Bearer ${this.authentication.accessToken}`,
+        },
+      });
+      response = await response.json();
+      this.setUsers(response);
+      this.loaded = true;
   },
+  
 };
 </script>
 
@@ -164,5 +173,49 @@ export default {
 .search-user {
   max-width: 87%;
   background: white;
+}
+
+@media (min-width: 1904px) {
+  .user-container-list {
+    position: fixed;
+    right: 0px;
+    top: 75px;
+    width: 8%;
+
+    max-height: 85vh;
+    height: 85vh;
+    padding: 0 5px 0 0;
+    margin: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: white;
+  }
+}
+@media (max-width: 1904px) {
+  .user-container-list {
+    position: fixed;
+    right: 0px;
+    top: 75px;
+    width: 16%;
+
+    max-height: 85vh;
+    height: 85vh;
+    padding: 0 5px 0 0;
+    margin: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: white;
+  }
+}
+
+.user-container-list::-webkit-scrollbar {
+  width: 3px; /* Tamaño del scroll en vertical */
+  height: 3px; /* Tamaño del scroll en horizontal */
+  /* display: none; Ocultar scroll */
+}
+/* Ponemos un color de fondo y redondeamos las esquinas del thumb */
+.user-container-list::-webkit-scrollbar-thumb {
+  background: #be0707;
+  border-radius: 4px;
 }
 </style>

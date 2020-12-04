@@ -1,14 +1,13 @@
 <template>
-  <div>
-    <h3>Vitrina {{ stand }}</h3>
-    <v-container class="pa-0">
-      <v-row v-for="row in parseInt(levels)" :key="row">
-        <v-col v-for="col in 3" :key="col" class="item-card">
+  <div >
+    <h3 class="ml-3">Vitrina {{ stand }}</h3>
+    <v-container fluid >
+      <v-row  v-for="row in parseInt(levels)" :key="row" wrap>
+        <v-col class="col-card" v-for="col in 3" sm="6" md="4" :key="col">
           <CardInventory class="card" :stand="stand" :col="col" :row="row" />
         </v-col>
       </v-row>
     </v-container>
-    {{reservation}}
      <v-dialog v-model="reservation.showDialog">
           <Schedule v-if="reservation.showDialog" :item="reservation.element"/>
       </v-dialog>
@@ -72,7 +71,15 @@ export default {
   height: auto;
   overflow: hidden;
 }
-.item-card {
-  max-width: 33%;
+@media (max-width: 600px) {
+  .col-card {
+    min-width: 94vw;
+    
+  }
+  .card{
+    height: 100%;
+  }
 }
+
+
 </style>

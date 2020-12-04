@@ -281,6 +281,11 @@ export default {
   created(){
     document.title = "Inicio · UAO-RAS";
     this.setViewname = "Inicio";
+
+   
+     
+    
+  
   },
   methods: {
     ...mapMutations(["setViewname"]),

@@ -3,7 +3,7 @@
     <v-skeleton-loader
       v-if="!isActive"
       class="mx-auto"
-      type="card"
+      type="image"
     ></v-skeleton-loader>
     <v-lazy
       :options="{
@@ -13,15 +13,19 @@
       transition="fade-transition"
       v-if="isActive"
     >
-      <v-card 
+      <v-card
        color="#bdbdbdd7" 
       @mouseover="showActions=true;"
       @mouseleave="showActions=false">
         <v-carousel
+          class="carousel"
           :continuous="false"
           hide-delimiters
-          height="230"
           gradient="to top, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+          progress
+          cycle
+          color="accent"
+          height="340"
         >
           <v-carousel-item
             v-for="(element, index) in api_data"
@@ -29,6 +33,7 @@
             :src="element.photo == 'null' ? '' : element.photo"
             reverse-transition="fade-transition"
             transition="fade-transition"
+            
           >
             <header class="card-header">
               <v-card-title>
@@ -111,4 +116,10 @@ export default {
 .card-header {
   background: rgba(0, 0, 0, 0.4);
 }
+
+.image{
+  position: relative;
+  height: 100%;
+}
+
 </style>

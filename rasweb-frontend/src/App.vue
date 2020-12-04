@@ -1,21 +1,33 @@
 <template>
-  <v-app style="min-width: 800px;">
-    
+  <v-app>
     <div
       v-if="authentication.userIsAuthenticated || authentication.accessToken"
     >
       <NavBar />
-     
+
       <v-main>
         <v-container fluid>
           <v-row wrap>
-            <v-col sm="12" md="3" lg="2">
-              <LeftAside />   
+            <v-col class="left-aside" xs="12" sm="12" md="2" lg="2" xl="1">
+              <LeftAside />
             </v-col>
-            <v-col sm="12" md="9" :lg="view =='Robotarium'?'10':'7'">
+            <v-col
+              class="router-view"
+              xs="12"
+              sm="12"
+              md="12"
+              :lg="view == 'Robotarium' ? '10' : '8'"
+              :xl="view == 'Robotarium' ? '11' : '10'"
+            >
               <router-view />
             </v-col>
-            <v-col v-if="view !=='Robotarium'" class="user-container-list">
+            <v-col
+              class="right-aside"
+              v-if="view !== 'Robotarium'"
+              md="2"
+              lg="2"
+              xl="1"
+            >
               <RightAside />
             </v-col>
           </v-row>
@@ -53,33 +65,26 @@ export default {
   },
 
   data: () => ({
-    api_dir: "/robotarium-api/v1.0/users-list",
+    
   }),
   computed: {
     ...mapState(["authentication", "selfUser", "view", "domainBase"]),
   },
-  async created() {
-    let response = await fetch(this.domainBase + this.api_dir, {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        Authorization: `Bearer ${this.authentication.accessToken}`,
-      },
-    });
-    response = await response.json();
-    this.setUsers(response);
-    this.loaded = true;
-  },
+  
   methods: {
-    ...mapMutations(["destroyAuthcredentials", "setUsers"]),
+    ...mapMutations(["destroyAuthcredentials"]),
     async Logout() {
       const web_domain = "http://127.0.0.1:8000";
       const api_dir = "/robotarium-api/v1.0/logout/";
-      let response = await fetch(web_domain + api_dir + this.authentication.accessToken, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${this.authentication.accessToken}`,
-        },
-      });
+      let response = await fetch(
+        web_domain + api_dir + this.authentication.accessToken,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${this.authentication.accessToken}`,
+          },
+        }
+      );
 
       this.destroyAuthcredentials();
       this.$router.push({ name: "Login" });
@@ -89,26 +94,21 @@ export default {
 </script>
 
 <style scoped>
-.user-container-list {
-  position: fixed;
-  right: 0px;
-  top: 12%;
-  width: 22%;
-  max-height: 85vh;
-  height: 85vh;
-  padding: 0px;
-  margin: 0px;
-  overflow-y: auto;
-  overflow-x: hidden;
+@media (max-width: 1264px) {
+  .right-aside {
+    display: none;
+  }
+  .left-aside {
+    display: none;
+  }
 }
-.user-container-list::-webkit-scrollbar {
-  width: 3px; /* Tamaño del scroll en vertical */
-  height: 3px; /* Tamaño del scroll en horizontal */
-  /* display: none; Ocultar scroll */
-}
-/* Ponemos un color de fondo y redondeamos las esquinas del thumb */
-.user-container-list::-webkit-scrollbar-thumb {
-  background: #be0707;
-  border-radius: 4px;
+@media (min-width: 1264px) {
+  left-aside {
+    display: block;
+  }
+  .right-aside {
+    display: block;
+    position: relative;
+  }
 }
 </style>

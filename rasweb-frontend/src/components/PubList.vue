@@ -55,19 +55,21 @@
           </v-card-actions>
         </v-row>
         <v-row class="ma-3" >
-          <v-carousel :continuous="false" class="carousel-pub-list" style="border-radius: 5px;">
+          <v-carousel :continuous="false" v-if="post.photos.length" class="carousel-pub-list" style="border-radius: 5px;">
             <v-carousel-item
               v-for="(photo, index) in post.photos"
               :key="index"
               :src="`${domainBase}/coco-files/${photo}`"
               reverse-transition="fade-transition"
               transition="fade-transition"
-            ></v-carousel-item>
+              
+            >
+            </v-carousel-item>
           </v-carousel>
         </v-row>
 
         <v-row class="pr-7">
-          <v-divider class="mt-2 mb-2"></v-divider>
+          <v-divider class="ml-4 mb-2"></v-divider>
         </v-row>
       </v-card>
     </v-lazy>

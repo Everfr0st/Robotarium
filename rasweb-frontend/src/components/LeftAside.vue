@@ -7,15 +7,17 @@
         wrap
       >
         <v-btn
+        small
         align="left"
-          color="primary"
+          active-class="primary lighthen-10"
           class="ma-2"
           text
+          
           :to="{ name: item.link }"
           exact
           rounded
         >
-          <v-icon left>{{ item.icon }}</v-icon>
+          <v-icon left small>{{ item.icon }}</v-icon>
           <h3>
             {{ item.title }}
           </h3>
@@ -51,8 +53,9 @@ export default {
 </script>
 
 <style scoped>
+
 .btn-menu {
-  background-color: rgba(190, 7, 7, 0.4);
+  background-color: rgba(190, 7, 7, 0.123);
 }
 .primary--text{
   color: black;

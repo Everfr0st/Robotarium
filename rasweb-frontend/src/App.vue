@@ -8,15 +8,15 @@
       <v-main>
         <v-container fluid>
           <v-row wrap>
-            <v-col class="left-aside" xs="12" sm="12" md="2" lg="2" xl="1">
+            <v-col class="left-aside" xs="12" sm="12" md="1" lg="1" xl="1">
               <LeftAside />
             </v-col>
             <v-col
-              class="router-view"
+              class="router-view pl-15"
               xs="12"
               sm="12"
               md="12"
-              :lg="view == 'Robotarium' ? '10' : '8'"
+              :lg="view == 'Robotarium' ? '11' : '9'"
               :xl="view == 'Robotarium' ? '11' : '10'"
             >
               <router-view />

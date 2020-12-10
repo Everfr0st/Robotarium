@@ -3,7 +3,7 @@
     <v-img class="bg" src="@/assets/images/bg.jpg">
       <v-container class="container">
         <v-row class="row-form">
-          <v-col class="login-form" sm="12" md="6">
+          <v-col class="login-form pa-10" sm="12" md="6">
             <v-row>
               <v-img
                 max-height="70"
@@ -58,8 +58,8 @@
               </v-btn>
             </form>
             <v-row class="mt-2" justify="center">
-                <p style="margin-top: 2px;" >¿No tienes una cuenta?</p>
-                <v-btn class="ml-1" :to="{ name: 'SignUp' }" small text color="primary">Regístrate</v-btn>
+                <p style="margin-top: 22px;" >¿No tienes una cuenta?</p>
+                <v-btn class="ml-1 mt-5" :to="{ name: 'SignUp' }" small text color="primary">Regístrate</v-btn>
             </v-row>
           </v-col>
           <v-col class="image-login">
@@ -264,7 +264,7 @@ h1 {
   display: block;
   width: 400px;
   height: auto;
-  margin: 12% auto;
+  margin: 25% auto;
 }
 @media (max-width: 960px) {
   .image-login {

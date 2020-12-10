@@ -3,7 +3,7 @@
     <v-img class="bg" src="@/assets/images/bg.jpg">
       <v-container class="container">
         <v-row class="row-form">
-          <v-col class="login-form" sm="12" md="6">
+          <v-col class="login-form pa-10" sm="12" md="6">
             <v-row>
               <v-img
                 max-height="70"
@@ -18,7 +18,7 @@
                 class="google-logo"
                 src="https://img.icons8.com/color/452/google-logo.png"
               ></v-img>
-              Regístrate con Google
+              Inicia sesión con Google
             </v-btn>
 
             <v-row class="pa-3 mr-1">
@@ -45,7 +45,7 @@
                 :append-icon="view ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="view = !view;"
               ></v-text-field>
-              
+              <p class="forgot-password">¿Olvidaste tu contraseña?</p>
               <v-progress-linear
                 v-if="loading"
                 color="accent"
@@ -54,12 +54,12 @@
                 height="6"
               ></v-progress-linear>
               <v-btn class="mr-4" color="primary" block type="submit">
-                Regístrate
+                Iniciar sesión
               </v-btn>
             </form>
             <v-row class="mt-2" justify="center">
                 <p style="margin-top: 2px;" >¿No tienes una cuenta?</p>
-                <v-btn class="ml-1"  small text color="primary">Regístrate</v-btn>
+                <v-btn class="ml-1" :to="{ name: 'SignUp' }" small text color="primary">Regístrate</v-btn>
             </v-row>
           </v-col>
           <v-col class="image-login">
@@ -268,7 +268,7 @@ h1 {
   display: block;
   width: 400px;
   height: auto;
-  margin: 12% auto;
+  margin: 25% auto;
 }
 @media (max-width: 960px) {
   .image-login {

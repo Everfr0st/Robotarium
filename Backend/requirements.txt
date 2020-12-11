@@ -9,8 +9,9 @@ opencv_python == 4.2.0.34
 python-memcached
 Pillow
 djangorestframework
-djangorestframework_simplejwt
+#djangorestframework_simplejwt
 django-cors-headers
 asgiref~=3.2  --use-feature=2020-resolver
 icalendar
 psycopg2--binary
+dj_rest_auth

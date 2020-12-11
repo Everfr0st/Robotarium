@@ -4,44 +4,42 @@ from django.http import JsonResponse
 from django.views.generic import TemplateView
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 from .auxmethods import get_semester_name
 from .models import *
+from .serializer import UserSerializer
 from ..Chat.models import Message
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
-class SignUp(TemplateView):
-    def get(self, request, **kwargs):  # change to Post Method
+class CreateUserApi(generics.CreateAPIView):
+    serializer_class = UserSerializer
+
+    def post(self, request, *args, **kwargs):
+        first_name = request.data['first_name']
+        last_name = request.data['last_name']
+        username = request.data['username']
+        email = request.data['email']
+        password = request.data['password']
         try:
-            username = self.request.GET["Username"]
-            email = self.request.GET["Email"]
-            role = self.request.GET["Role"]
-            password = self.request.GET["Password"]
-
-            user = User.objects.create(username=username, email=email)
-
-            if role == "Estudiante":
-                Student.objects.create(user=user)
-            elif role == "Docente":
-                Teacher.objects.create(user=user)
-
-            user_to_authenticate = authenticate(
-                username=username, password=password)
-            login(request, user_to_authenticate)
-
-            return JsonResponse({
-                'SignUp': True,
-                'Authenticated': True,
-                'Rol': role,
-            })
-
+            user = User.objects.create_user(username=username, email=email, password=password)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+            response = self.get_tokens_for_user(user)
+            return JsonResponse(response)
         except:
-            user.delete()
-            return JsonResponse({
-                'SignUp': False,
-                'Authenticated': False
-            })
+            return Response({'status': 'Ya existe una cuenta asociada a este correo o nombre de usuario'}, status=409)
+
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        return {
+            'created': True,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
 
 
 class SignUpMoreInfo(TemplateView):

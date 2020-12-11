@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from datetime import timedelta
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -49,7 +50,8 @@ INSTALLED_APPS = [
     # Third party apps
     'corsheaders',
     'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
     'channels',
     'notify',
 
@@ -91,7 +93,8 @@ WSGI_APPLICATION = 'rasweb.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
 }
 
@@ -99,7 +102,6 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=120),
 }
-
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -147,9 +149,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'Files')
-MEDIA_URL = '/coco-files/'
+MEDIA_URL = '/ras-uao-files/'
 
-#Django channels
+# Django channels
 ASGI_APPLICATION = "rasweb.routing.application"
 CHANNEL_LAYERS = {
     'default': {
@@ -165,8 +167,8 @@ CACHES = {
         'LOCATION': 'localhost:6379',
         'OPTIONS': {
             'DB': 1
-            }
         }
+    }
 }
 
 SITE_ID = 1
@@ -182,5 +184,5 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "semillero.robotica@uao.edu.co" # Cambiar por correo del semillero
-EMAIL_HOST_PASSWORD = "mcljpyepirjkzjhp" # Contraseña de aplicación
+EMAIL_HOST_USER = "semillero.robotica@uao.edu.co"  # Cambiar por correo del semillero
+EMAIL_HOST_PASSWORD = "mcljpyepirjkzjhp"  # Contraseña de aplicación

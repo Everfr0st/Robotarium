@@ -38,7 +38,7 @@ export default {
       {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         headers: {
-          Authorization: `Bearer ${this.authentication.accessToken}`,
+          Authorization: `Token ${this.authentication.accessToken}`,
         },
       }
     );

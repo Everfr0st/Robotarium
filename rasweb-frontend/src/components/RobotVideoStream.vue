@@ -143,7 +143,7 @@ export default {
       fetch(this.domainBase + this.apiDir, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${this.authentication.accessToken}`,
+          Authorization: `Token ${this.authentication.accessToken}`,
         },
       })
         .then((response) => {

@@ -6,7 +6,6 @@ export default new Vuex.Store({
   state: {
     authentication: {
       accessToken: localStorage.getItem("token"),
-      refreshToken: localStorage.getItem("refresh_token"),
       userIsAuthenticated: !!localStorage.getItem("token"),
     },
     selfUser: {
@@ -36,16 +35,13 @@ export default new Vuex.Store({
 
   },
   mutations: {
-    updateAuthcredentials(state, { access, refresh, auth }) {
+    updateAuthcredentials(state, { access, auth }) {
       state.authentication.accessToken = access;
-      state.authentication.refreshToken = refresh;
       state.authentication.userIsAuthenticated = auth;
-      localStorage.setItem('refresh_token', state.authentication.refreshToken)
       localStorage.setItem('token', state.authentication.accessToken)
     },
     destroyAuthcredentials(state){
       state.authentication.accessToken = null;
-      state.authentication.refreshToken = null;
       state.authentication.userIsAuthenticated = false;
       localStorage.removeItem('token');
       localStorage.removeItem('refresh_token');

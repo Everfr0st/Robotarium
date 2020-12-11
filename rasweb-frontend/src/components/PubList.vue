@@ -59,7 +59,7 @@
             <v-carousel-item
               v-for="(photo, index) in post.photos"
               :key="index"
-              :src="`${domainBase}/coco-files/${photo}`"
+              :src="`${domainBase}/ras-uao-files/${photo}`"
               reverse-transition="fade-transition"
               transition="fade-transition"
               
@@ -101,7 +101,7 @@ export default {
     let response = await fetch(this.domainBase + this.api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
-        Authorization: `Bearer ${this.authentication.accessToken}`,
+        Authorization: `Token ${this.authentication.accessToken}`,
       },
     });
     if (response.status == 200) {

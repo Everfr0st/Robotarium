@@ -68,7 +68,7 @@ export default {
     let options = {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
-        Authorization: `Bearer ${this.authentication.accessToken}`,
+        Authorization: `Token ${this.authentication.accessToken}`,
       },
     };
     let response = await fetch(this.domainBase + this.api_dir, options);

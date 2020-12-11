@@ -3,7 +3,7 @@
     <v-img class="bg" src="@/assets/images/bg.jpg">
       <v-container class="container">
         <v-row class="row-form">
-          <v-col class="login-form pa-10" sm="12" md="6">
+          <v-col class="login-form" sm="12" md="6">
             <v-row>
               <v-img
                 max-height="70"
@@ -33,7 +33,7 @@
               <v-text-field
                 class="mb-1"
                 v-model="username"
-                label="Usuario"
+                label="Usuario o correo"
                 :rules="[rules.required]"
               ></v-text-field>
               <v-text-field
@@ -57,15 +57,14 @@
                 Iniciar sesión
               </v-btn>
             </form>
-            <v-row class="mt-2" justify="center">
-                <p style="margin-top: 22px;" >¿No tienes una cuenta?</p>
-                <v-btn class="ml-1 mt-5" :to="{ name: 'SignUp' }" small text color="primary">Regístrate</v-btn>
-            </v-row>
+            <p class="mt-3 mb-0" align="center" >
+            ¿No tienes una cuenta? <a @click="go2SignUpView">Regístrate</a>
+          </p>
           </v-col>
           <v-col class="image-login">
             <v-img src="@/assets/images/circuit.png" class="circuit"></v-img>
 
-            <v-img src="@/assets/images/Duckie_logo.png" class="duckie"></v-img>
+            <v-img src="@/assets/images/Duckie_logo.png" class="duckie pa-0"></v-img>
           </v-col>
         </v-row>
       </v-container>
@@ -115,12 +114,22 @@ export default {
     ...mapMutations(["updateAuthcredentials", "setViewname"]),
     async loginSubmit() {
       this.loading = true;
-      let form_data = {
-        username: this.username,
-        password: this.password,
-      };
-
-      var response = await fetch(web_domain + "api-token/", {
+      let form_data = {};
+      if (this.username.indexOf("@") > -1) {
+        form_data = {
+          username: "",
+          email: this.username,
+          password: this.password,
+        };
+      } else {
+        form_data = {
+          username: this.username,
+          email: "",
+          password: this.password,
+        };
+      }
+    
+      var response = await fetch(web_domain + "user-auth/login/", {
         method: "POST",
         credentials: "same-origin",
         headers: {
@@ -131,8 +140,7 @@ export default {
       if (response.status === 200) {
         response = await response.json();
         this.updateAuthcredentials({
-          access: response.access,
-          refresh: response.refresh,
+          access: response.key,
           auth: true,
         });
         this.$router.push({ name: "Home" });
@@ -142,6 +150,9 @@ export default {
       }
       this.loading = false;
     },
+    go2SignUpView(){
+      this.$router.push({name:"SignUp"})
+    }
   },
 };
 </script>
@@ -168,12 +179,13 @@ h1 {
 }
 .container {
   width: 100vw;
-  height: 40px;
+  height: auto;
   margin: 5% auto;
 }
 .row-form {
-  padding: 2%;
   border-radius: 15px;
+  max-height: 480px;
+  overflow: hidden;
 }
 .google-logo {
   background: white;
@@ -251,6 +263,7 @@ h1 {
 .login-form {
   background: white;
   border-radius: 10px 0 0 10px;
+  padding: 25px;
 }
 .circuit {
   position: absolute;
@@ -264,7 +277,7 @@ h1 {
   display: block;
   width: 400px;
   height: auto;
-  margin: 25% auto;
+  margin: 20% auto;
 }
 @media (max-width: 960px) {
   .image-login {
@@ -276,5 +289,15 @@ h1 {
   .row-form {
     margin: 5px;
   }
+}
+p,
+a {
+  font-size: 12pt;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 </style>

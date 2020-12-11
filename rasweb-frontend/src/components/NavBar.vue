@@ -74,7 +74,7 @@ export default {
     let nav_data = await fetch(web_domain + api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
-        Authorization: `Bearer ${this.authentication.accessToken}`,
+        Authorization: `Token ${this.authentication.accessToken}`,
       },
     });
 

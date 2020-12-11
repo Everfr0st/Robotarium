@@ -38,13 +38,12 @@ export default new Vuex.Store({
     updateAuthcredentials(state, { access, auth }) {
       state.authentication.accessToken = access;
       state.authentication.userIsAuthenticated = auth;
-      localStorage.setItem('token', state.authentication.accessToken)
+      localStorage.setItem('token', access)
     },
     destroyAuthcredentials(state){
       state.authentication.accessToken = null;
       state.authentication.userIsAuthenticated = false;
       localStorage.removeItem('token');
-      localStorage.removeItem('refresh_token');
     },
     setSelfuser(state, user) {
       state.selfUser.username = user.username;

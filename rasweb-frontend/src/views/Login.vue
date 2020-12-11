@@ -112,9 +112,10 @@ export default {
   },
   methods: {
     ...mapMutations(["updateAuthcredentials", "setViewname"]),
-    async loginSubmit() {
+    loginSubmit() {
       this.loading = true;
-      let form_data = {};
+      if(this.username){
+        let form_data = {};
       if (this.username.indexOf("@") > -1) {
         form_data = {
           username: "",
@@ -129,26 +130,45 @@ export default {
         };
       }
     
-      var response = await fetch(web_domain + "user-auth/login/", {
+      fetch(web_domain + "user-auth/login/", {
         method: "POST",
         credentials: "same-origin",
         headers: {
           "content-type": "application/json",
         },
         body: JSON.stringify(form_data),
-      });
-      if (response.status === 200) {
-        response = await response.json();
-        this.updateAuthcredentials({
+      })
+      .then((response)=>{       
+          if(response.status == 200){
+
+            return response.json()
+          }
+      })
+      .then((response)=>{
+          this.updateAuthcredentials({
           access: response.key,
           auth: true,
         });
         this.$router.push({ name: "Home" });
-      } else {
+      })
+      .catch((err)=>{
+        console.log(err)
         this.snackbar = true;
-        this.message = "Credenciales inválidas!";
+        this.message = "Error inesperado. Intenta de nuevo más tarde";
+      })
+      .finally(()=>{
+        this.loading = false;
+      })
+
+      } else{
+        this.snackbar = true;
+        this.message = "Debes ingresar datos!"
+        this.loading = false;
       }
-      this.loading = false;
+      
+      
+   
+      
     },
     go2SignUpView(){
       this.$router.push({name:"SignUp"})

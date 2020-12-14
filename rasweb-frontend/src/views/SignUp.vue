@@ -20,12 +20,18 @@
               ></v-img>
               Regístrate con Google
             </v-btn>
-
+            <v-row class="pa-0 mb-0 mr-1">
+              <v-col class="pa-2" sm="5"><div class="line"></div></v-col>
+              <v-col class="pa-2" sm="2"
+                ><h3 style="text-align: center">Ó</h3></v-col
+              >
+              <v-col class="pa-2" sm="5"><div class="line"></div></v-col>
+            </v-row>
             <form style="width: 100%" @submit.prevent="signUpSubmit">
-              <v-row >
+              <v-row class="mb-0" >
                 <v-col class="mb-0 pb-0" xs="6">
                   <v-text-field
-                    class="mb-1"
+                    class="mb-1 mt-0 pt-0"
                     v-model="firstName"
                     label="Nombres"
                     :rules="[rules.required]"
@@ -35,7 +41,7 @@
                 <v-col class="mb-0 pb-0" sm="6" >
                   <v-text-field
                     required
-                    class="mb-1"
+                    class="mb-1 mt-0 pt-0"
                     v-model="lastName"
                     label="Apellidos"
                     :rules="[rules.required]"
@@ -44,24 +50,24 @@
               </v-row>
               <v-text-field
                 required
-                class="mb-1 mt-0"
+                class="mb-1 pa-0 mt-0"
                 v-model="username"
                 label="Usuario"
                 :rules="[rules.required, rules.valid]"
               ></v-text-field>
               <v-text-field
                 required
-                class="mb-1"
+                class="mb-1 pt-0"
                 type="email"
                 v-model="email"
                 label="Correo"
                 :rules="[rules.required]"
               ></v-text-field>
-              <v-row>
-                <v-col sm="6">
+              <v-row class="pt-3">
+                <v-col class="mt-0 pt-0" sm="6">
                   <v-text-field
                     required
-                    class="mb-1"
+                    class="mb-1 mt-0 pt-0"
                     v-model="password1"
                     label="Contraseña"
                     :type="view1 ? 'text' : 'password'"
@@ -70,10 +76,10 @@
                     @click:append="view1 = !view1"
                   ></v-text-field>
                 </v-col>
-                <v-col sm="6">
+                <v-col class="pt-0" sm="6">
                   <v-text-field
                     required
-                    class="mb-1"
+                    class="mb-1 mt-0 pt-0"
                     v-model="password2"
                     label="Repita la contraseña"
                     :type="view2 ? 'text' : 'password'"

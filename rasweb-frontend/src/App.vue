@@ -8,7 +8,7 @@
       <v-main>
         <v-container fluid>
           <v-row wrap>
-            <v-col class="left-aside" xs="12" sm="12" md="2" lg="2" xl="1">
+            <v-col class="left-aside" xs="12" sm="12" md="2" lg="1">
               <LeftAside  />
             </v-col>
             <v-col 
@@ -104,7 +104,7 @@ export default {
   }
 }
 @media (min-width: 1264px) {
-  left-aside {
+  .left-aside {
     display: block;
   }
   .right-aside {

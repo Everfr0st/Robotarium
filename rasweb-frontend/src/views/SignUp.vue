@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-img class="bg" src="@/assets/images/bg.jpg">
-      <v-container class="mt-4">
+      <v-container class="container">
         <v-row class="row-form">
           <v-col class="signup-form pl-10 pr-10 pb-5" sm="12" md="6">
             <v-row>
@@ -65,6 +65,7 @@
               ></v-text-field>
               <v-row class="pt-3">
                 <v-col class="mt-0 pt-0" sm="6">
+
                   <v-text-field
                     required
                     class="mb-1 mt-0 pt-0"
@@ -102,6 +103,7 @@
                 :loading="loading"
                 block
                 type="submit"
+
               >
                 Registrate
               </v-btn>
@@ -155,7 +157,7 @@ export default {
     loading: false,
     valid: false,
     valid2: false,
-    apiDir: "create-user/",
+    apiDir: "/robotarium-api/v1.0/create-user/",
     snackbar: false,
     message: "",
   }),
@@ -192,34 +194,6 @@ export default {
   },
   methods: {
     ...mapMutations(["updateAuthcredentials", "setViewname"]),
-    async loginSubmit() {
-      this.loading = true;
-      let form_data = {
-        username: this.username,
-        password: this.password,
-      };
-
-      var response = await fetch(web_domain + "api-token/", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(form_data),
-      });
-      if (response.status === 200) {
-        response = await response.json();
-        this.updateAuthcredentials({
-          access: response.access,
-          auth: true,
-        });
-        this.$router.push({ name: "Home" });
-      } else {
-        this.snackbar = true;
-        this.message = "Credenciales inválidas!";
-      }
-      this.loading = false;
-    },
     go2LoginView(){
       this.$router.push({name:"Login"})
     },
@@ -258,19 +232,18 @@ export default {
             access: response.key,
             auth: !!response.key,
           };
-          this.updateAuthInfo(responseObj);
+          this.updateAuthcredentials(responseObj);
+          this.$router.push({ name: "MoreInfo" });
           
         })
         .catch((e) => {
           this.snackbar = true;
           this.message =
-            "Ya existe una cuenta con este nombre de usuario o correo";
+            "Ya existe una cuenta con este correo o nombre de usuario";
         })
         .finally(()=>{
           this.signUpDialog = false;
           this.loading = false;
-          
-          this.$router.push({ name: "MoreInfo" });
         })
     },
   },
@@ -300,7 +273,7 @@ h1 {
 .container {
   width: 100vw;
   height: 40px;
-  margin: 2% auto;
+  margin: 5% auto;
 }
 .row-form {
   border-radius: 15px;

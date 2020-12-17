@@ -8,25 +8,25 @@
       <v-main>
         <v-container fluid>
           <v-row wrap>
-            <v-col class="left-aside" xs="12" sm="12" md="2" lg="1">
+            <v-col class="left-aside" xs="12" sm="12" md="2" lg="1" >
               <LeftAside  />
+                    <v-btn small color="error darken" @click="Logout()"> <v-icon left>mdi-logout</v-icon> Cerrar sesión </v-btn>
             </v-col>
             <v-col 
               class="router-view"
               xs="12"
               sm="12"
               md="12"
-              :lg="view == 'Robotarium' ? '10' : '8'"
+              :lg="view == 'Robotarium' ? '10' : '9'"
               :xl="view == 'Robotarium' ? '11' : '10'"
             >
-              <router-view />
+              <router-view :class="view !== 'Robotarium' ? 'view' : ''" />
             </v-col>
             <v-col
-            
               class="right-aside"
               v-if="view !== 'Robotarium'"
               md="2"
-              lg="2"
+              lg="1"
               xl="1"
             >
               <RightAside />
@@ -34,7 +34,6 @@
           </v-row>
         </v-container>
       </v-main>
-      <v-btn color="error" @click="Logout()"> Cerrar sesión </v-btn>
       <UserDetailDialog />
       <ActiveChatList />
     </div>
@@ -103,13 +102,16 @@ export default {
     display: none;
   }
 }
-@media (min-width: 1264px) {
+@media (min-width: 1264px) and (max-width: 1904px) {
   .left-aside {
     display: block;
   }
   .right-aside {
     display: block;
     position: relative;
+  }
+  .view{
+    padding-right: 5%;
   }
 }
 

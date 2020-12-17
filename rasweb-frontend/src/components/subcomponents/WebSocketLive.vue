@@ -5,12 +5,9 @@
       <h3 v-else>{{ robotarium.robot }}</h3>
     </div>
     <img v-if="img_text" :src="'data:image/png;base64,' + img_text" />
-    <v-skeleton-loader
-      class="mx-auto"
-      max-width="300"
-      type="image"
-    ></v-skeleton-loader>
+    
   </div>
+ 
 </template>
 
 <script>

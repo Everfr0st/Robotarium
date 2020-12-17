@@ -19,7 +19,7 @@
       @mouseleave="showActions=false">
         <v-carousel
           class="carousel"
-          :continuous="false"
+          continuous
           hide-delimiters
           gradient="to top, rgba(0,0,0,.1), rgba(0,0,0,.5)"
           progress

@@ -38,11 +38,10 @@
           </v-row>
           <v-divider class="mt-2 mb-2"></v-divider>
 
-          <v-row v-if="tagUsers" class="pt-0" justify="center">
-            <v-form style="width: 96%">
-              <v-container>
-                <v-row>
-                  <v-autocomplete
+          <v-row v-if="tagUsers" class="pt-0">
+            <v-col sm="12">
+<v-form>
+              <v-autocomplete
                     v-model="tagUserslist"
                     :items="users"
                     chips
@@ -125,9 +124,9 @@
                       </template>
                     </template>
                   </v-autocomplete>
-                </v-row>
-              </v-container>
             </v-form>
+            </v-col>
+            
           </v-row>
           <v-row class="pl-2">
             <v-dialog v-model="dialog" persistent max-width="600">
@@ -141,8 +140,10 @@
                       src="@/assets/icons/upload_photo.svg"
                     />
                   </template>
+                  <span class="btn-text">
                   Subir fotos
-                  <span v-if="photos.length"> ({{ photos.length }})</span>
+                  </span>
+                  <span class="btn-text" v-if="photos.length"> ({{ photos.length }})</span>
                 </v-btn>
               </template>
               <v-card>
@@ -216,8 +217,11 @@
                   src="@/assets/icons/tag_friend.svg"
                 />
               </template>
+              <span class="btn-text">
+
               Etiquetar usuarios
-              <span v-if="tagUserslist.length"
+              </span>
+              <span class="btn-text" v-if="tagUserslist.length"
                 >({{ tagUserslist.length }})</span
               >
             </v-btn>
@@ -433,5 +437,10 @@ export default {
     rgba(192, 7, 7, 1) 100%
   );
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#590404', endColorstr='#c00707', GradientType=1 );
+}
+@media (max-width: 960px) {
+.btn-text{
+  display: none;
+}
 }
 </style>

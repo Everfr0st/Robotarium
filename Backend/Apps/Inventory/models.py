@@ -12,7 +12,7 @@ class Inventory(models.Model):
         return 'inventory/{0}'.format(filename + ".jpg")
 
     name = models.CharField(max_length=40)
-    code = models.CharField(max_length=5, unique=True)
+    code = models.CharField(max_length=5)
     quantity = models.IntegerField()
     photo = models.ImageField(upload_to=element_directory_path, blank=True)
     added = models.DateTimeField(auto_now_add=True)

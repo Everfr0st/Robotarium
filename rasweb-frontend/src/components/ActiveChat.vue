@@ -153,7 +153,7 @@ export default {
     message: "",
     date_send: "",
     room: undefined,
-    typing: true,
+    typing: false,
     messages: [],
     position: 255,
     loading: true,

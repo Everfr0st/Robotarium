@@ -35,8 +35,9 @@ export default {
   position: fixed;
   bottom: -15px;
   left: 0px;
-  width: 75%;
+  width: 85%;
   height: auto;
   display: inline-block; 
+  z-index: 2;
 }
 </style>

@@ -58,7 +58,7 @@
           </template>
         </v-list>
       </div>
-      <div v-else class="ml-3">
+      <div v-else class="ml-3 mt-2">
         <v-skeleton-loader
           v-for="index in 7"
           :key="index"

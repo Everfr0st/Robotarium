@@ -98,6 +98,11 @@
       >
         Cerrar
       </v-chip>
+       <v-skeleton-loader v-else-if="robotarium"
+      class="mx-auto"
+      max-width="300"
+      type="image"
+    ></v-skeleton-loader>
       <WebSocketLive number="" :robot="true" v-if="robotStream" />
     </v-card>
     <v-snackbar v-model="snackbar">
@@ -215,17 +220,9 @@ export default {
         pos3 = e.clientX;
         pos4 = e.clientY;
         // set the element's new position:
-        let x = elmnt.offsetLeft - pos1;
-        let y = elmnt.offsetTop - pos2;
-        if (
-          x > 10 &&
-          x < screen.width - 350 &&
-          y > 10 &&
-          y < screen.height - 350
-        ) {
-          elmnt.style.top = elmnt.offsetTop - pos2 + "px";
+        
+        elmnt.style.top = elmnt.offsetTop - pos2 + "px";
           elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
-        }
       }
 
       function closeDragElement() {

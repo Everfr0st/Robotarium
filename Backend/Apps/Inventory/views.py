@@ -26,7 +26,7 @@ class ItemDetailApi(generics.ListAPIView):
     model = Inventory
 
     def get_queryset(self):
-        return Inventory.objects.filter(code__icontains=self.request.GET["code"]).order_by("code")
+        return Inventory.objects.filter(code__icontains=self.request.GET["code"]).order_by("-code")
 
 
 class ReserveListApi(generics.ListAPIView):
@@ -49,7 +49,7 @@ class ReserveListApi(generics.ListAPIView):
             schedule__date=params[0],
             element__name__icontains=params[1],
             element__code=params[2]
-        )
+        ).order_by("code")
 
 
 class CreateReservationApi(generics.CreateAPIView):
@@ -99,10 +99,11 @@ class CreateReservationApi(generics.CreateAPIView):
 
     def mail_configs(self, reservation):
         username = reservation.user.username
-        subject = '{0} {1}, reservaste el elemento {2}'.format(
+        subject = '{0} {1}, reservaste el elemento {2} en la ubicación {3}'.format(
             reservation.user.first_name,
             reservation.user.last_name,
-            reservation.element.name
+            reservation.element.name,
+            reservation.element.code
         )
         try:
             date_formated = reservation.schedule.date.strftime("%d de %b. de %Y")
@@ -110,8 +111,8 @@ class CreateReservationApi(generics.CreateAPIView):
             end_formated = reservation.schedule.end_time.strftime("%I:%M %p")
         except:
             date_formated = datetime.strptime(reservation.schedule.date, '%Y-%m-%d').strftime("%d de %b. de %Y")
-            start_formated = str(reservation.schedule.start_time)
-            end_formated = str(reservation.schedule.end_time)
+            start_formated = str(reservation.schedule.start_time)[0:len(str(reservation.schedule.start_time))-3]
+            end_formated = str(reservation.schedule.end_time)[0:len(str(reservation.schedule.start_time))-3]
 
         description = 'Descarga el archivo con formato .ics y sincroniza tu calendario con el evento que tienes el {0} de {1} a {2}' \
             .format(

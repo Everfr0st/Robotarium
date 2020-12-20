@@ -143,14 +143,11 @@
 import { mapState } from "vuex";
 import { mapMutations } from "vuex";
 const web_domain = "http://127.0.0.1:8000";
-var aux_messages;
-var aux_room;
-var aux_webSocket;
 export default {
   name: "ActiveChat",
   data: () => ({
     websocket: undefined,
-    message: "",
+    message: [],
     date_send: "",
     room: undefined,
     typing: false,
@@ -160,10 +157,11 @@ export default {
   }),
   props: ["chat", "index"],
   computed: {
-    ...mapState(["chats", "selfUser", "wsBase"]),
+    ...mapState(["selfUser", "wsBase"]),
   },
   created() {
     let response;
+    console.log(this.room, "<-created")
     ApiComunication(this.selfUser.username, this.chat.username).then(
       (response) => {
         if (response.conversation_created == undefined) {
@@ -183,7 +181,6 @@ export default {
         if (this.room != undefined) {
           this.connect();
         }
-        aux_room = this.room;
         this.loading = false;
       }
     );
@@ -214,18 +211,12 @@ export default {
     });*/
   },
   beforeUpdate() {
-    if (this.room == aux_room) {
-      aux_messages = this.messages;
-    } else {
-      this.room = aux_room;
-      this.messages = aux_messages;
-
-      //this.websocket = aux_webSocket;
-      //this.connect();
-    }
+    console.log("->", this.room, this.chat.username)
   },
   beforeDestroy() {
     this.websocket.close();
+    this.websocket = null;
+    console.log(this.websocket, "destroyed")
   },
   methods: {
     ...mapMutations(["deleteChatfromlist"]),
@@ -250,16 +241,20 @@ export default {
     showDate(Date) {
     },
     sendMessage() {
-      this.websocket.send(
+      if(this.message.length){
+        this.websocket.send(
         JSON.stringify({
           type: "chat_message",
           conversation: this.room,
           sender: this.selfUser.username,
+          receiver: this.chat.username,
           text: this.message,
           read: false,
         })
       );
       this.message = "";
+      }
+      
     },
     typingMessage() {
       let sender = this.selfUser.username;
@@ -268,6 +263,7 @@ export default {
           JSON.stringify({
             type: "type_message",
             sender: sender,
+            receiver: this.chat.username,
             typing: true,
           })
         );
@@ -276,6 +272,7 @@ export default {
           JSON.stringify({
             type: "type_message",
             sender: sender,
+            receiver: this.chat.username,
             typing: false,
           })
         );
@@ -285,12 +282,11 @@ export default {
       this.websocket = new WebSocket(
         "ws://" + this.wsBase + "/ws/chat/" + this.room + "/"
       );
-      aux_webSocket = this.websocket;
       this.websocket.onopen = () => {
-        //console.info("conectado exitosamente!", this.room);
+        console.info("conectado exitosamente!", this.room);
         this.websocket.onmessage = ({ data }) => {
+
           // this.messages.unshift(JSON.parse(data));
-          //console.log(JSON.parse(data))
           const socket_data = JSON.parse(data);
           if (
             socket_data.type === "type_message" &&
@@ -298,6 +294,7 @@ export default {
           ) {
             this.typing = socket_data.typing;
           } else if (socket_data.type === "chat_message") {
+
             this.messages.unshift(socket_data);
             this.date_send = socket_data.send.split("-")[0];
           }

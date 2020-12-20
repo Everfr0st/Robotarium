@@ -67,6 +67,7 @@ export default new Vuex.Store({
     },
     deleteChatfromlist(state, index) {
       state.chats.splice(index, 1);
+      console.log(state.chats)
     
       //this.$delete(this.chats, index);
 

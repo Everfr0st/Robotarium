@@ -1,15 +1,12 @@
 <template>
   <v-container class="chat-list"  >
-    <v-row   justify="end" class="pa-0">   
+    <v-row  justify="end" class="pa-0">   
       <div v-for="(chat,index) in chats" :key="index">
-          <ActiveChat v-if="chats.length<=3" :chat="chat" :index="index"/>
+          <ActiveChat :chat="chat" :index="index"/>
       </div>
     </v-row>
-
   </v-container>
 </template>
-
-
 <script>
 import { mapState } from "vuex";
 import { mapMutations } from "vuex";
@@ -27,7 +24,11 @@ export default {
   },
   methods:{
     ...mapMutations(["deleteChatfromlist"]),
+  },
+  beforeUpdated(){
+    console.log("ada")
   }
+  
 };
 </script>
 <style  scoped>
@@ -39,5 +40,6 @@ export default {
   height: auto;
   display: inline-block; 
   z-index: 2;
+  background: orange;
 }
 </style>

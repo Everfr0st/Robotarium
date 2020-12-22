@@ -98,7 +98,7 @@
       >
         Cerrar
       </v-chip>
-       <v-skeleton-loader v-else-if="robotarium"
+       <v-skeleton-loader v-else
       class="mx-auto"
       max-width="300"
       type="image"

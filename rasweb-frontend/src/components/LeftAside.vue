@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container wrap>
+    <v-container class="pt-0" wrap>
       <v-row
         v-for="(item, index) in elements"
         :key="index"

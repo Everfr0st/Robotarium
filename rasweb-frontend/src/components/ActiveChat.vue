@@ -37,15 +37,7 @@
             >mdi-window-minimize</v-icon
           >
         </v-btn>
-        <v-btn
-          @click="
-            clearData();
-            deleteChatfromlist(index);
-          "
-          color="white"
-          icon
-          small
-        >
+        <v-btn @click="closeChat()" color="white" icon small>
           <v-icon small>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -74,8 +66,6 @@
                   chat.username.slice(0, 1).toUpperCase()
                 }}</span>
               </v-avatar>
-    
-
               <span class="ml-1">Escribiendo...</span>
             </v-row>
           </v-card-text>
@@ -146,10 +136,10 @@ const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "ActiveChat",
   data: () => ({
-    websocket: undefined,
-    message: [],
+    websocket: null,
+    message: "",
     date_send: "",
-    room: undefined,
+    room: null,
     typing: false,
     messages: [],
     position: 255,
@@ -161,7 +151,6 @@ export default {
   },
   created() {
     let response;
-    console.log(this.room, "<-created")
     ApiComunication(this.selfUser.username, this.chat.username).then(
       (response) => {
         if (response.conversation_created == undefined) {
@@ -173,50 +162,15 @@ export default {
           response.conversation_created != undefined
         ) {
           this.room = response.conversation;
-          //this.created = response.conversation_created;
         } else {
           console.error("Unexpected error have ocurred!!");
-          //this.created = response.conversation_created;
         }
-        if (this.room != undefined) {
+        if (this.room != null) {
           this.connect();
         }
         this.loading = false;
       }
     );
-    /*.then(function(){
-      if (vm.room != undefined) {
-      vm.websocket = new WebSocket(
-        "ws://" + vm.wsBase + "/ws/chat/" + vm.room + "/"
-      );
-      vm.websocket.onopen = function (e) {
-        console.info("conectado exitosamente!");
-      };
-      vm.websocket.onmessage = function (e) {
-        const socket_data = JSON.parse(e.data);
-        if (
-          socket_data.type === "type_message" && 
-          socket_data.sender != vm.selfUser 
-        ) {
-          vm.typing = socket_data.typing;
-        } else if (socket_data.type === "chat_message") {
-          vm.messages.unshift(socket_data);
-        }
-      };
-
-      vm.websocket.onclose = function (e) {
-        console.error("Chat socket closed unexpectedly");
-      };
-    }
-    });*/
-  },
-  beforeUpdate() {
-    console.log("->", this.room, this.chat.username)
-  },
-  beforeDestroy() {
-    this.websocket.close();
-    this.websocket = null;
-    console.log(this.websocket, "destroyed")
   },
   methods: {
     ...mapMutations(["deleteChatfromlist"]),
@@ -238,23 +192,21 @@ export default {
         }
       } catch {}
     },
-    showDate(Date) {
-    },
+    showDate(Date) {},
     sendMessage() {
-      if(this.message.length){
+      if (this.message.length) {
         this.websocket.send(
-        JSON.stringify({
-          type: "chat_message",
-          conversation: this.room,
-          sender: this.selfUser.username,
-          receiver: this.chat.username,
-          text: this.message,
-          read: false,
-        })
-      );
-      this.message = "";
+          JSON.stringify({
+            type: "chat_message",
+            conversation: this.room,
+            sender: this.selfUser.username,
+            receiver: this.chat.username,
+            text: this.message,
+            read: false,
+          })
+        );
+        this.message = "";
       }
-      
     },
     typingMessage() {
       let sender = this.selfUser.username;
@@ -285,18 +237,20 @@ export default {
       this.websocket.onopen = () => {
         console.info("conectado exitosamente!", this.room);
         this.websocket.onmessage = ({ data }) => {
-
           // this.messages.unshift(JSON.parse(data));
-          const socket_data = JSON.parse(data);
+          const socketData = JSON.parse(data);
           if (
-            socket_data.type === "type_message" &&
-            socket_data.sender != this.selfUser.username
+            socketData.type === "type_message" &&
+            socketData.sender != this.selfUser.username
           ) {
-            this.typing = socket_data.typing;
-          } else if (socket_data.type === "chat_message") {
-
-            this.messages.unshift(socket_data);
-            this.date_send = socket_data.send.split("-")[0];
+            this.typing = socketData.typing;
+          } else if (
+            socketData.type === "chat_message" &&
+            (socketData.sender == this.chat.username ||
+              socketData.receiver == this.chat.username)
+          ) {
+            this.messages.unshift(socketData);
+            this.date_send = socketData.send.split("-")[0];
           }
         };
       };
@@ -304,10 +258,11 @@ export default {
         console.log(`room ${this.room} closes`);
       };
     },
-    clearData() {},
+    closeChat() {
+      this.$emit("close", { username: this.chat.username, index: this.index });
+    },
   },
 };
-
 async function ApiComunication(sender, receiver) {
   const api_dir = `/robotarium-api/v1.0/chat/chat-messages`;
   let response = await fetch(
@@ -357,7 +312,7 @@ async function ApiComunication(sender, receiver) {
 /* Ponemos un color de fondo y redondeamos las esquinas del thumb */
 .chat-messages::-webkit-scrollbar-thumb {
   background: #be0707;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 .outgoing-message {
   background: #0a4a73;
@@ -367,6 +322,7 @@ async function ApiComunication(sender, receiver) {
   color: white;
   padding: 5px 5px 5% 5px;
   position: relative;
+  border-right: 0px;
 }
 .outgoing-message::after {
   content: "";
@@ -375,31 +331,32 @@ async function ApiComunication(sender, receiver) {
   border-right: 5px solid #0a4a73;
   border-top: 5px solid transparent;
   border-left: 5px solid transparent;
-  border-bottom: 5px soli#0A4A73;
+  border-bottom: 5px solid #0a4a73;
   transform: rotate(180deg);
   position: absolute;
-  top: 0px;
-  right: -7px;
+  top: 0.5px;
+  right: -5px;
 }
 .incomming-message {
-  background: #be0707;
+  background: #d96334;
   width: auto;
   max-width: 60%;
   padding: 5px 5px 5% 5px;
   position: relative;
+  border-left: 0px;
 }
 .incomming-message::after {
   content: "";
   width: 0;
   height: 0;
-  border-right: 5px solid #be0707;
+  border-right: 5px solid #d96334;
   border-top: 5px solid transparent;
   border-left: 5px solid transparent;
-  border-bottom: 5px solid#BE0707;
+  border-bottom: 5px solid#D96334;
   transform: rotate(-90deg);
   position: absolute;
-  top: 0px;
-  left: -4px;
+  top: 0.5px;
+  left: -5px;
 }
 .message-time {
   font-size: 7pt;
@@ -419,7 +376,4 @@ async function ApiComunication(sender, receiver) {
   border-radius: 5px;
   margin: 10px 0px 10px 40%;
 }
-
-
-
 </style>

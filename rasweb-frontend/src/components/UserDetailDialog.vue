@@ -28,7 +28,7 @@
       </v-card-title>
       <v-card-subtitle class="pt-1 pl-5 pr-0" style="margin-bottom: 0px">
         <v-icon left  color="primary">mdi-book-open-variant</v-icon>
-        <span class="pt-1">
+        <span class="pt-1 pr-2">
           {{ user_detail.first_description.split("-")[0] }}
           <strong>{{ user_detail.first_description.split("-")[1] }}</strong>
         </span>

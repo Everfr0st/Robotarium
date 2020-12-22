@@ -2,7 +2,7 @@
   <div >
     <v-lazy
       transition="fade-transition"
-      :options="{ threshold: 0.5 }"
+      :options="{ threshold: 1 }"
       v-for="(post, index) in posts"
       :key="index"
     >
@@ -68,8 +68,8 @@
           </v-carousel>
         </v-row>
 
-        <v-row class="pr-7">
-          <v-divider class="ml-4 mb-2"></v-divider>
+        <v-row class="pr-3">
+          <v-divider class="ml-3 mb-3 mt-3"></v-divider>
         </v-row>
       </v-card>
     </v-lazy>

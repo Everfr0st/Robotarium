@@ -33,9 +33,9 @@
             </v-col>
           </v-row>
         </v-container>
+      <ActiveChatList />
       </v-main>
       <UserDetailDialog />
-      <ActiveChatList />
     </div>
 
     <div v-else>
@@ -94,7 +94,7 @@ export default {
 </script>
 
 <style scoped>
-@media (max-width: 1264px) {
+@media (max-width: 960px) {
   .right-aside {
     display: none;
   }

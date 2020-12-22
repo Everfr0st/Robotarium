@@ -1,15 +1,18 @@
 <template>
-  <v-container class="chat-list"  >
-    <v-row   justify="end" class="pa-0">   
+  <v-container fluid class="chat-list"  >
+    <v-row  justify="end" class="pa-0">   
       <div v-for="(chat,index) in chats" :key="index">
-          <ActiveChat v-if="chats.length<=3" :chat="chat" :index="index"/>
+          <ActiveChat :id="`chat_${chat.username}`" :chat="chat" v-on:close="deleteChat" :index="index"/>
+      
       </div>
     </v-row>
+    <div style="position: fixed; top: 100px; left: 50px;">
 
+          {{chats}}
+
+    </div>
   </v-container>
 </template>
-
-
 <script>
 import { mapState } from "vuex";
 import { mapMutations } from "vuex";
@@ -21,23 +24,46 @@ export default {
   components: {
     ActiveChat,
   },
-  data: () => ({}),
+  data: () => ({
+    closedChats : []
+  }),
   computed: {
   ...mapState(["chats"]), 
   },
   methods:{
     ...mapMutations(["deleteChatfromlist"]),
+    deleteChat(chat){
+      this.deleteChatfromlist(chat.index);
+      let chatCard = document.getElementById('chat_'+chat.username)
+      //chatCard.parentNode.removeChild(chatCard);
+      this.closedChats.push(chat.username)
+
+    }
+  },
+  beforeUpdated(){
   }
+  
 };
 </script>
 <style  scoped>
 .chat-list{
+  display: block;
   position: fixed;
   bottom: -15px;
   left: 0px;
-  width: 85%;
   height: auto;
-  display: inline-block; 
-  z-index: 2;
+  background: orange;
 }
+@media (min-width: 1264px){
+  .chat-list{
+  display: block;
+  position: fixed;
+  bottom: -15px;
+  left: 0px;
+  width: 90vw;
+  height: auto;
+  background: orange;
+}
+}
+
 </style>

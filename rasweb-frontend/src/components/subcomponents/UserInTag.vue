@@ -11,7 +11,7 @@
             {{tagUser.name.trim().length?tagUser.name:'@'+tagUser.username}}
             </span>
           </v-chip>
-    </div>
+    </div>  
 </template>
 
 <script>

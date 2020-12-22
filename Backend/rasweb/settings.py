@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     # Self apps
-    'Apps.User',
+    'Apps.User.apps.UserConfig',
     'Apps.Inventory',
     'Apps.Post',
     'Apps.Chat',

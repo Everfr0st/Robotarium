@@ -1,24 +1,37 @@
 <template>
     <div>
-        <Stand class="pa-0" stand="A" levels="5" />
-        <Stand class="mt-4 pa-0" stand="B" levels="6" />
-<Reservation/>
+        <v-tabs v-model="tab" class="mt-1">
+              <v-tab> <v-icon left>mdi-calendar-multiple</v-icon> Reservar </v-tab>
+              <v-tab><v-icon left>mdi-book</v-icon> Historial</v-tab>
+            </v-tabs>
+            <v-tabs-items v-model="tab">
+              <v-tab-item>
+                <div class="pa-1" v-if="tab == 0">
+                         <Reservation class="mt-3"/>
+
+                </div>
+              </v-tab-item>
+              <v-tab-item>  <History class="mt-3"/> </v-tab-item>
+            </v-tabs-items>
+    
     </div>
 </template>
 
 <script>
-import Stand from "@/components/Stand.vue";
+
 import Reservation from "@/components/Reservation.vue"
+import History from "@/components/History.vue"
 import {mapMutations} from "vuex";
-import Reservation from '../components/Reservation.vue';
 export default {
     name: "Inventory",
+    data: ()=> ({
+     tab: ""
+    }),
     components:{
         Reservation,
-        Stand
+        History
     },
     created(){
-        document.title = "Inventario · UAO-RAS"
         this.setViewname("Inventario");
     },
     methods:{

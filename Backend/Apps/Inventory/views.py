@@ -111,8 +111,8 @@ class CreateReservationApi(generics.CreateAPIView):
             end_formated = reservation.schedule.end_time.strftime("%I:%M %p")
         except:
             date_formated = datetime.strptime(reservation.schedule.date, '%Y-%m-%d').strftime("%d de %b. de %Y")
-            start_formated = str(reservation.schedule.start_time)[0:len(str(reservation.schedule.start_time))-3]
-            end_formated = str(reservation.schedule.end_time)[0:len(str(reservation.schedule.start_time))-3]
+            start_formated = str(reservation.schedule.start_time)[0:len(str(reservation.schedule.start_time)) - 3]
+            end_formated = str(reservation.schedule.end_time)[0:len(str(reservation.schedule.start_time)) - 3]
 
         description = 'Descarga el archivo con formato .ics y sincroniza tu calendario con el evento que tienes el {0} de {1} a {2}' \
             .format(
@@ -137,3 +137,14 @@ class CreateReservationApi(generics.CreateAPIView):
             'type': 'text/calendar'
         }
         sendMail(configs, context, file_configs)
+
+
+class ReservationHistoryApi(generics.ListAPIView):
+    model = Reserve
+    serializer_class = ReserveSerializer
+
+    def get_queryset(self):
+        query = self.request.GET.get("query")
+        date_start = self.request.GET.get("dateStart")
+        date_end = self.request.GET.get("dateEnd")
+        return Reserve.objects.filter(element__name=query, schedule__date__gte=date_start, schedule__date__lte=date_end)

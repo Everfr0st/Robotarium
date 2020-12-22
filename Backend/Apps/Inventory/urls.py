@@ -11,4 +11,5 @@ urlpatterns = [
     path('item-detail/', ItemDetailApi.as_view(), name='item_detail'),
     path('reserve-list/', ReserveListApi.as_view(), name='reserve_list'),
     path('create-reservation/', CreateReservationApi.as_view(), name='post_reservation'),
+    path('history-reservation/', ReservationHistoryApi.as_view(), name='reservation_history'),
 ]

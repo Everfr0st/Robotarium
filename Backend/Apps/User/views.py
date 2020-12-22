@@ -7,6 +7,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from rasweb.settings import DOMAIN_BASE
 from .auxmethods import get_semester_name
 from .models import *
 from .serializer import UserSerializer
@@ -170,6 +171,27 @@ class UserDetail(TemplateView):
             'second_element': second_element}
         )
 
+
+class UserInfoApi(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        user_id = request.GET.get('user')
+        try:
+            user_profile = UserProfilePhoto.objects.get(user_id=user_id)
+            profile_picture = DOMAIN_BASE + user_profile.profile_picture.url
+            user = user_profile.user
+        except:
+            profile_picture = ''
+            user=User.objects.get(id=user_id)
+
+        name=user.first_name+' '+user.last_name
+        json_obj={
+            'name': name,
+            'username': user.username,
+            'profile_picture': profile_picture
+        }
+        return Response(json_obj)
 
 class Logout(generics.DestroyAPIView):
 

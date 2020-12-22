@@ -10,5 +10,6 @@ urlpatterns = [
     #path('logout/<str:token>', Logout.as_view(), name='logout'),
     path('navbar-info/', NavBar.as_view(), name='navbar_info'),
     path('users-list/', UsersList.as_view(), name='users_list'),
-    path('user-detail', UserDetail.as_view(), name='user_detail')
+    path('user-detail', UserDetail.as_view(), name='user_detail'),
+    path('user-Info/', UserInfoApi.as_view(), name='user_info')
 ]

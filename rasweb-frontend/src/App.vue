@@ -94,7 +94,7 @@ export default {
 </script>
 
 <style scoped>
-@media (max-width: 960px) {
+@media (max-width: 1264px) {
   .right-aside {
     display: none;
   }

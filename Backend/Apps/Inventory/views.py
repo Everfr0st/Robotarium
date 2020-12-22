@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from rasweb.mailing import sendMail
 from .models import *
-from .serializer import InventorySerializer, ReserveSerializer
+from .serializer import InventorySerializer, ReserveSerializer, ScheduleSerializer
 
 
 class InventoryListApi(generics.ListAPIView):
@@ -54,7 +54,6 @@ class ReserveListApi(generics.ListAPIView):
 
 class CreateReservationApi(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
-        print(request.data)
         data = json.loads(request.data)
         schedule = data["schedule"]
         element = data["element"]
@@ -139,6 +138,20 @@ class CreateReservationApi(generics.CreateAPIView):
         sendMail(configs, context, file_configs)
 
 
+class ElementInfoApi(generics.RetrieveAPIView):
+    serializer_class = InventorySerializer
+
+    def get_queryset(self):
+        return Inventory.objects.filter(pk=self.kwargs['pk'])
+
+class ScheduleInfoApi(generics.RetrieveAPIView):
+    serializer_class = ScheduleSerializer
+    model = Schedule
+
+    def get_queryset(self):
+        return Schedule.objects.filter(pk=self.kwargs['pk'])
+
+
 class ReservationHistoryApi(generics.ListAPIView):
     model = Reserve
     serializer_class = ReserveSerializer
@@ -147,4 +160,5 @@ class ReservationHistoryApi(generics.ListAPIView):
         query = self.request.GET.get("query")
         date_start = self.request.GET.get("dateStart")
         date_end = self.request.GET.get("dateEnd")
-        return Reserve.objects.filter(element__name=query, schedule__date__gte=date_start, schedule__date__lte=date_end)
+        return Reserve.objects.filter(element__name__icontains=query, schedule__date__gte=date_start,
+                                      schedule__date__lte=date_end).order_by('-schedule__date')

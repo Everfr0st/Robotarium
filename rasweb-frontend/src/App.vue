@@ -10,7 +10,7 @@
           <v-row wrap>
             <v-col class="left-aside" xs="12" sm="12" md="2" lg="1" >
               <LeftAside  />
-                    <v-btn small color="error darken" @click="Logout()"> <v-icon left>mdi-logout</v-icon> Cerrar sesión </v-btn>
+              <v-btn class="ml-3 mt-3" small  outlined color="error darken-1" @click="Logout()"> <v-icon left>mdi-logout</v-icon> Cerrar sesión </v-btn>
             </v-col>
             <v-col 
               class="router-view"

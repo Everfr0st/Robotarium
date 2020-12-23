@@ -30,8 +30,7 @@ class ItemDetailApi(generics.ListAPIView):
 
 
 class ReserveListApi(generics.ListAPIView):
-    # permission_classes = (IsAuthenticated,)
-    model = Reserve
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         query_list = []
@@ -49,7 +48,7 @@ class ReserveListApi(generics.ListAPIView):
             schedule__date=params[0],
             element__name__icontains=params[1],
             element__code=params[2]
-        ).order_by("code")
+        ).order_by("-element__code")
 
 
 class CreateReservationApi(generics.CreateAPIView):

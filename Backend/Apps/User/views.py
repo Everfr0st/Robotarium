@@ -72,25 +72,6 @@ class SignUpMoreInfo(TemplateView):
                 'SignUp': False,
             })
 
-
-class SignIn(TemplateView):
-    def get(self, request, **kwargs):
-        try:
-            username = request.GET["Username"]
-            password = request.GET["Password"]
-
-            user_to_authenticate = authenticate(
-                username=username, password=password)
-            login(request, user_to_authenticate)
-            # http://127.0.0.1:8000/login/?Username=pipe&Password=Coco_F13280212
-            return JsonResponse({
-                'Authenticated': True
-            })
-
-        except:
-            return JsonResponse({'Authenticated': False, })
-
-
 class NavBar(generics.RetrieveAPIView):  # , LoginRequiredMixin):
     permission_classes = (IsAuthenticated,)
 
@@ -183,15 +164,16 @@ class UserInfoApi(generics.RetrieveAPIView):
             user = user_profile.user
         except:
             profile_picture = ''
-            user=User.objects.get(id=user_id)
+            user = User.objects.get(id=user_id)
 
-        name=user.first_name+' '+user.last_name
-        json_obj={
+        name = user.first_name + ' ' + user.last_name
+        json_obj = {
             'name': name,
             'username': user.username,
             'profile_picture': profile_picture
         }
         return Response(json_obj)
+
 
 class Logout(generics.DestroyAPIView):
 

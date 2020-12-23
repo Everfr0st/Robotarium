@@ -6,12 +6,12 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
-        <div class="pa-1" v-if="tab == 0">
+        <div>
           <Reservation class="mt-3" />
         </div>
       </v-tab-item>
       <v-tab-item
-        ><div class="pa-1" v-if="tab == 1">
+        ><div>
           <History class="mt-3" />
         </div>
       </v-tab-item>

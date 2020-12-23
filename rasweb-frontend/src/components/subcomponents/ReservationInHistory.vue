@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-list two-line v-if="userInfo" >
+    <v-list two-line v-if="userInfo">
       <v-list-item>
-        <v-list-item-avatar  color="secondary">
+        <v-list-item-avatar color="secondary">
           <v-img
             v-if="userInfo.profile_picture"
             :alt="userInfo.name"
@@ -14,18 +14,20 @@
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>
-              {{userInfo.name}} 
-              
+          <v-list-item-title :title="userInfo.name">
+            {{ userInfo.name }}
           </v-list-item-title>
 
           <v-list-item-subtitle>
-            @{{ userInfo.username }} ·
-            <span :title="'🕒 '+timeSince">
-              <v-icon  small> mdi-history </v-icon>
-              {{timeSince}}
+            <span :title="'@' + userInfo.username">
+              @{{ userInfo.username }} ·
             </span>
-            
+            <span :title="'🕒 ' + timeSince">
+              <small>
+                <v-icon small> mdi-history </v-icon>
+                {{ timeSince | capitalize }}
+              </small>
+            </span>
           </v-list-item-subtitle>
         </v-list-item-content>
 
@@ -39,10 +41,12 @@
         >Reservó el elemento {{ elementInfo.name }} que se encuentra en la
         posición {{ elementInfo.code }}</v-card-title
       >
-      <v-card-subtitle v-if="scheduleInfo">
+      <v-card-subtitle
+        :title="date + ', de ' + timeStart + ' a ' + timeEnd"
+        v-if="scheduleInfo"
+      >
         <v-icon left>mdi-calendar-clock</v-icon>
-        {{ scheduleInfo.date }}, de {{ scheduleInfo.start_time.substr(0, 5) }} a
-        {{ scheduleInfo.end_time.substr(0, 5) }}
+        {{ date | capitalize }}, de {{ timeStart }} a {{ timeEnd }}.
       </v-card-subtitle>
       <v-img :src="elementInfo.photo"></v-img>
     </v-list>
@@ -51,7 +55,7 @@
 
 <script>
 import { mapState } from "vuex";
-import moment from 'moment';
+import moment from "moment";
 export default {
   name: "ReservationInHistory",
   props: ["reservation"],
@@ -68,12 +72,29 @@ export default {
   computed: {
     ...mapState(["authentication", "domainBase"]),
 
-    timeSince: function(){
-        return moment(this.reservation.created).locale('es').fromNow();
-    }
+    timeSince: function () {
+      return moment(this.reservation.created).locale("es").fromNow();
+    },
+    date: function () {
+      return moment(this.scheduleInfo.date)
+        .locale("es")
+        .format("dddd D MMM YYYY");
+    },
+    timeStart: function () {
+      let date = this.scheduleInfo.date;
+      return moment(date + " " + this.scheduleInfo.start_time)
+        .locale("es")
+        .format("hh:mm a");
+    },
+    timeEnd: function () {
+      let date = this.scheduleInfo.date;
+      return moment(date + " " + this.scheduleInfo.end_time)
+        .locale("es")
+        .format("hh:mm a");
+    },
   },
   created() {
-                  console.log(moment())
+    console.log(moment());
     this.apiRetrieve(
       this.domainBase + this.apiDir.userInfo + `?user=${this.reservation.user}`,
       "userInfo"
@@ -108,6 +129,13 @@ export default {
             this.scheduleInfo = response;
           }
         });
+    },
+  },
+  filters: {
+    capitalize: function (value) {
+      if (!value) return "";
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
     },
   },
 };

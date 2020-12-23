@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-container fluid>
-      <v-card>
-        <v-form @submit.prevent="getHistory">
+    <v-container class="px-0" fluid>
+      <v-card elevation="3">
+        <v-form @submit.prevent="getHistory(); recent=false;">
           <v-row class="px-5" justify="center">
             <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="query" label="Elemento"></v-text-field>
@@ -60,7 +60,7 @@
             </v-col>
             <v-col md="2">
               <v-card-actions>
-                <v-btn :loading="loading" type="submit" color="accent darken-3"
+                <v-btn :loading="loading" class="mx-auto" type="submit" color="accent darken-3"
                   >Buscar</v-btn
                 >
               </v-card-actions>
@@ -68,10 +68,18 @@
             <v-spacer></v-spacer>
           </v-row>
         </v-form>
+         <v-progress-linear
+        :active="loading"
+        :indeterminate="loading"
+        absolute
+        bottom
+        color="accent accent-4"
+      ></v-progress-linear>
       </v-card>
     </v-container>
 
-    <div class="mt-5">{{ msg }}</div>
+    <div v-if="recent" class="display-1 mt-3 px-3">Reservas agendadas para hoy</div>
+    <div class="mt-5 px-3">{{ msg }}</div>
     <v-card
       elevation="5"
       v-for="(reservation, index) in historyList"
@@ -112,11 +120,14 @@ export default {
     message: "",
     msg: "",
     loading: false,
+    recent: true
   }),
   computed: {
     ...mapState(["domainBase", "authentication"]),
   },
-  created() {},
+  created() {
+    this.getHistory();
+  },
   methods: {
     getHistory() {
       this.loading = true;
@@ -143,8 +154,8 @@ export default {
                   : response.length + " reservas 😎"
               }`;
             } else {
-              this.msg =
-                "No encontramos reservas con la información que suministraste 🧐";
+              if(this.recent) this.msg = "No hay reservas agendadas para el día de hoy 🤨" 
+              else this.msg = "No encontramos reservas con la información que suministraste 🤔";
             }
           })
           .catch(function (error) {

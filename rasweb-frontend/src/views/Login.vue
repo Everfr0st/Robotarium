@@ -154,7 +154,7 @@ export default {
       .catch((err)=>{
         console.log(err)
         this.snackbar = true;
-        this.message = "Error inesperado. Intenta de nuevo más tarde";
+        this.message = "Credenciales inválidas!";
       })
       .finally(()=>{
         this.loading = false;

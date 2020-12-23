@@ -6,11 +6,6 @@
       
       </div>
     </v-row>
-    <div style="position: fixed; top: 100px; left: 50px;">
-
-          {{chats}}
-
-    </div>
   </v-container>
 </template>
 <script>

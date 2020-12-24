@@ -81,7 +81,7 @@
     <div v-if="recent" class="display-1 mt-3 px-3">Reservas agendadas para hoy</div>
     <div class="mt-5 px-3">{{ msg }}</div>
     <v-card
-      elevation="5"
+      elevation="5" 
       v-for="(reservation, index) in historyList"
       :key="index"
       class="mt-5 mb-10"

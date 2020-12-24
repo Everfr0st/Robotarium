@@ -4,6 +4,8 @@
       class="ma-1 chat-card"
       :style="'right: ' + index * position + 'px;'"
       :id="'chat-card-' + chat.username"
+      elevation="3"
+      @focus="seenText"
     >
       <v-card-title
         @click="toggletChat(chat.username, 1)"
@@ -43,18 +45,21 @@
       </v-card-title>
       <v-card-text class="pa-0 pt-4" style="position: relative">
         <v-container
-          style="position: absolute; top: -8px; left: -10%; z-index: 1000"
+          style="position: absolute; top: -8px; left: -10%; z-index: 10"
           fluid
           class="ma-0 pa-0"
           v-if="messages.length"
         >
           <div class="chat-date">
-            {{ date_send }}
+            {{ date }}
           </div>
         </v-container>
         <v-container class="chat-messages">
+          <span v-if="seen">
+            {{ seenMessage }}
+          </span>
           <v-card-text class="ma-0 pa-0" v-if="typing">
-            <v-row class="ml-0">
+            <v-row class="ml-0 pb-0">
               <v-avatar size="20" v-if="chat.profilePicture">
                 <img :src="chat.profilePicture" :alt="chat.name" />
               </v-avatar>
@@ -66,7 +71,19 @@
                   chat.username.slice(0, 1).toUpperCase()
                 }}</span>
               </v-avatar>
-              <span class="ml-1">Escribiendo...</span>
+              <span style="position: relaive" class="ml-1"
+                >Escribiendo
+
+                <div class="fb-chat">
+                  <div class="fb-chat--bubbles">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <!--fb-chat-bubbles-->
+                </div>
+                <!--fb-chat-->
+              </span>
             </v-row>
           </v-card-text>
           <v-card
@@ -76,31 +93,58 @@
             v-for="(message, index) in messages"
             :key="index"
           >
-            <v-card-text
-              :class="
-                message.sender == selfUser.username
-                  ? 'ml-auto outgoing-message'
-                  : 'incomming-message'
-              "
-              @seeking="showDate(message.send)"
-            >
-              <p
-                :title="message.text"
-                style="margin: 0px; padding: 0px"
-                class="white--text"
-              >
-                {{ message.text }}
-              </p>
-              <small
-                :title="
-                  message.send.split('-')[0] +
-                  'a las' +
-                  message.send.split('-')[1]
+            <v-lazy>
+              <v-card-text
+                :class="
+                  message.sender == selfUser.username
+                    ? 'ml-auto outgoing-message'
+                    : 'incomming-message'
                 "
-                class="message-time"
-                >{{ message.send.split("-")[1] }}</small
               >
-            </v-card-text>
+                <p
+                  :title="
+                    message.text.length > 50
+                      ? message.text.substr(0, 50) + '...'
+                      : message.text.substr(0, 50)
+                  "
+                  style="margin: 0px; padding: 0px"
+                  class="white--text"
+                >
+                  {{ message.text }}
+                </p>
+
+                <small
+                  :title="
+                    message.send.split('-')[0] +
+                    'a las' +
+                    message.send.split('-')[1]
+                  "
+                  class="message-time"
+                >
+                  {{ message.send.split("-")[1] }}
+                  <span>
+                    <v-icon
+                      title="Visto"
+                      class="pb-1"
+                      v-if="message.sender == selfUser.username && message.read"
+                      color="white"
+                      small
+                      >mdi-check-all</v-icon
+                    >
+                    <v-icon
+                      title="No leído"
+                      class="pb-1"
+                      v-if="
+                        message.sender == selfUser.username && !message.read
+                      "
+                      color="white"
+                      small
+                      >mdi-check</v-icon
+                    >
+                  </span>
+                </small>
+              </v-card-text>
+            </v-lazy>
           </v-card>
           <v-btn
             v-if="loading"
@@ -115,6 +159,7 @@
       </v-card-text>
       <v-card-actions class="ma-0 pa-0">
         <v-text-field
+          class="text-input"
           @keyup.enter="sendMessage()"
           @keyup="typingMessage()"
           block
@@ -123,6 +168,7 @@
           type="text"
           solo
           autocomplete="off"
+          @focus="seenText"
         ></v-text-field>
       </v-card-actions>
     </v-card>
@@ -130,8 +176,9 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
+import moment from "moment";
+var contador =0;
 const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "ActiveChat",
@@ -144,10 +191,25 @@ export default {
     messages: [],
     position: 255,
     loading: true,
+    seen: false,
+    seenMessage: "",
   }),
   props: ["chat", "index"],
   computed: {
     ...mapState(["selfUser", "wsBase"]),
+    date: function () {
+      if (this.messages.length) {
+        return moment(this.messages[this.messages.length - 1])
+          .locale("es")
+          .format("D MMM, YYYY");
+      }
+    },
+    time: function () {
+      let date = this.scheduleInfo.date;
+      return moment(date + " " + this.scheduleInfo.start_time)
+        .locale("es")
+        .format("hh:mm a");
+    },
   },
   created() {
     let response;
@@ -169,6 +231,7 @@ export default {
           this.connect();
         }
         this.loading = false;
+        this.message = "";
       }
     );
   },
@@ -205,6 +268,7 @@ export default {
             read: false,
           })
         );
+        
         this.message = "";
       }
     },
@@ -230,27 +294,44 @@ export default {
         );
       }
     },
+    seenText() {
+      if (
+        this.messages.length &&
+        this.messages[0].sender !==
+          this.selfUser.username &&
+        !this.messages[0].read
+      ) {
+        let sender = this.selfUser.username;
+        this.websocket.send(
+          JSON.stringify({
+            type: "seen_message",
+            sender: sender,
+            receiver: this.chat.username,
+            seen: true,
+            room: this.room,
+          })
+        );
+      }
+    },
     connect() {
       this.websocket = new WebSocket(
         "ws://" + this.wsBase + "/ws/chat/" + this.room + "/"
       );
       this.websocket.onopen = () => {
+        
         console.info("conectado exitosamente!", this.room);
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
+          
           const socketData = JSON.parse(data);
           if (
             socketData.type === "type_message" &&
             socketData.sender != this.selfUser.username
           ) {
             this.typing = socketData.typing;
-          } else if (
-            socketData.type === "chat_message" &&
-            (socketData.sender == this.chat.username ||
-              socketData.receiver == this.chat.username)
-          ) {
-            this.messages.unshift(socketData);
-            this.date_send = socketData.send.split("-")[0];
+          }else if (socketData.type === "chat_message" ) {
+              this.messages.unshift(socketData);
+              this.date_send = socketData.send.split("-")[0];
           }
         };
       };
@@ -259,6 +340,8 @@ export default {
       };
     },
     closeChat() {
+      this.websocket.close();
+      this.websocket = null;
       this.$emit("close", { username: this.chat.username, index: this.index });
     },
   },
@@ -317,7 +400,7 @@ async function ApiComunication(sender, receiver) {
 .outgoing-message {
   background: #0a4a73;
   width: auto;
-  max-width: 60%;
+  max-width: 75%;
   float: rigth;
   color: white;
   padding: 5px 5px 5% 5px;
@@ -334,13 +417,13 @@ async function ApiComunication(sender, receiver) {
   border-bottom: 5px solid #0a4a73;
   transform: rotate(180deg);
   position: absolute;
-  top: 0.5px;
+  top: 0.8px;
   right: -5px;
 }
 .incomming-message {
   background: #d96334;
   width: auto;
-  max-width: 60%;
+  max-width: 75%;
   padding: 5px 5px 5% 5px;
   position: relative;
   border-left: 0px;
@@ -355,14 +438,17 @@ async function ApiComunication(sender, receiver) {
   border-bottom: 5px solid#D96334;
   transform: rotate(-90deg);
   position: absolute;
-  top: 0.5px;
+  top: 0.8px;
   left: -5px;
 }
+.text-input {
+  border-top: 1px solid rgb(197, 197, 197);
+}
 .message-time {
-  font-size: 7pt;
+  font-size: 6pt;
   color: white;
   position: absolute;
-  bottom: 0px;
+  bottom: -3px;
   right: 3px;
 }
 .chat-date {
@@ -375,5 +461,49 @@ async function ApiComunication(sender, receiver) {
   text-align: center;
   border-radius: 5px;
   margin: 10px 0px 10px 40%;
+}
+
+.fb-chat {
+  background-color: transparent;
+  width: 100px;
+  line-height: 60px;
+  display: block;
+  border-radius: 30%/50%;
+  position: absolute;
+  left: 75px;
+  bottom: -8px;
+}
+.fb-chat--bubbles {
+  text-align: center;
+}
+.fb-chat--bubbles span {
+  display: inline-block;
+  background-color: #b6b5ba;
+  width: 5px;
+  height: 5px;
+  border-radius: 100%;
+  margin-right: 3px;
+  animation: bob 2s infinite;
+}
+.fb-chat--bubbles span:nth-child(1) {
+  animation-delay: -1s;
+}
+.fb-chat--bubbles span:nth-child(2) {
+  animation-delay: -0.85s;
+}
+.fb-chat--bubbles span:nth-child(3) {
+  animation-delay: -0.7s;
+  margin-right: 0;
+}
+
+@keyframes bob {
+  10% {
+    transform: translateY(-5px);
+    background-color: #9e9da2;
+  }
+  50% {
+    transform: translateY(0);
+    background-color: #b6b5ba;
+  }
 }
 </style>

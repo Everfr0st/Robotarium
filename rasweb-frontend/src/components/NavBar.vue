@@ -80,8 +80,8 @@ export default {
 
     if (nav_data.status === 200) {
       nav_data = await nav_data.json();
-      this.unread_notifications = nav_data.unread_notifications;
-      this.unread_messages = nav_data.unread_messages;
+      this.unread_notifications = nav_data.unread_notifications  > 10? '+10':nav_data.unread_notifications;
+      this.unread_messages = nav_data.unread_messages > 10? '+10':nav_data.unread_messages; 
       this.name = nav_data.name;
       this.username = nav_data.username;
       this.profile_picture = nav_data.profile_picture.length

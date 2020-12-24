@@ -15,15 +15,16 @@ class Conversation(TimeStampedModel):
     def __str__(self):
         return '{0} -> {1}'.format(self.owner.username, self.opponent.username)
 
+
 class Message(SoftDeletableModel):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     read = models.BooleanField(default=False)
-    updated = models.DateTimeField(auto_now_add=True) #When user Postgres, change this name to created or send
+    created = models.DateTimeField(auto_now_add=True)  # When user Postgres, change this name to created or send
 
     def __str__(self):
-        return self.sender.username + " (" + str(self.updated)[0:19] + ") - '" + self.text + "'"
+        return self.sender.username + " (" + str(self.created)[0:19] + ") - '" + self.text + "'"
 
     def serializer(self):
         serializer = {
@@ -31,6 +32,6 @@ class Message(SoftDeletableModel):
             "sender": self.sender.username,
             "text": self.text,
             "read": self.read,
-            "send": self.updated.strftime("%b %d, %Y - %H:%M")
+            "send": self.created.strftime("%b %d, %Y - %I:%M %p")
         }
         return serializer

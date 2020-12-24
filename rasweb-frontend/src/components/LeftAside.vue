@@ -11,8 +11,7 @@
         align="left"
           active-class="primary lighthen-10"
           class="ma-2"
-          text
-          
+          text  
           :to="{ name: item.link }"
           exact
           rounded

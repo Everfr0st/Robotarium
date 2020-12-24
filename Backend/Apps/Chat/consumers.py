@@ -3,11 +3,15 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from datetime import datetime
 
+from django.contrib.auth.models import User
+
+from Apps.Chat.models import Message
+
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'live_%s' % self.room_name
+        self.room_group_name = 'chat_%s' % self.room_name
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -34,8 +38,29 @@ class ChatConsumer(WebsocketConsumer):
     # Receive message from room group
     def chat_message(self, event):
         event["send"] = datetime.now().strftime("%b %d, %Y - %H:%M")
+        self.save_message(event)
         # Send message to WebSocket
         self.send(text_data=json.dumps(event))
 
     def type_message(self, event):
         self.send(text_data=json.dumps(event))
+
+    def seen_message(self, event):
+        self.send(text_data=json.dumps(event))
+
+    def save_message(self, msg_obj):
+        if not Message.objects.filter(conversation_id=msg_obj['conversation'], sender__username=msg_obj['sender'],
+                                  read=msg_obj['read'], created=datetime.now()).exists():
+            sender = User.objects.get(username=msg_obj['sender'])
+            return Message.objects.create(conversation_id=msg_obj['conversation'], sender=sender,
+                                          text=msg_obj['text']).serializer()
+
+    def mark_as_read_messages(self, seen_obj):
+        messages = Message.objects.filter(conversation_id=seen_obj['room'], sender__username=seen_obj['receiver'],
+                                          read=False)
+        message_list = []
+        for message in messages:
+            message.read = True
+            message.save()
+            message_list.append(message.serializer())
+        return message_list

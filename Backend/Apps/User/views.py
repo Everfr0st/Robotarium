@@ -90,13 +90,13 @@ class NavBar(generics.RetrieveAPIView):  # , LoginRequiredMixin):
             (Q(conversation__owner_id=request.user.pk) |
              Q(conversation__opponent_id=request.user.pk)),
             read=False
-        ).count()
+        ).exclude(sender__username=user.username).count()
         unread_notifications = 3
         return JsonResponse({
             'username': user.username,
             'name': user.first_name + ' ' + user.last_name,
             'profile_picture': profile_picture,
-            'unread_messages': unread_messages + 1,
+            'unread_messages': unread_messages,
             'unread_notifications': unread_notifications
         })
 

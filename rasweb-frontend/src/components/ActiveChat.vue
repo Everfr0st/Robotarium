@@ -314,8 +314,9 @@ export default {
       }
     },
     connect() {
+      let protocol = document.location.protocol == 'http:'?'ws://':'wss://'
       this.websocket = new WebSocket(
-        "ws://" + this.wsBase + "/ws/chat/" + this.room + "/"
+        protocol + this.wsBase + "/ws/chat/" + this.room + "/"
       );
       this.websocket.onopen = () => {
         
@@ -369,7 +370,7 @@ async function ApiComunication(sender, receiver) {
   overflow: hidden;
   position: absolute;
   bottom: 10px;
-  z-index: 100000;
+  z-index: 10;
 }
 .chat-header {
   background-color: #be0707;

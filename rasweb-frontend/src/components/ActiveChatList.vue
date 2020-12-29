@@ -48,6 +48,7 @@ export default {
   left: 0px;
   height: auto;
   background: orange;
+  z-index: 10;
 }
 @media (min-width: 1264px){
   .chat-list{

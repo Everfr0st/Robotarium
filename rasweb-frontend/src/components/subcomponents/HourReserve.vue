@@ -63,7 +63,7 @@
       {{ message }}
       <template v-slot:action="{ attrs }">
         <v-btn color="error" outlined v-bind="attrs" @click="snackbar = false">
-          Cerrar
+          cerrar
         </v-btn>
       </template>
     </v-snackbar>

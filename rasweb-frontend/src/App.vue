@@ -62,6 +62,7 @@ export default {
     RightAside,
     UserDetailDialog,
     ActiveChatList,
+    
   },
 
   data: () => ({

@@ -3,11 +3,12 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
+import VueSSE from 'vue-sse';
 
 
 
 Vue.config.productionTip = false
-
+Vue.use(VueSSE);
 
 router.beforeEach((to,from,next) => {
   if(to.matched.some(record =>record.meta.requiresLogin)){

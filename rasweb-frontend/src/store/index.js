@@ -31,8 +31,6 @@ export default new Vuex.Store({
     wsBase : '127.0.0.1:8000',
     domainBase : 'http://127.0.0.1:8000',
     view: '',
-
-
   },
   mutations: {
     updateAuthcredentials(state, { access, auth }) {

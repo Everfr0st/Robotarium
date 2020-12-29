@@ -30,7 +30,7 @@
           <v-icon> mdi-comment-text-multiple </v-icon>
         </v-badge>
       </v-btn>
-      <v-btn fab text>
+      <v-btn @click="notifications=!notifications" fab text>
         <v-badge
           :content="unread_notifications"
           :value="unread_notifications"
@@ -53,20 +53,37 @@
         </v-avatar>
       </v-btn>
     </v-app-bar>
+    <v-snackbar v-model="snackbar">
+      {{ message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="info" v-bind="attrs" @click="snackbar = false">
+          cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <Notifications v-if="notifications" class="notifications"/>
   </div>
 </template>
 
 <script>
 import { mapMutations, mapState } from "vuex";
+import Notifications from "../components/Notifications.vue";
 
 export default {
   name: "NavBar",
+  components: {
+    Notifications,
+  },
   data: () => ({
     unread_messages: 0,
     unread_notifications: 0,
     name: "",
     profile_picture: "",
     username: "",
+    notificationWebsocket: null,
+    snackbar: false,
+    message: "Tienes una nueva notificación.",
+    notifications: false,
   }),
   async created() {
     const web_domain = "http://127.0.0.1:8000";
@@ -80,14 +97,19 @@ export default {
 
     if (nav_data.status === 200) {
       nav_data = await nav_data.json();
-      this.unread_notifications = nav_data.unread_notifications  > 10? '+10':nav_data.unread_notifications;
-      this.unread_messages = nav_data.unread_messages > 10? '+10':nav_data.unread_messages; 
+      this.unread_notifications =
+        nav_data.unread_notifications > 10
+          ? "+10"
+          : nav_data.unread_notifications;
+      this.unread_messages =
+        nav_data.unread_messages > 10 ? "+10" : nav_data.unread_messages;
       this.name = nav_data.name;
       this.username = nav_data.username;
       this.profile_picture = nav_data.profile_picture.length
         ? web_domain + nav_data.profile_picture
         : "";
       this.setSelfuser(nav_data);
+      this.connect();
     } else {
       this.destroyAuthcredentials();
       this.$router.push({ name: "Login" });
@@ -99,9 +121,38 @@ export default {
   },
   methods: {
     ...mapMutations(["setSelfuser", "destroyAuthcredentials"]),
+    connect() {
+      let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
+      this.websocket = new WebSocket(
+        protocol + this.wsBase + "/ws/notifications/" + this.username + "/"
+      );
+      this.websocket.onopen = () => {
+        console.log("conectado exitosamente!", this.username);
+        this.websocket.onmessage = ({ data }) => {
+          // this.messages.unshift(JSON.parse(data));
+
+          const socketData = JSON.parse(data);
+          console.log(socketData);
+          if (
+            socketData.type === "new_notification" &&
+            socketData.sender != this.username
+          ) {
+            let unread_notifications =
+              socketData.unread_notifications > 10
+                ? "+10"
+                : socketData.unread_notifications;
+            this.unread_notifications = unread_notifications;
+            this.snackbar = true;
+          }
+        };
+      };
+      this.websocket.onclose = () => {
+        console.log(`room ${this.username} closes`);
+      };
+    },
   },
   computed: {
-    ...mapState(["authentication"]),
+    ...mapState(["authentication", "wsBase"]),
   },
 };
 </script>
@@ -153,4 +204,5 @@ export default {
   background: transparent;
   border: 0px;
 }
+
 </style>

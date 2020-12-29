@@ -49,10 +49,8 @@
               </v-badge>
 
               <v-list-item-content>
-                <v-list-item-title v-html="user.name"></v-list-item-title>
-                <v-list-item-subtitle
-                  v-html="'@' + user.username"
-                ></v-list-item-subtitle>
+                <v-list-item-title :title="user.name">{{user.name}}</v-list-item-title>
+                <v-list-item-subtitle :title="'@'+user.username">@{{user.username}}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -94,7 +92,12 @@ export default {
     ]),
   },
   methods: {
-    ...mapMutations(["setAccountInfo", "setChatInfo", "addChat2List", "setUsers"]),
+    ...mapMutations([
+      "setAccountInfo",
+      "setChatInfo",
+      "addChat2List",
+      "setUsers",
+    ]),
     hideDialog() {
       let chatlist = document.getElementById("chat-list");
       let chatlist_position = chatlist.getBoundingClientRect();
@@ -112,30 +115,34 @@ export default {
       // setDialogPosition(username);
     },
     searchUser() {
+      //This search engine is not working correctly
       let usersList = document.getElementsByClassName("v-list-item__title");
       let userslistContainers = document.getElementsByClassName("user-list");
       for (var i = 0; i < usersList.length; i++) {
         var txtValue = usersList[i].textContent || usersList[i].innerText;
-        if (txtValue.toUpperCase().indexOf(this.search.toUpperCase()) > -1) {
-          userslistContainers[i].style.display = "";
-        } else {
-          userslistContainers[i].style.display = "none";
-        }
+        try {
+          console.log(txtValue.toUpperCase().indexOf(this.search.toUpperCase()))
+          if (txtValue.toUpperCase().indexOf(this.search.toUpperCase()) > -1) {
+            userslistContainers[i].style.display = "";
+            console.log('match->',userslistContainers[i])
+          } else {
+            userslistContainers[i].style.display = "none";
+          }
+        } catch (error) {}
       }
     },
   },
   async created() {
-      let response = await fetch(this.domainBase + this.api_dir, {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        headers: {
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
-      });
-      response = await response.json();
-      this.setUsers(response);
-      this.loaded = true;
+    let response = await fetch(this.domainBase + this.api_dir, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        Authorization: `Token ${this.authentication.accessToken}`,
+      },
+    });
+    response = await response.json();
+    this.setUsers(response);
+    this.loaded = true;
   },
-  
 };
 </script>
 

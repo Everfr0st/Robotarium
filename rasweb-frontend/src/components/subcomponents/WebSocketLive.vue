@@ -1,13 +1,13 @@
 <template>
-  <div v-if="live.started  || robot" style="position: relative">
+  <div v-if="live.started || robot" style="position: relative">
     <div class="stream-name">
-      <h3 v-if="number.trim().length">Cámara {{ number == "one" ? "1" : "2" }}</h3>
+      <h3 v-if="number.trim().length">
+        Cámara {{ number == "one" ? "1" : "2" }}
+      </h3>
       <h3 v-else>{{ robotarium.robot }}</h3>
     </div>
     <img v-if="img_text" :src="'data:image/png;base64,' + img_text" />
-    
   </div>
- 
 </template>
 
 <script>
@@ -18,7 +18,7 @@ export default {
     api_dir: "/ws/live-main-stream/",
     img_text: "",
   }),
-  props: ["number","robot"],
+  props: ["number", "robot"],
   computed: {
     ...mapState(["wsBase", "live", "robotarium", "domainBase"]),
   },
@@ -35,7 +35,8 @@ export default {
       let dir = this.number.trim().length
         ? this.wsBase + this.api_dir + this.number
         : this.wsBase + this.api_dir + this.robotarium.robot;
-      this.websocket = new WebSocket("ws://" + dir + "/"); //Manage secure websocket
+      let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
+      this.websocket = new WebSocket(protocol + dir + "/"); //Manage secure websocket
       this.websocket.onopen = () => {
         console.info("conectado exitosamente!");
         this.websocket.onmessage = ({ data }) => {

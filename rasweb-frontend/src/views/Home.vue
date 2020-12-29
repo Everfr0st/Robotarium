@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card elevation="3" class="mb-4" style="border-radius: 15px;">
+    <v-card elevation="3" class="mb-4" style="border-radius: 15px">
       <v-container fluid>
         <v-progress-linear
           v-if="loading"
@@ -16,7 +16,9 @@
                 <img :src="selfUser.profilePicture" :alt="selfUser.name" />
               </v-avatar>
               <v-avatar size="50" color="secondary" v-else>
-                <span v-if="selfUser.name.trim().length" style="color: white; font-size: 14pt;"
+                <span
+                  v-if="selfUser.name.trim().length"
+                  style="color: white; font-size: 14pt"
                   >{{ selfUser.name.split(" ")[0].slice(0, 1)
                   }}{{ selfUser.name.split(" ")[1].slice(0, 1) }}</span
                 >
@@ -26,7 +28,7 @@
               </v-avatar>
             </v-avatar>
             <v-col>
-                <div
+              <div
                 contenteditable="true"
                 class="create"
                 id="create-post"
@@ -34,99 +36,86 @@
                 @keyup="AddContent()"
               ></div>
             </v-col>
-            
           </v-row>
           <v-divider class="mt-2 mb-2"></v-divider>
 
           <v-row v-if="tagUsers" class="pt-0">
             <v-col sm="12">
-<v-form>
-              <v-autocomplete
-                    v-model="tagUserslist"
-                    :items="users"
-                    chips
-                    color="accent lighten-2"
-                    label="¿Con quién vas a anunciar?"
-                    item-text="name"
-                    item-value="username"
-                    multiple
-                  >
-                  
-                    <template v-slot:selection="data">
-                      <v-chip
-                        v-bind="data.attrs"
-                        :input-value="data.selected"
-                                              >
-                        <v-avatar left v-if="data.item.profilePicture">
-                          <img
-                            :src="data.item.profilePicture"
-                            :alt="data.item.name"
-                          />
-                        </v-avatar>
-                        <v-avatar left color="secondary" v-else>
-                          <span
-                            v-if="data.item.name"
-                            style="color: white; font-size: 8pt"
-                            >{{ data.item.name.split(" ")[0].slice(0, 1)
-                            }}{{
-                              data.item.name.split(" ")[1].slice(0, 1)
-                            }}</span
-                          >
-                          <span v-else style="color: white; font-size: 8pt">{{
-                            data.item.username.slice(0, 2).toUpperCase()
-                          }}</span>
-                        </v-avatar>
-                        {{
-                          data.item.name
-                            ? data.item.name
-                            : "@" + data.item.username
-                        }}
-                      </v-chip>
-                    </template>
-                    <template v-slot:item="data">
-                      <template v-if="typeof data.item !== 'object'">
-                        <v-list-item-content
-                          v-text="data.item"
-                        ></v-list-item-content>
-                      </template>
-                      <template v-else>
-                        <v-list-item-avatar
-                          left
-                          v-if="data.item.profilePicture"
+              <v-form>
+                <v-autocomplete
+                  v-model="tagUserslist"
+                  :items="users"
+                  chips
+                  color="accent lighten-2"
+                  label="¿Con quién vas a anunciar?"
+                  item-text="name"
+                  item-value="username"
+                  multiple
+                >
+                  <template v-slot:selection="data">
+                    <v-chip v-bind="data.attrs" :input-value="data.selected">
+                      <v-avatar left v-if="data.item.profilePicture">
+                        <img
+                          :src="data.item.profilePicture"
+                          :alt="data.item.name"
+                        />
+                      </v-avatar>
+                      <v-avatar left color="secondary" v-else>
+                        <span
+                          v-if="data.item.name"
+                          style="color: white; font-size: 8pt"
+                          >{{ data.item.name.split(" ")[0].slice(0, 1)
+                          }}{{ data.item.name.split(" ")[1].slice(0, 1) }}</span
                         >
-                          <img
-                            :src="data.item.profilePicture"
-                            :alt="data.item.name"
-                          />
-                        </v-list-item-avatar>
-                        <v-list-item-avatar left color="secondary" v-else>
-                          <span
-                            v-if="data.item.name"
-                            style="color: white; font-size: 8pt"
-                            >{{ data.item.name.split(" ")[0].slice(0, 1)
-                            }}{{
-                              data.item.name.split(" ")[1].slice(0, 1)
-                            }}</span
-                          >
-                          <span v-else style="color: white; font-size: 8pt">{{
-                            data.item.username.slice(0, 2).toUpperCase()
-                          }}</span>
-                        </v-list-item-avatar>
-
-                        <v-list-item-content>
-                          <v-list-item-title
-                            v-html="data.item.name"
-                          ></v-list-item-title>
-                          <v-list-item-subtitle
-                            v-html="'@' + data.item.username"
-                          ></v-list-item-subtitle>
-                        </v-list-item-content>
-                      </template>
+                        <span v-else style="color: white; font-size: 8pt">{{
+                          data.item.username.slice(0, 2).toUpperCase()
+                        }}</span>
+                      </v-avatar>
+                      {{
+                        data.item.name
+                          ? data.item.name
+                          : "@" + data.item.username
+                      }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="data">
+                    <template v-if="typeof data.item !== 'object'">
+                      <v-list-item-content
+                        v-text="data.item"
+                      ></v-list-item-content>
                     </template>
-                  </v-autocomplete>
-            </v-form>
+                    <template v-else>
+                      <v-list-item-avatar left v-if="data.item.profilePicture">
+                        <img
+                          :src="data.item.profilePicture"
+                          :alt="data.item.name"
+                        />
+                      </v-list-item-avatar>
+                      <v-list-item-avatar left color="secondary" v-else>
+                        <span
+                          v-if="data.item.name"
+                          style="color: white; font-size: 8pt"
+                          >{{ data.item.name.split(" ")[0].slice(0, 1)
+                          }}{{ data.item.name.split(" ")[1].slice(0, 1) }}</span
+                        >
+                        <span v-else style="color: white; font-size: 8pt">{{
+                          data.item.username.slice(0, 2).toUpperCase()
+                        }}</span>
+                      </v-list-item-avatar>
+
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-html="data.item.name"
+                        ></v-list-item-title>
+                        <v-list-item-subtitle
+                          v-html="'@' + data.item.username"
+                        ></v-list-item-subtitle>
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-autocomplete>
+              </v-form>
             </v-col>
-            
           </v-row>
           <v-row class="pl-2">
             <v-dialog v-model="dialog" persistent max-width="600">
@@ -140,18 +129,14 @@
                       src="@/assets/icons/upload_photo.svg"
                     />
                   </template>
-                  <span class="btn-text">
-                  Subir fotos
-                  </span>
-                  <span class="btn-text" v-if="photos.length"> ({{ photos.length }})</span>
+                  <span class="btn-text"> Subir fotos </span>
+                  <span v-if="photos.length"> ({{ photos.length }})</span>
                 </v-btn>
               </template>
               <v-card>
                 <v-container class="ma-0 pa-0" style="overflow: hidden">
                   <v-row>
-                    <v-carousel 
-                    
-                     v-if="photos.length">
+                    <v-carousel v-if="photos.length">
                       <v-carousel-item
                         v-for="(photo, i) in photos"
                         :key="i"
@@ -201,8 +186,12 @@
                     "
                     >Eliminar todas</v-btn
                   >
-                  <v-btn class="mr-1" :color="photos.length? 'accent': 'primary'" @click="dialog = false">
-                    {{photos.length? 'Listo': 'Cerrar'}}
+                  <v-btn
+                    class="mr-1"
+                    :color="photos.length ? 'accent' : 'primary'"
+                    @click="dialog = false"
+                  >
+                    {{ photos.length ? "Listo" : "Cerrar" }}
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -217,11 +206,8 @@
                   src="@/assets/icons/tag_friend.svg"
                 />
               </template>
-              <span class="btn-text">
-
-              Etiquetar usuarios
-              </span>
-              <span class="btn-text" v-if="tagUserslist.length"
+              <span class="btn-text"> Etiquetar usuarios </span>
+              <span v-if="tagUserslist.length"
                 >({{ tagUserslist.length }})</span
               >
             </v-btn>
@@ -236,19 +222,14 @@
         </form>
       </v-container>
     </v-card>
-    
-      <PubList />
-    
+
+    <PubList v-if="!reload" />
+
     <v-snackbar v-model="snackbar" :timeout="timeout">
       {{ message }}
       <template v-slot:action="{ attrs }">
-        <v-btn
-          color="error"
-          outlined
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Cerrar
+        <v-btn color="error" outlined v-bind="attrs" @click="snackbar = false">
+          cerrar
         </v-btn>
       </template>
     </v-snackbar>
@@ -276,20 +257,52 @@ export default {
     snackbar: false,
     timeout: 5000,
     message: "",
-    attrs: '',
-    api_dir : "/robotarium-api/v1.0/new-post/"
+    attrs: "",
+    reload: false,
+    api_dir: "/robotarium-api/v1.0/new-post/",
   }),
   computed: {
-    ...mapState(["users", "selfUser", "authentication", "domainBase"]),
+    ...mapState([
+      "users",
+      "selfUser",
+      "authentication",
+      "domainBase",
+      "wsBase",
+    ]),
   },
-  created(){
+  created() {
     document.title = "Inicio · UAO-RAS";
     this.setViewname = "Inicio";
+  },
+  mounted() {
+    this.$sse(this.domainBase + "/notifications/", { format: "json" }) // or { format: 'plain' }
+      .then((sse) => {
+        // Store SSE object at a higher scope
+        var msgServer = sse;
+        console.log(msgServer);
+        // Catch any errors (ie. lost connections, etc.)
+        sse.onError((e) => {
+          console.error("lost connection; giving up!", e);
 
-   
-     
-    
-  
+          // This is purely for example; EventSource will automatically
+          // attempt to reconnect indefinitely, with no action needed
+          // on your part to resubscribe to events once (if) reconnected
+          sse.close();
+        });
+
+        // Listen for messages without a specified event
+        sse.subscribe("notification", (message, rawEvent) => {
+          this.reload = true;
+          this.sleep(5).then(() => {
+            this.reload = false;
+          });
+        });
+      })
+      .catch((err) => {
+        // When this error is caught, it means the initial connection to the
+        // events server failed.  No automatic attempts to reconnect will be made.
+        console.error("Failed to connect to server", err);
+      });
   },
   methods: {
     ...mapMutations(["setViewname"]),
@@ -314,7 +327,9 @@ export default {
 
         const options = {
           method: "POST",
-          headers: {},
+          headers: {
+            Authorization: `Token ${this.authentication.accessToken}`,
+          },
           body: formdata,
         };
         delete options.headers["Content-Type"];
@@ -326,6 +341,7 @@ export default {
             "Ha sucedido un error inesperado, intenta de nuevo más tarde.";
           this.snackbar = true;
         } else {
+          this.sendNotification();
           this.loading = false;
           this.content = "";
           this.photos = [];
@@ -350,17 +366,37 @@ export default {
       const index = this.users.indexOf(item);
       if (index >= 0) this.users.splice(index, 1);
     },
+    sendNotification() {
+      let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
+
+      this.tagUserslist.forEach((user) => {
+        var websocket = new WebSocket(
+          protocol + this.wsBase + "/ws/notifications/" + user + "/"
+        );
+        let sockedData = {
+          type: "new_notification",
+          sender: this.selfUser.username,
+          receiver: user,
+        };
+        console.log(sockedData);
+        websocket.onopen = () => websocket.send(JSON.stringify(sockedData));
+        websocket.onmessage = ({ data }) => {
+          websocket.close();
+        };
+      });
+    },
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
   },
-  
 };
 </script>
 
 <style scoped>
-
 .create {
-  background: rgba(197,7,7,0.1);
+  background: rgba(197, 7, 7, 0.1);
   padding: 10px;
-  
+
   border-radius: 10px;
   width: auto;
   height: auto;
@@ -381,7 +417,7 @@ export default {
 [contenteditable][placeholder]:empty:before {
   content: attr(placeholder);
   position: relative;
-  color: #4A4A4A;
+  color: #4a4a4a;
   background-color: transparent;
 }
 .create::-webkit-scrollbar {
@@ -395,9 +431,9 @@ export default {
   border-radius: 4px;
 }
 .theme--light.v-divider {
-    border-color: #be0707 !important; 
+  border-color: #be0707 !important;
 }
-.submit-post{
+.submit-post {
   background: rgba(89, 4, 4, 1);
   background: -moz-linear-gradient(
     left,
@@ -439,8 +475,8 @@ export default {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#590404', endColorstr='#c00707', GradientType=1 );
 }
 @media (max-width: 960px) {
-.btn-text{
-  display: none;
-}
+  .btn-text {
+    display: none;
+  }
 }
 </style>

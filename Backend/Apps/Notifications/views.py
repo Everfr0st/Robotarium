@@ -20,7 +20,10 @@ class NotificationsListApi(generics.ListAPIView):
         for notification in notifications:
             notification_dictionary = self.get_obj_context(notification)
             notifications_list.append(notification_dictionary)
-            return JsonResponse(notifications_list, safe=False)
+            notification.read = True
+            notification.save()
+
+        return JsonResponse(notifications_list, safe=False)
 
     def get_obj_context(self, notification):
         try:
@@ -40,6 +43,7 @@ class NotificationsListApi(generics.ListAPIView):
             'description': notification.description,
             'target': target,
             'created': notification.created,
+            'read': notification.read
         }
 
     def get_target(self, notification):

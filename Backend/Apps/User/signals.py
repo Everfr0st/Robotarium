@@ -10,7 +10,7 @@ from Apps.User.models import UserOnline
 @receiver(post_save, sender=User)
 def create_user_status(sender, instance, created, **kwargs):
     if created:
-        UserOnline.objects.create(user=instance)
+        UserOnline.objects.create(user=instance,is_online=True)
 
 
 

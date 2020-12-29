@@ -68,7 +68,7 @@ class CreatePost(generics.CreateAPIView):
 
     def tag_user(self, recipient, actor, target):
         notify.send(actor, recipient=recipient, actor=actor, target=target,
-                    verb='te etiquetó en', nf_type='tagged_by_one_user')
+                    verb='Te etiquetó en', nf_type='tagged_by_one_user')
 
     def notify_users(self):
         send_event('posts', 'notification', {'text': 'New post'})

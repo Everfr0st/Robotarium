@@ -6,5 +6,6 @@ from .views import *
 
 urlpatterns = [
     path('chat/chat-messages', csrf_exempt(ChatMessages), name='chat_messages'),
+    path('inbox/', InboxApi.as_view(), name='inbox'),
 
 ]

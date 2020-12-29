@@ -120,10 +120,6 @@ class UsersList(generics.RetrieveAPIView):
             except:
                 profile_picture = ''
             user_dic["profile_picture"] = profile_picture
-            if user_dic["online"]:
-                user_dic["color"] = "green"
-            else:
-                user_dic["color"] = "grey"
             users_list.append(user_dic)
         return JsonResponse(users_list, safe=False)
 

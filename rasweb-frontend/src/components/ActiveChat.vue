@@ -11,7 +11,7 @@
         @click="toggletChat(chat.username, 1)"
         class="white--text chat-header"
       >
-        <v-badge bottom overlap dot :color="chat.color">
+        <v-badge bottom overlap dot :color="chat.online?'green':'grey'">
           <v-avatar size="30" v-if="chat.profilePicture">
             <img :src="chat.profilePicture" :alt="chat.name" />
           </v-avatar>

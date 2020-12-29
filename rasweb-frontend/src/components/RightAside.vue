@@ -29,7 +29,7 @@
               <v-badge
                 bordered
                 bottom
-                :color="user.color"
+                :color="user.online?'green':'grey'"
                 offset-x="25px"
                 offset-y="25px"
                 dot

@@ -1,8 +1,11 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import JsonResponse
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 
 from Apps.Chat.models import Message, Conversation
+from Apps.User.models import UserProfilePhoto, UserOnline
 
 
 def ChatMessages(request):
@@ -38,4 +41,38 @@ def ChatMessages(request):
                 return JsonResponse({'conversation_created': False, 'error': True})
 
 
+class InboxApi(generics.ListAPIView):
+    model = Message
+    permission_classes = (IsAuthenticated,)
 
+    def get(self, request, *args, **kwargs):
+        messages = Message.objects.filter(
+            Q(conversation__owner_id=request.user.pk) |
+            Q(conversation__opponent_id=request.user.pk)).distinct("conversation").order_by('conversation', '-created')
+        messages_list = []
+        for message in messages:
+            msg_dictionary = message.serializer()
+            opponent = self.get_opponent(request.user, message)
+            user_online =UserOnline.objects.get(user=opponent)
+            msg_dictionary["opponent"] = {
+                'username': opponent.username,
+                'name': '{0} {1}'.format(opponent.first_name, opponent.last_name),
+                'profile_picture': self.get_profile_picture(opponent),
+                'online': user_online.is_online,
+            }
+            messages_list.append(msg_dictionary)
+        return JsonResponse(messages_list, safe=False)
+
+    def get_opponent(self, user, msg):
+        if user.username == msg.conversation.owner.username:
+            opponent = msg.conversation.opponent
+        else:
+            opponent = msg.conversation.owner
+        return opponent
+
+    def get_profile_picture(self, user_obj):
+        try:
+            user_profile_photo = UserProfilePhoto.objects.get(user=user_obj).profile_picture.url
+        except:
+            user_profile_photo = ''
+        return user_profile_photo

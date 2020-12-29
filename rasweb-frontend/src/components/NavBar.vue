@@ -20,7 +20,7 @@
       <a href="/"> </a>
       <v-spacer></v-spacer>
 
-      <v-btn fab text>
+      <v-btn fab text @click="inbox = !inbox; notifications= false;">
         <v-badge
           :content="unread_messages"
           :value="unread_messages"
@@ -30,7 +30,7 @@
           <v-icon> mdi-comment-text-multiple </v-icon>
         </v-badge>
       </v-btn>
-      <v-btn @click="notifications=!notifications" fab text>
+      <v-btn @click="notifications=!notifications; inbox = false; " fab text>
         <v-badge
           :content="unread_notifications"
           :value="unread_notifications"
@@ -61,18 +61,21 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <Notifications v-if="notifications" class="notifications"/>
+    <Notifications v-on:unreadNotifications="updateNotiStatus" v-if="notifications" class="notifications"/>
+    <Inbox v-on:unreadMessages="updateMsgStatus" v-if="inbox" style="position: fixed;" />
   </div>
 </template>
 
 <script>
 import { mapMutations, mapState } from "vuex";
 import Notifications from "../components/Notifications.vue";
+import Inbox from "../components/Inbox.vue";
 
 export default {
   name: "NavBar",
   components: {
     Notifications,
+    Inbox
   },
   data: () => ({
     unread_messages: 0,
@@ -84,6 +87,7 @@ export default {
     snackbar: false,
     message: "Tienes una nueva notificación.",
     notifications: false,
+    inbox: false,
   }),
   async created() {
     const web_domain = "http://127.0.0.1:8000";
@@ -150,6 +154,10 @@ export default {
         console.log(`room ${this.username} closes`);
       };
     },
+    updateNotiStatus(unread_notifications){
+      this.unread_notifications = unread_notifications
+    },
+    updateMsgStatus(unread_messages){}
   },
   computed: {
     ...mapState(["authentication", "wsBase"]),

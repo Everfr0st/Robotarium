@@ -6,7 +6,7 @@
   >
     <v-card elevation="5" class="pa-0">
       <v-row wrap justify="center" class="pt-3">
-        <v-badge bordered bottom overlap :color="dialog.online">
+        <v-badge bordered bottom overlap :color="dialog.online?'green':'grey'">
           <v-avatar size="45" v-if="dialog.profilePicture">
             <img :src="dialog.profilePicture" :alt="dialog.name" />
           </v-avatar>
@@ -40,11 +40,10 @@
       <v-card-actions>
         <v-row justify="center" class="mt-1 mb-2">
           <v-btn @click="addChat2List({
-            color: dialog.online,
-            name: dialog.name,
-            online: dialog.online ==='green'?true:false,
-            profilePicture: dialog.profilePicture,
             username: dialog.username,
+            name: dialog.name,
+            online: dialog.online,
+            profile_picture: dialog.profilePicture,
           })" small class="mr-1" color="primary">
             <v-icon left>mdi-send</v-icon>
             <span>Escríbeme</span>

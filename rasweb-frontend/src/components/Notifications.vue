@@ -4,10 +4,10 @@
     <v-card-text class="pa-0 ma-0">
       <span class="ml-3 " v-if="!notifications.length">Aún no tienes notificaciones  😕 </span>
       <v-list-item
-        class="notification"
         three-line
-        v-for="notification in notifications"
-        :key="notification.actor.username"
+        v-for="(notification, index) in notifications"
+        :key="index"
+        :class="notification.read?'notification': 'notification noti-unread'"
       >
         <v-badge
           offset-x="30px"
@@ -51,9 +51,9 @@
               @{{ notification.actor.username }}</span
             >
           </v-list-item-title>
-          <v-list-item-subtitle :title="'@' + notification.actor.username">
+          <v-list-item-subtitle :title="notification.verb + ' ' + notification.target">
             {{ notification.verb }}
-            <strong>
+            <strong class="secondary--text">
               {{ notification.target }}
             </strong>
             <br />
@@ -97,6 +97,7 @@ export default {
         })
         .then((response) => {
           this.notifications = response;
+          this.$emit('unreadNotifications', 0)
         })
         .catch((err) => {
           console.error(err);
@@ -138,5 +139,8 @@ export default {
 .notification:hover{
   background: rgb(209, 209, 209);
   cursor: pointer;
+}
+.noti-unread{
+  background:rgb(209, 209, 209);
 }
 </style>

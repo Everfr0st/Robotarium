@@ -52,26 +52,31 @@ export default new Vuex.Store({
       state.dialog.name = user.name;
       state.dialog.username = user.username;
       state.dialog.profilePicture = user.profilePicture;
-      state.dialog.online = user.color;
+      state.dialog.online = user.online;
     },
     setUsers(state, users){
       state.users = users;
     },
     addChat2List(state, chat) {
-      let chat_in_list = state.chats.indexOf(chat)
-      if (chat_in_list === -1) {
-        state.chats.push(chat)
+      let auxChat = {
+        username: chat.username,
+        name: chat.name,
+        online: chat.online,
+        profile_picture: chat.profile_picture
+      }
+      let chat_in_list = state.chats.indexOf(auxChat)
+      console.log(auxChat, state.chats)
+      if (chat_in_list==-1) {
+        state.chats.push(auxChat)
       }
     },
     deleteChatfromlist(state, index) {
       state.chats.splice(index, 1);
       console.log(state.chats)
-    
       //this.$delete(this.chats, index);
 
     },
     updateLiveObj(state, liveObj){
-      
       state.live = liveObj
     },
     setViewname(state, view){

@@ -1,10 +1,8 @@
 import json
 
-from django.db.models import Q
-from rest_framework import generics, status
 from django.http import JsonResponse
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from rasweb.mailing import sendMail
 from .models import *

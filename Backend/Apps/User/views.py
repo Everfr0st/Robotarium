@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.generic import TemplateView
+from notify.models import Notification
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
@@ -72,15 +73,12 @@ class SignUpMoreInfo(TemplateView):
                 'SignUp': False,
             })
 
+
 class NavBar(generics.RetrieveAPIView):  # , LoginRequiredMixin):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, **kwargs):
         user = request.user
-        user_online = UserOnline.objects.get(user_id=user.pk)
-        user_online.is_online = True
-        user_online.save()
-
         try:
             profile_picture = UserProfilePhoto.objects.get(
                 user_id=user.pk).profile_picture.url
@@ -91,7 +89,8 @@ class NavBar(generics.RetrieveAPIView):  # , LoginRequiredMixin):
              Q(conversation__opponent_id=request.user.pk)),
             read=False
         ).exclude(sender__username=user.username).count()
-        unread_notifications = 3
+        unread_notifications = Notification.objects.filter(recipient_id=self.request.user.pk,
+                                                           read=False).count()
         return JsonResponse({
             'username': user.username,
             'name': user.first_name + ' ' + user.last_name,

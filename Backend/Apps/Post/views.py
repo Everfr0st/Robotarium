@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
+from django_eventstream import send_event
+from notify.signals import notify
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
@@ -30,18 +32,20 @@ class PostList(generics.ListAPIView):
             dic_post["created"] = post.created.strftime("%b %d, %Y")
             dic_post["photos"] = list(PostPhoto.objects.filter(post=post).values_list('photo', flat=True))
             dic_post["tag_users"] = list(User.objects.filter(
-                    id__in=list(
-                        TagUser.objects.filter(post=post).values_list('user', flat=True)
-                    )
-                ).values_list('username', flat=True)
-            )
+                id__in=list(
+                    TagUser.objects.filter(post=post).values_list('user', flat=True)
+                )
+            ).values_list('username', flat=True)
+                                         )
             post_list.append(dic_post)
 
         return JsonResponse(post_list, safe=False)
 
 
-def CreatePost(request):
-    if request.method == "POST":
+class CreatePost(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
         try:
             content = request.POST["content"]
             num_photos = int(request.POST["num_photos"])
@@ -56,7 +60,15 @@ def CreatePost(request):
                 user = request.POST.get("user_{}".format(i))
                 user = User.objects.get(username=user)
                 TagUser.objects.create(post_id=post.pk, user_id=user.pk)
-
+                self.tag_user(recipient=user, actor=request.user, target=post)
+            self.notify_users()
             return JsonResponse({'created': True})
         except:
             return JsonResponse({'created': False})
+
+    def tag_user(self, recipient, actor, target):
+        notify.send(actor, recipient=recipient, actor=actor, target=target,
+                    verb='Te etiquetó', nf_type='tagged_by_one_user')
+
+    def notify_users(self):
+        send_event('posts', 'notification', {'text': 'New post'})

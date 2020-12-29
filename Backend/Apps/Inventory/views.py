@@ -122,7 +122,6 @@ class CreateReservationApi(generics.CreateAPIView):
             'username': username,
             'subject': subject,
             'description': description
-
         }
         configs = {
             'Template': 'MailTemplates/reservation-mail.html',
@@ -130,7 +129,7 @@ class CreateReservationApi(generics.CreateAPIView):
             'to': [reservation.user.email],
         }
         file_configs = {
-            'file_name': 'reservation-{0}{1}.ics'.format(reservation.user.first_name, reservation.pk),
+            'file_name': '{0}_reservation.ics'.format(reservation.user.first_name),
             'content': reservation.generate_event(),
             'type': 'text/calendar'
         }
@@ -142,6 +141,7 @@ class ElementInfoApi(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return Inventory.objects.filter(pk=self.kwargs['pk'])
+
 
 class ScheduleInfoApi(generics.RetrieveAPIView):
     serializer_class = ScheduleSerializer

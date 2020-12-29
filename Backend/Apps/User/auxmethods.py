@@ -4,7 +4,7 @@ def get_semester_name(semester):
         2: 'Segundo semestre',
         3: 'Tercer semestre',
         4: 'Cuarto semestre',
-        5: 'Quito semestre',
+        5: 'Quinto semestre',
         6: 'Sexto semestre',
         7: 'Séptimo semestre',
         8: 'Octavo semestre',

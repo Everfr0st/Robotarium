@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from datetime import timedelta
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'channels',
     'notify',
+    'django_eventstream',
 
 ]
 MIDDLEWARE = [
@@ -65,9 +67,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_grip.GripMiddleware',
 ]
 
+EVENTSTREAM_ALLOW_ORIGIN = "*"
+EVENTSTREAM_ALLOW_CREDENTIALS = False
+
+# this is for corsheaders (pip)
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = default_headers + ('cache-control',)
 # Check why not works
 # AUTHENTICATION_BACKENDS = ['Apps.User.backend.EmailAuthBackend']
 

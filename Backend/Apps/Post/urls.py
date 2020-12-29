@@ -7,6 +7,6 @@ from .views import *
 
 
 urlpatterns = [
-    path('new-post/', csrf_exempt(CreatePost), name='create_post'),
+    path('new-post/', csrf_exempt(CreatePost.as_view()), name='create_post'),
     path('post-list/', PostList.as_view(), name='post_list'),
 ]

@@ -65,14 +65,12 @@ export default new Vuex.Store({
         profile_picture: chat.profile_picture
       }
       let chat_in_list = state.chats.indexOf(auxChat)
-      console.log(auxChat, state.chats)
       if (chat_in_list==-1) {
         state.chats.push(auxChat)
       }
     },
     deleteChatfromlist(state, index) {
       state.chats.splice(index, 1);
-      console.log(state.chats)
       //this.$delete(this.chats, index);
 
     },

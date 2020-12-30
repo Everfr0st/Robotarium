@@ -300,8 +300,6 @@ export default {
     
       if (!event.request) {
         this.checkAvailability();
-        
-        console.log(this.reserveSubmit)
       }
     },
     checkAvailability() {
@@ -420,7 +418,6 @@ export default {
     },
     submitReserve() {
       if (!this.reservation_created) {
-        console.log(this.reserveSubmit)
         this.loading = true;
         let formData = JSON.stringify(this.reserveSubmit);
         let response;

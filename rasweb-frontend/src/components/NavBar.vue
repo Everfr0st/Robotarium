@@ -62,7 +62,7 @@
       </template>
     </v-snackbar>
     <Notifications v-on:unreadNotifications="updateNotiStatus" v-if="notifications" class="notifications"/>
-    <Inbox v-on:unreadMessages="updateMsgStatus" v-if="inbox" style="position: fixed;" />
+    <Inbox  v-on:unreadMessages="updateMsgStatus" v-if="inbox" style="position: fixed;" />
   </div>
 </template>
 
@@ -131,12 +131,10 @@ export default {
         protocol + this.wsBase + "/ws/notifications/" + this.username + "/"
       );
       this.websocket.onopen = () => {
-        console.log("conectado exitosamente!", this.username);
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
 
           const socketData = JSON.parse(data);
-          console.log(socketData);
           if (
             socketData.type === "new_notification" &&
             socketData.sender != this.username
@@ -151,13 +149,14 @@ export default {
         };
       };
       this.websocket.onclose = () => {
-        console.log(`room ${this.username} closes`);
       };
     },
     updateNotiStatus(unread_notifications){
       this.unread_notifications = unread_notifications
     },
-    updateMsgStatus(unread_messages){}
+    updateMsgStatus(unreadMessages){
+      this.unread_messages = unreadMessages;
+    }
   },
   computed: {
     ...mapState(["authentication", "wsBase"]),

@@ -31,6 +31,11 @@ class ChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         if text_data_json["type"] == "chat_message":
             self.save_message(text_data_json)
+            text_data_json["unread_messages"] = self.unread_msgs(text_data_json)
+
+        elif text_data_json["type"] == "seen_message":
+            self.mark_as_read_messages(text_data_json)
+            text_data_json["unread_messages"] = 0
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -58,9 +63,11 @@ class ChatConsumer(WebsocketConsumer):
     def mark_as_read_messages(self, seen_obj):
         messages = Message.objects.filter(conversation_id=seen_obj['room'], sender__username=seen_obj['receiver'],
                                           read=False)
-        message_list = []
         for message in messages:
             message.read = True
             message.save()
-            message_list.append(message.serializer())
-        return message_list
+
+    def unread_msgs(self, msg_obj):
+        messages = Message.objects.filter(conversation_id=msg_obj['conversation'], sender__username=msg_obj['sender'],
+                                          read=False).count()
+        return messages

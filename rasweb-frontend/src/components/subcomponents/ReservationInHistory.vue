@@ -94,7 +94,6 @@ export default {
     },
   },
   created() {
-    console.log(moment());
     this.apiRetrieve(
       this.domainBase + this.apiDir.userInfo + `?user=${this.reservation.user}`,
       "userInfo"

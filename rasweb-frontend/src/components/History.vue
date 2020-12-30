@@ -159,7 +159,6 @@ export default {
             }
           })
           .catch(function (error) {
-            console.log(error);
           })
           .finally(() => {
             this.loading = false;

@@ -279,7 +279,6 @@ export default {
       .then((sse) => {
         // Store SSE object at a higher scope
         var msgServer = sse;
-        console.log(msgServer);
         // Catch any errors (ie. lost connections, etc.)
         sse.onError((e) => {
           console.error("lost connection; giving up!", e);
@@ -378,7 +377,6 @@ export default {
           sender: this.selfUser.username,
           receiver: user,
         };
-        console.log(sockedData);
         websocket.onopen = () => websocket.send(JSON.stringify(sockedData));
         websocket.onmessage = ({ data }) => {
           websocket.close();

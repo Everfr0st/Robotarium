@@ -5,13 +5,13 @@
       :style="'right: ' + index * position + 'px;'"
       :id="'chat-card-' + chat.username"
       elevation="3"
-      @focus="seenText"
+     
     >
       <v-card-title
         @click="toggletChat(chat.username, 1)"
         class="white--text chat-header"
       >
-        <v-badge bottom overlap dot :color="chat.online?'green':'grey'">
+        <v-badge bottom overlap dot :color="chat.online ? 'green' : 'grey'">
           <v-avatar size="30" v-if="chat.profilePicture">
             <img :src="chat.profilePicture" :alt="chat.name" />
           </v-avatar>
@@ -125,10 +125,10 @@
                   <span>
                     <v-icon
                       title="Visto"
-                      class="pb-1"
+                      class="pb-1 ml-1"
                       v-if="message.sender == selfUser.username && message.read"
                       color="white"
-                      small
+                      x-small
                       >mdi-check-all</v-icon
                     >
                     <v-icon
@@ -168,7 +168,7 @@
           type="text"
           solo
           autocomplete="off"
-          @focus="seenText"
+          @input="seenText"
         ></v-text-field>
       </v-card-actions>
     </v-card>
@@ -178,7 +178,7 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import moment from "moment";
-var contador =0;
+var contador = 0;
 const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "ActiveChat",
@@ -229,6 +229,7 @@ export default {
         }
         if (this.room != null) {
           this.connect();
+          this.seenText();
         }
         this.loading = false;
         this.message = "";
@@ -268,7 +269,7 @@ export default {
             read: false,
           })
         );
-        
+
         this.message = "";
       }
     },
@@ -297,12 +298,11 @@ export default {
     seenText() {
       if (
         this.messages.length &&
-        this.messages[0].sender !==
-          this.selfUser.username &&
+        this.messages[0].sender !== this.selfUser.username &&
         !this.messages[0].read
       ) {
         let sender = this.selfUser.username;
-        this.websocket.send(
+        this.websocket.onopen = () => this.websocket.send(
           JSON.stringify({
             type: "seen_message",
             sender: sender,
@@ -314,36 +314,44 @@ export default {
       }
     },
     connect() {
-      let protocol = document.location.protocol == 'http:'?'ws://':'wss://'
+      let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(
         protocol + this.wsBase + "/ws/chat/" + this.room + "/"
       );
       this.websocket.onopen = () => {
-        
         console.info("conectado exitosamente!", this.room);
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
-          
+
           const socketData = JSON.parse(data);
           if (
             socketData.type === "type_message" &&
             socketData.sender != this.selfUser.username
           ) {
             this.typing = socketData.typing;
-          }else if (socketData.type === "chat_message" ) {
-              this.messages.unshift(socketData);
-              this.date_send = socketData.send.split("-")[0];
+          } else if (socketData.type === "chat_message") {
+            this.messages.unshift(socketData);
+            console.log(socketData)
+            this.date_send = socketData.send.split("-")[0];
+          } else if (socketData.type === "seen_message") {
+            this.checkSeen();
           }
         };
       };
       this.websocket.onclose = () => {
-        console.log(`room ${this.room} closes`);
       };
     },
     closeChat() {
       this.websocket.close();
       this.websocket = null;
       this.$emit("close", { username: this.chat.username, index: this.index });
+    },
+    checkSeen() {
+      this.messages.forEach((message) => {
+        if (message.sender == this.selfUser.username && message.read == false) {
+          message.read = true;
+        }
+      });
     },
   },
 };

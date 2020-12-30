@@ -121,10 +121,8 @@ export default {
       for (var i = 0; i < usersList.length; i++) {
         var txtValue = usersList[i].textContent || usersList[i].innerText;
         try {
-          console.log(txtValue.toUpperCase().indexOf(this.search.toUpperCase()))
           if (txtValue.toUpperCase().indexOf(this.search.toUpperCase()) > -1) {
             userslistContainers[i].style.display = "";
-            console.log('match->',userslistContainers[i])
           } else {
             userslistContainers[i].style.display = "none";
           }

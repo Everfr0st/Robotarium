@@ -4,7 +4,7 @@
     <v-card-subtitle class="mt-2" v-if="!inbox.length">Aún no tienes mensajes 😵</v-card-subtitle>
     <v-card-text class="px-0 pt-0 mx-0 pb-0" v-for="(conversation, index) in inbox"
         :key="index">
-        <ChatElement v-on:unreadMessages="updateCountUnreadMessages" v-on:moveChat="changeChatPosition" :index="index" :dialog="conversation" />
+        <ChatElement v-on:unreadMessages="updateCountUnreadMessages" :index="index" :dialog="conversation" />
     </v-card-text>
   </v-card>
 </template>

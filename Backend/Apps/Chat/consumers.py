@@ -29,6 +29,8 @@ class ChatConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        if text_data_json["type"] == "chat_message":
+            self.save_message(text_data_json)
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -37,8 +39,8 @@ class ChatConsumer(WebsocketConsumer):
 
     # Receive message from room group
     def chat_message(self, event):
-        event["send"] = datetime.now().strftime("%b %d, %Y - %H:%M")
-        self.save_message(event)
+        event["send"] = datetime.now().strftime("%b %d, %Y - %I:%M %p")
+        # self.save_message(event)
         # Send message to WebSocket
         self.send(text_data=json.dumps(event))
 
@@ -49,11 +51,9 @@ class ChatConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(event))
 
     def save_message(self, msg_obj):
-        if not Message.objects.filter(conversation_id=msg_obj['conversation'], sender__username=msg_obj['sender'],
-                                  read=msg_obj['read'], created=datetime.now()).exists():
-            sender = User.objects.get(username=msg_obj['sender'])
-            return Message.objects.create(conversation_id=msg_obj['conversation'], sender=sender,
-                                          text=msg_obj['text']).serializer()
+        sender = User.objects.get(username=msg_obj['sender'])
+        return Message.objects.create(conversation_id=msg_obj['conversation'], sender=sender,
+                                      text=msg_obj['text']).serializer()
 
     def mark_as_read_messages(self, seen_obj):
         messages = Message.objects.filter(conversation_id=seen_obj['room'], sender__username=seen_obj['receiver'],

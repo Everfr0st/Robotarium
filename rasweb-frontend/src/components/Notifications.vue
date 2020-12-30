@@ -1,8 +1,9 @@
 <template>
   <v-card elevation="5" class="noti-card px-0" width="300" max-width="300">
     <v-card-title class="pa-0 ml-3 mt-3"> Notificaciones </v-card-title>
+     <v-card-subtitle class="mt-2 " v-if="!notifications.length">Aún no tienes notificaciones  😕 </v-card-subtitle>
     <v-card-text class="pa-0 ma-0">
-      <span class="ml-3 " v-if="!notifications.length">Aún no tienes notificaciones  😕 </span>
+     
       <v-list-item
         three-line
         v-for="(notification, index) in notifications"

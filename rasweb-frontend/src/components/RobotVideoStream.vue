@@ -1,95 +1,96 @@
 <template>
   <div>
-      <v-card class="pa-3 mr-4">
-        <v-autocomplete
-          v-model="robot"
-          :items="robots"
-          chips
-          color="accent"
-          label="Selecciona un robot"
-          item-text="name"
-          item-value="name, available"
-          :readonly="robotStream"
+    <v-card class="pa-3 mr-4">
+      <v-autocomplete
+        v-model="robot"
+        :items="robots"
+        chips
+        color="accent"
+        label="Selecciona un robot"
+        item-text="name"
+        item-value="name, available"
+        :readonly="robotStream"
+      >
+        <template v-slot:selection="data">
+          <v-chip v-bind="data.attrs" :input-value="data.selected">
+            <v-badge
+              bottom
+              overlap
+              dot
+              offset-x="13px"
+              offset-y="8px"
+              :color="data.item.available ? 'green' : 'grey'"
+            >
+              <v-avatar color="secondary" left>
+                <img
+                  :src="data.item.photo"
+                  :alt="data.item.name"
+                  v-if="data.item.photo"
+                />
+                <span v-else style="color: white; font-size: 8pt">{{
+                  data.item.name.slice(0, 1)
+                }}</span>
+              </v-avatar>
+            </v-badge>
+            {{ data.item.name }}
+          </v-chip>
+        </template>
+        <template v-slot:item="data">
+          <template v-if="typeof data.item !== 'object'">
+            <v-list-item-content v-text="data.item"></v-list-item-content>
+          </template>
+          <template v-else>
+            <v-badge
+              bottom
+              overlap
+              dot
+              offset-x="0px"
+              offset-y="23px"
+              :color="data.item.available ? 'green' : 'grey'"
+            >
+              <v-list-item-avatar
+                @click="setRobotInfo(data.item)"
+                color="secondary"
+              >
+                <img
+                  :src="data.item.photo"
+                  :alt="data.item.name"
+                  v-if="data.item.photo"
+                />
+                <span v-else style="color: white; font-size: 8pt">{{
+                  data.item.name.slice(0, 1)
+                }}</span>
+              </v-list-item-avatar>
+            </v-badge>
+
+            <v-list-item-content @click="setRobotInfo(data.item)">
+              <v-list-item-title v-html="data.item.name"></v-list-item-title>
+              <v-list-item-subtitle
+                class="ml-3"
+                v-html="data.item.available ? 'Disponible' : ' No disponible'"
+              ></v-list-item-subtitle>
+            </v-list-item-content>
+          </template>
+        </template>
+      </v-autocomplete>
+      <p v-if="robotObj.available && robot">
+        Envíale información al robot {{ robotObj.name }} a través de la
+        dirección ip <strong>{{ JSON.parse(robotObj.meta).compose }} </strong>
+      </p>
+      <v-card-actions class="ma-0 pa-0">
+        <v-btn
+          :disabled="!robotObj.available"
+          @click="showRobotStreaming"
+          :color="robotStream ? 'error' : 'accent'"
+          >{{ robotStream ? "Cerrar" : "Vista del robot" }}</v-btn
         >
-          <template v-slot:selection="data">
-            <v-chip v-bind="data.attrs" :input-value="data.selected">
-              <v-badge
-                bottom
-                overlap
-                dot
-                offset-x="13px"
-                offset-y="8px"
-                :color="data.item.available ? 'green' : 'grey'"
-              >
-                <v-avatar color="secondary" left>
-                  <img
-                    :src="data.item.photo"
-                    :alt="data.item.name"
-                    v-if="data.item.photo"
-                  />
-                  <span v-else style="color: white; font-size: 8pt">{{
-                    data.item.name.slice(0, 1)
-                  }}</span>
-                </v-avatar>
-              </v-badge>
-              {{ data.item.name }}
-            </v-chip>
-          </template>
-          <template v-slot:item="data">
-            <template v-if="typeof data.item !== 'object'">
-              <v-list-item-content v-text="data.item"></v-list-item-content>
-            </template>
-            <template v-else>
-              <v-badge
-                bottom
-                overlap
-                dot
-                offset-x="0px"
-                offset-y="23px"
-                :color="data.item.available ? 'green' : 'grey'"
-              >
-                <v-list-item-avatar
-                  @click="setRobotInfo(data.item)"
-                  color="secondary"
-                >
-                  <img
-                    :src="data.item.photo"
-                    :alt="data.item.name"
-                    v-if="data.item.photo"
-                  />
-                  <span v-else style="color: white; font-size: 8pt">{{
-                    data.item.name.slice(0, 1)
-                  }}</span>
-                </v-list-item-avatar>
-              </v-badge>
-
-              <v-list-item-content @click="setRobotInfo(data.item)">
-                <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                <v-list-item-subtitle
-                  class="ml-3"
-                  v-html="data.item.available ? 'Disponible' : ' No disponible'"
-                ></v-list-item-subtitle>
-              </v-list-item-content>
-            </template>
-          </template>
-        </v-autocomplete>
-        <p v-if="robotObj.available && robot">
-          Envíale información al robot {{ robotObj.name }} a través de la
-          dirección ip <strong>{{ robotObj.ip }} </strong>
-        </p>
-        <v-card-actions class="ma-0 pa-0">
-          <v-btn
-            :disabled="!robotObj.available"
-            @click="showRobotStreaming"
-            :color="robotStream ? 'error' : 'accent'"
-            >{{ robotStream ? "Cerrar" : "Vista del robot" }}</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-
+      </v-card-actions>
+    </v-card>
+    <joistick />
+      <robot-image v-on:robotView="setRobotImage" />
     <v-card elevation="3" id="drag-box">
       <v-chip
-        v-if="robotStream"
+        v-if="img"
         class="chip"
         close
         color="primary"
@@ -98,12 +99,13 @@
       >
         Cerrar
       </v-chip>
-       <v-skeleton-loader v-else
-      class="mx-auto"
-      max-width="300"
-      type="image"
-    ></v-skeleton-loader>
-      <WebSocketLive number="" :robot="true" v-if="robotStream" />
+      <v-skeleton-loader
+        v-else
+        class="mx-auto"
+        max-width="300"
+        type="image"
+      ></v-skeleton-loader>
+      <img  :src="'data:image/png;base64,' + img" />
     </v-card>
     <v-snackbar v-model="snackbar">
       {{ message }}
@@ -120,6 +122,8 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import WebSocketLive from "@/components/subcomponents/WebSocketLive.vue";
+import Joistick from "../components/Joistick.vue";
+import RobotImage from "../components/RobotImage.vue";
 export default {
   name: "RobotVideoStream",
   data: () => ({
@@ -132,9 +136,12 @@ export default {
     dragEvent: "",
     snackbar: false,
     message: "",
+    img: "",
   }),
   components: {
     WebSocketLive,
+    Joistick,
+    RobotImage,
   },
   created() {
     this.getApiInfo();
@@ -160,8 +167,10 @@ export default {
         })
         .then((response) => {
           this.robots = response;
+          console.log(response)
         })
         .catch(() => {}); //Hacer algo al error en respuesta
+        
     },
     setRobotInfo(info) {
       this.robotObj = info;
@@ -220,9 +229,9 @@ export default {
         pos3 = e.clientX;
         pos4 = e.clientY;
         // set the element's new position:
-        
+
         elmnt.style.top = elmnt.offsetTop - pos2 + "px";
-          elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
+        elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
       }
 
       function closeDragElement() {
@@ -231,6 +240,10 @@ export default {
         document.onmousemove = null;
       }
     },
+    setRobotImage(data){
+
+        this.img = data.data;
+    }
   },
 };
 </script>

@@ -4,10 +4,10 @@ from channels.generic.websocket import WebsocketConsumer
 from datetime import datetime
 
 
-class LiveConsumer(WebsocketConsumer):
+class RobotConsumer(WebsocketConsumer):
     def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'live_%s' % self.room_name
+        self.room_name = self.scope['url_route']['kwargs']['robot_name']
+        self.room_group_name = 'robot_%s' % self.room_name
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -32,6 +32,6 @@ class LiveConsumer(WebsocketConsumer):
         )
 
     # Receive message from room group
-    def live_info(self, event):
+    def robot_data(self, event):
         # Send message to WebSocket
         self.send(text_data=json.dumps(event))

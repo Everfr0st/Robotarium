@@ -8,7 +8,7 @@
       <v-main>
         <v-container fluid>
           <v-row wrap>
-            <v-col class="left-aside" xs="12" sm="12" md="2" lg="1" >
+            <v-col class="left-aside" v-if="view !== 'Robotarium'"  xs="12" sm="12" md="2" lg="1" > 
               <LeftAside  />
               <v-btn class="ml-4 mt-5" small  outlined color="error darken-1" @click="Logout()"> <v-icon left>mdi-logout</v-icon> <span class="logout">Cerrar sesión</span></v-btn>
             </v-col>
@@ -17,8 +17,8 @@
               xs="12"
               sm="12"
               md="12"
-              :lg="view == 'Robotarium' ? '10' : '9'"
-              :xl="view == 'Robotarium' ? '11' : '10'"
+              :lg="view == 'Robotarium' ? '12' : '9'"
+              :xl="view == 'Robotarium' ? '12' : '10'"
             >
               <router-view :class="view !== 'Robotarium' ? 'view' : ''" />
             </v-col>

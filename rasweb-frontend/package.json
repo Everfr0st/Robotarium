@@ -9,7 +9,6 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "moment": "^2.15.2",
-    "nipplejs": "^0.8.7",
     "roslib": "^1.1.0",
     "vue": "^2.6.11",
     "vue-plugin-load-script": "^1.3.2",

@@ -1,17 +1,13 @@
 <template>
   <div>
-    <v-container class="pt-0" wrap>
-      <v-row
-        v-for="(item, index) in elements"
-        :key="index"
-        wrap
-      >
+    <v-container class="pt-0 white" >
+      <v-row class="white"  v-for="(item, index) in elements" :key="index" wrap>
         <v-btn
-        small
-        align="left"
+          small
+          align="left"
           active-class="primary lighthen-10"
           class="ma-2"
-          text  
+          text
           :to="{ name: item.link }"
           exact
           rounded
@@ -52,11 +48,10 @@ export default {
 </script>
 
 <style scoped>
-
 .btn-menu {
   background-color: rgba(190, 7, 7, 0.123);
 }
-.primary--text{
+.primary--text {
   color: black;
 }
 </style>

@@ -64,7 +64,10 @@ export default {
         name: "/camera/rgb/image_raw",
         messageType: "sensor_msgs/Image",
       },
-     
+      {
+        name: "/camera/rgb/image_raw/compressed",
+        messageType: "sensor_msgs/CompressedImage",
+      },
       {
         name: "/camera/rgb/image_raw/compressedDepth",
         messageType: "sensor_msgs/CompressedImage",

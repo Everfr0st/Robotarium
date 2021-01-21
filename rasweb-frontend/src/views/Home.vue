@@ -272,7 +272,7 @@ export default {
   },
   created() {
     document.title = "Inicio · UAO-RAS";
-    this.setViewname = "Inicio";
+    this.setViewname("Inicio");
   },
   mounted() {
     this.$sse(this.domainBase + "/notifications/", { format: "json" }) // or { format: 'plain' }

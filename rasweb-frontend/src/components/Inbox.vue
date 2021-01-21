@@ -1,5 +1,5 @@
 <template>
-  <v-card id="inbox" elevation="5" class="inbox px-0" width="350" max-width="350">
+  <v-card id="inbox" elevation="5" class="inbox px-0" width="300" max-width="300">
     <v-card-title class="pa-0 ml-3 mt-3"> Mensajes </v-card-title>
     <v-card-subtitle class="mt-2" v-if="!inbox.length">Aún no tienes mensajes 😵</v-card-subtitle>
     <v-card-text class="px-0 pt-0 mx-0 pb-0" v-for="(conversation, index) in inbox"

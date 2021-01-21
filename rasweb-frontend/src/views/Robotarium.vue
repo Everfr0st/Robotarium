@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-container fluid>
+    <v-container class="robotarium" fluid>
       <v-row>
         <v-col md="4" lg="3">
-          <RobotVideoStream />
+          <RobotVideoStream  />
           
         </v-col>
         <v-col md="8" lg="9">
@@ -12,6 +12,11 @@
       </v-row>
     </v-container>
 
+    <v-overlay id="overlay" opacity="0.8">
+      <div class="display-1 pa-5 mt-12">
+        El robotarium RAS-UAO no funciona correctamente en dispositivos con resoluciones menores a 1200px 
+      </div>
+    </v-overlay>
     
   </div>
 </template>
@@ -41,3 +46,22 @@ export default {
   },
 };
 </script>
+<style>
+@media (max-width: 1200px) {
+  .robotarium {
+    display: none;
+  }
+  #overlay {
+    display: block;
+  }
+}
+@media (min-width: 1200px) {
+  #overlay {
+    display: none;
+  }
+  .robotarium {
+    display: block;
+    padding: 0 15px;
+  }
+}
+</style>

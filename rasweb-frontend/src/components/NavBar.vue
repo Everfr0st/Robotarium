@@ -1,15 +1,14 @@
 <template>
   <div>
-    <v-app-bar app class="NavBar" dark>
+    <v-app-bar id="appBar" app class="NavBar" dark>
       <v-btn
         align="left"
         color="primary"
-        class="pt-2"
+        class="pt-2 logo-btn"
         text
         elevation="0"
         fab
         :to="{ name: 'Home' }"
-        id="logo-btn"
       >
         <v-img
           max-height="50"
@@ -20,7 +19,14 @@
       <a href="/"> </a>
       <v-spacer></v-spacer>
 
-      <v-btn fab text @click="inbox = !inbox; notifications= false;">
+      <v-btn
+        fab
+        text
+        @click="
+          inbox = !inbox;
+          notifications = false;
+        "
+      >
         <v-badge
           :content="unread_messages"
           :value="unread_messages"
@@ -30,7 +36,14 @@
           <v-icon> mdi-comment-text-multiple </v-icon>
         </v-badge>
       </v-btn>
-      <v-btn @click="notifications=!notifications; inbox = false; " fab text>
+      <v-btn
+        @click="
+          notifications = !notifications;
+          inbox = false;
+        "
+        fab
+        text
+      >
         <v-badge
           :content="unread_notifications"
           :value="unread_notifications"
@@ -52,7 +65,13 @@
           }}</span>
         </v-avatar>
       </v-btn>
+      <v-btn id="logout-btn" icon>
+        <v-icon>mdi-export</v-icon>
+      </v-btn>
     </v-app-bar>
+
+  
+
     <v-snackbar v-model="snackbar">
       {{ message }}
       <template v-slot:action="{ attrs }">
@@ -61,8 +80,16 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <Notifications v-on:unreadNotifications="updateNotiStatus" v-if="notifications" class="notifications"/>
-    <Inbox  v-on:unreadMessages="updateMsgStatus" v-if="inbox" style="position: fixed;" />
+    <Notifications
+      v-on:unreadNotifications="updateNotiStatus"
+      v-if="notifications"
+      class="notifications"
+    />
+    <Inbox
+      v-on:unreadMessages="updateMsgStatus"
+      v-if="inbox"
+      style="position: fixed"
+    />
   </div>
 </template>
 
@@ -75,7 +102,7 @@ export default {
   name: "NavBar",
   components: {
     Notifications,
-    Inbox
+    Inbox,
   },
   data: () => ({
     unread_messages: 0,
@@ -120,8 +147,10 @@ export default {
     }
   },
   mounted() {
-    const logo = document.getElementById("logo-btn");
-    logo.classList.remove("v-btn--active", "v-btn--contained");
+    const logo = document.getElementsByClassName("logo-btn");
+    logo.forEach((boton) => {
+      boton.classList.remove("v-btn--active", "v-btn--contained");
+    });
   },
   methods: {
     ...mapMutations(["setSelfuser", "destroyAuthcredentials"]),
@@ -148,15 +177,14 @@ export default {
           }
         };
       };
-      this.websocket.onclose = () => {
-      };
+      this.websocket.onclose = () => {};
     },
-    updateNotiStatus(unread_notifications){
-      this.unread_notifications = unread_notifications
+    updateNotiStatus(unread_notifications) {
+      this.unread_notifications = unread_notifications;
     },
-    updateMsgStatus(unreadMessages){
+    updateMsgStatus(unreadMessages) {
       this.unread_messages = unreadMessages;
-    }
+    },
   },
   computed: {
     ...mapState(["authentication", "wsBase"]),
@@ -206,10 +234,20 @@ export default {
   );
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#590404', endColorstr='#c00707', GradientType=1 );
 }
-#logo-btn {
+.logo-btn {
   color: white;
   background: transparent;
   border: 0px;
 }
+@media (max-width: 1264px) {
+  #logout-btn {
+    display: block;
+  }
+}
+@media (min-width: 1264px) {
 
+  #logout-btn {
+    display: none;
+  }
+}
 </style>

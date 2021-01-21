@@ -4,11 +4,11 @@
       <v-card elevation="3">
         <v-form @submit.prevent="getHistory(); recent=false;">
           <v-row class="px-5" justify="center">
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="12" md="4">
               <v-text-field v-model="query" label="Elemento"></v-text-field>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col cols="12" sm="6" md="3">
+            <v-col cols="12" sm="12" md="3">
               <v-menu
                 v-model="menu1"
                 :close-on-content-click="false"
@@ -33,7 +33,7 @@
                 ></v-date-picker>
               </v-menu>
             </v-col>
-            <v-col cols="12" sm="6" md="3">
+            <v-col cols="12" sm="12" md="3">
               <v-menu
                 v-model="menu2"
                 :close-on-content-click="false"
@@ -58,9 +58,9 @@
                 ></v-date-picker>
               </v-menu>
             </v-col>
-            <v-col md="2">
+            <v-col sm="12" md="2">
               <v-card-actions>
-                <v-btn :loading="loading" class="mx-auto" type="submit" color="accent darken-3"
+                <v-btn :loading="loading" type="submit" color="accent darken-3"
                   >Buscar</v-btn
                 >
               </v-card-actions>

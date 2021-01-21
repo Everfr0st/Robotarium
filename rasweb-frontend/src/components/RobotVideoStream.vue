@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="pa-3 mr-4">
+    <v-card class="pa-3 mr-4 mt-3">
       <v-autocomplete
         v-model="robot"
         :items="robots"
@@ -249,8 +249,9 @@ export default {
 #drag-box {
   position: fixed;
   bottom: 3%;
-  right: 1%;
+  right: 2%;
   max-width: 400px;
+  min-width: 400px;
   max-height: 260px;
   cursor: pointer;
   border-radius: 10px;

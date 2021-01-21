@@ -1,7 +1,8 @@
 <template>
   <div id="zone_joystick">
     <v-container>
-      <p>Velocidad ({{ speed }}%)</p>
+      <small>Joistick</small>
+      <p class="pt-0">Velocidad ({{ speed }}%)</p>
       <v-slider
         v-model="speed"
         :color="color"
@@ -11,32 +12,32 @@
         min="0"
         max="100"
         @change="go2Dir"
+        :disabled="!connected"
       >
       </v-slider>
       <v-row justify="center">
-        <v-btn color="info" @mousedown="forward" fab>
+        <v-btn :disabled="!connected" color="info" @mousedown="forward" fab>
           <v-icon>mdi-arrow-up</v-icon>
         </v-btn>
       </v-row>
       <v-row class="mt-4" justify="space-around">
-        <v-btn color="info" @mousedown="left" fab>
+        <v-btn :disabled="!connected" color="info" @mousedown="left" fab>
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
-        <v-btn color="error" @mousedown="stop" fab>
+        <v-btn :disabled="!connected" color="error" @mousedown="stop" fab>
           <v-icon>mdi-stop</v-icon>
         </v-btn>
-        <v-btn color="info" @mousedown="right" fab>
+        <v-btn :disabled="!connected" color="info" @mousedown="right" fab>
           <v-icon>mdi-arrow-right</v-icon>
         </v-btn>
       </v-row>
       <v-row class="mt-4" justify="center">
-        <v-btn color="info" @mousedown="backward" fab>
+        <v-btn :disabled="!connected" color="info" @mousedown="backward" fab>
           <v-icon>mdi-arrow-down</v-icon>
         </v-btn>
       </v-row>
     </v-container>
-    <p v-if="connected" class="success--text">Conectado a {{ wsAddress }}</p>
-    <p v-else class="error--text">Desconectado</p>
+    
   </div>
 </template>
 
@@ -46,6 +47,7 @@ import ROSLIB from "roslib";
 var radius = 50;
 export default {
   name: "Joistick",
+  props: ['wsAddress'],
   data: () => ({
     speed: 50,
     dir: 0,
@@ -55,7 +57,7 @@ export default {
     ros: null,
     topic: "",
     message: "",
-    wsAddress: "ws://0.0.0.0:9090",
+    
   }),
   mounted() {
     //this.joistickFunction();
@@ -115,7 +117,7 @@ export default {
     left() {
       this.dir = 4;
       this.message = new ROSLIB.Message({
-        linear: { x: (this.speed / 100) * 0.26, y: 0, z: 0 },
+        linear: { x: 0.0, y: 0, z: 0 },
         angular: { x: 0.0, y: 0, z: (this.speed / 100) * 1.86 },
       });
       this.publishData();
@@ -123,7 +125,7 @@ export default {
     right() {
       this.dir = 2;
       this.message = new ROSLIB.Message({
-        linear: { x: (this.speed / 100) * 0.26, y: 0, z: 0 },
+        linear: { x: 0.0, y: 0, z: 0 },
         angular: { x: 0.0, y: 0, z: (-this.speed / 100) * 1.86 },
       });
       this.publishData();

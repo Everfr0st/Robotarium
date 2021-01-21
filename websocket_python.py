@@ -11,7 +11,7 @@ import sys
 async def send_data(uri):
 	async with websockets.connect(uri) as websocket:
 		time_start = time.time()
-		cap = cv2.VideoCapture(2)
+		cap = cv2.VideoCapture(0)
 
 		_pause = 0.05
 		while True:

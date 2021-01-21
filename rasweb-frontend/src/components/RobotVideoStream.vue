@@ -9,7 +9,7 @@
         label="Selecciona un robot"
         item-text="name"
         item-value="name, available"
-        :readonly="robotStream"
+        :readonly="showRobotTools"
       >
         <template v-slot:selection="data">
           <v-chip v-bind="data.attrs" :input-value="data.selected">
@@ -73,40 +73,42 @@
           </template>
         </template>
       </v-autocomplete>
-      <p v-if="robotObj.available && robot">
-        Envíale información al robot {{ robotObj.name }} a través de la
-        dirección ip <strong>{{ JSON.parse(robotObj.meta).compose }} </strong>
-      </p>
-      <v-card-actions class="ma-0 pa-0">
-        <v-btn
-          :disabled="!robotObj.available"
-          @click="showRobotStreaming"
-          :color="robotStream ? 'error' : 'accent'"
-          >{{ robotStream ? "Cerrar" : "Vista del robot" }}</v-btn
-        >
+      <v-card-actions v-if="robot">
+        <v-btn @click="closeRobotTools" :color="showRobotTools? '' : 'error'">
+          {{ showRobotTools? "" : "Desconectar" }}
+        </v-btn>
       </v-card-actions>
     </v-card>
-    <joistick />
-      <robot-image v-on:robotView="setRobotImage" />
-    <v-card elevation="3" id="drag-box">
-      <v-chip
-        v-if="img"
-        class="chip"
-        close
-        color="primary"
-        @click="showRobotStreaming"
-        @click:close="showRobotStreaming"
+    <div v-if="robot">
+      <v-card class="mt-3 mr-4">
+        <joistick :wsAddress="'ws://0.0.0.0:' + getMeta.websocket" />
+      </v-card>
+      <v-card class="mt-4 px-3 mr-4 pb-3">
+        <robot-image
+          :wsAddress="'ws://0.0.0.0:' + getMeta.websocket"
+          v-on:robotView="setRobotImage"
+        />
+      </v-card>
+
+      <v-card
+        elevation="3"
+        width="400"
+        :height="img ? '260' : '200'"
+        id="drag-box"
       >
-        Cerrar
-      </v-chip>
-      <v-skeleton-loader
-        v-else
-        class="mx-auto"
-        max-width="300"
-        type="image"
-      ></v-skeleton-loader>
-      <img  :src="'data:image/png;base64,' + img" />
-    </v-card>
+        <v-skeleton-loader
+          v-if="!img"
+          class="mx-auto"
+          max-width="400"
+          min-height="400"
+          type="image"
+        >
+        </v-skeleton-loader>
+
+        <img v-else :src="'data:image/png;base64,' + img" />
+      </v-card>
+    </div>
+
     <v-snackbar v-model="snackbar">
       {{ message }}
 
@@ -131,8 +133,9 @@ export default {
     apiDir: "/robotarium-api/v1.0/robot-list/?format=json",
     robot: "",
     robotObj: "",
+    imgBox: false,
     robotAvailable: false,
-    robotStream: false,
+    showRobotTools: false,
     dragEvent: "",
     snackbar: false,
     message: "",
@@ -148,6 +151,9 @@ export default {
   },
   computed: {
     ...mapState(["domainBase", "authentication"]),
+    getMeta: function () {
+      return JSON.parse(this.robotObj.meta);
+    },
   },
   methods: {
     ...mapMutations(["setRobotariumInfo"]),
@@ -167,30 +173,18 @@ export default {
         })
         .then((response) => {
           this.robots = response;
-          console.log(response)
+          console.log(response);
         })
         .catch(() => {}); //Hacer algo al error en respuesta
-        
     },
     setRobotInfo(info) {
       this.robotObj = info;
     },
-    showRobotStreaming() {
-      if (this.robot) {
-        this.robotStream = !this.robotStream;
-        if (this.robotStream) {
-          this.dragElement();
-          let robotariumInfo = {
-            robot: this.robot,
-          };
-          this.setRobotariumInfo(robotariumInfo);
-        } else {
-          document.getElementById("drag-box").style = "display: none;";
-        }
-      } else {
-        this.snackbar = true;
-        this.message = "Debes seleccionar un robot disponible!";
-      }
+    closeRobotTools() {
+      this.robot = "";
+      this.showRobotTools = false;
+      this.imgBox = false;
+      this.img = "";
     },
     dragElement() {
       var elmnt = document.getElementById("drag-box");
@@ -240,10 +234,13 @@ export default {
         document.onmousemove = null;
       }
     },
-    setRobotImage(data){
-
-        this.img = data.data;
-    }
+    setRobotImage(data) {
+      if (data) this.img = data;
+      if (!this.imgBox) {
+        this.dragElement();
+        this.imgBox = true;
+      }
+    },
   },
 };
 </script>
@@ -251,15 +248,18 @@ export default {
 <style scoped>
 #drag-box {
   position: fixed;
-  bottom: 1.5%;
+  bottom: 3%;
   right: 1%;
-  width: 300px;
-  height: 200px;
-  z-index: 100;
+  max-width: 400px;
+  max-height: 260px;
   cursor: pointer;
-  display: none;
-  border-radius: 5px;
+  border-radius: 10px;
   overflow: hidden;
+  z-index: 100;
+}
+#drag-box img {
+  height: 260px;
+  max-width: 100%;
 }
 .chip {
   position: absolute;

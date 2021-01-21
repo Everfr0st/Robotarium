@@ -1,6 +1,6 @@
 <template>
   <div>
-    {{ topicName }}
+    <small>Cámara</small>
     <v-select
       @change="subscribe2Topic"
       label="Topic"
@@ -10,11 +10,38 @@
       item-value="name"
       v-model="topicName"
       :items="items"
+      :disabled="!connected"
     >
     </v-select>
-    <v-btn color="error" @click="unSubscribe">Parar</v-btn>
-    <p v-if="connected" class="success--text">Conectado a {{ wsAddress }}</p>
-    <p v-else class="error--text">Desconectado</p>
+    <small>* Topic recomendado: <strong>/camera/rgb/image_raw/compressed</strong></small>
+    <v-btn
+      :disabled="!connected"
+      color="info"
+      v-if="!addCustomTopic"
+      @click="addCustomTopic = true"
+      >Añadir topic personalizado</v-btn
+    >
+    <v-row class="pt-0" v-else>
+      <v-col sm="6">
+        <v-text-field v-model="customTopic" label="Topic"> </v-text-field>
+      </v-col>
+      <v-col sm="6">
+        <v-text-field v-model="customMsgType" label="Msg Type"> </v-text-field>
+      </v-col>
+
+      <v-col sm="12">
+        <v-btn @click="addTopic" color="accent darken-2" block> Añadir </v-btn>
+      </v-col>
+    </v-row>
+      <v-snackbar v-model="snackbar">
+      Debes agregar la información solicitada
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="error" text v-bind="attrs" @click="snackbar = false">
+          cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -24,18 +51,20 @@ import ROSLIB from "roslib";
 var radius = 50;
 export default {
   name: "Joistick",
+  props: ["wsAddress"],
   data: () => ({
     img: "",
     topicName: "",
+    customTopic: "",
+    customMsgType: "",
+    addCustomTopic: false,
+    snackbar: false,
     items: [
       {
         name: "/camera/rgb/image_raw",
         messageType: "sensor_msgs/Image",
       },
-      {
-        name: "/camera/rgb/image_raw/compressed",
-        messageType: "sensor_msgs/CompressedImage",
-      },
+     
       {
         name: "/camera/rgb/image_raw/compressedDepth",
         messageType: "sensor_msgs/CompressedImage",
@@ -48,7 +77,6 @@ export default {
     ros: null,
     topic: "",
     message: "",
-    wsAddress: "ws://0.0.0.0:9090",
     listener: null,
     connected: false,
   }),
@@ -56,6 +84,7 @@ export default {
     this.connect();
   },
   computed: {},
+  
   methods: {
     connect() {
       this.ros = new ROSLIB.Ros({
@@ -87,11 +116,25 @@ export default {
 
     listenData() {
       this.topic.subscribe((data) => {
-          this.$emit("robotView", data.data);
+        this.$emit("robotView", data.data);
+        //this.unSubscribe();
       });
     },
     unSubscribe() {
       this.topic.unsubscribe();
+    },
+    addTopic() {
+      if (this.customMsgType && this.customTopic) {
+        this.items.push({
+          name: this.customTopic,
+          messageType: this.customMsgType,
+        });
+        this.customMsgType = "";
+        this.customTopic = "";
+        this.addCustomTopic = false;
+      } else{
+        this.snackbar = true;
+      }
     },
   },
 };

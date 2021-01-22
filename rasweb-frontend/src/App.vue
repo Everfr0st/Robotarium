@@ -134,7 +134,7 @@ export default {
 </script>
 
 <style scoped>
-@media (max-width: 1264px) {
+@media (max-width: 1200px) {
   .right-aside {
     display: none;
   }
@@ -199,6 +199,6 @@ export default {
 -webkit-box-shadow: 3px 3px 3px 1px rgba(92,92,92,0.29);
 -moz-box-shadow: 3px 3px 3px 1px rgba(92,92,92,0.29);
 box-shadow: 3px 3px 3px 1px rgba(92,92,92,0.29);
-  border-radius: 0%;
+  border-radius: 0% 3px 3px 0;
 }
 </style>

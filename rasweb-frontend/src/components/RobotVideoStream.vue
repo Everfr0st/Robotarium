@@ -81,11 +81,11 @@
     </v-card>
     <div v-if="robot">
       <v-card class="mt-3 mr-4">
-        <joistick :wsAddress="'ws://0.0.0.0:' + getMeta.websocket" />
+        <joistick :wsAddress="'ws://aprobotica.uao.edu.co:' + getMeta.websocket"  />
       </v-card>
       <v-card class="mt-4 px-3 mr-4 pb-3">
         <robot-image
-          :wsAddress="'ws://0.0.0.0:' + getMeta.websocket"
+          :wsAddress="'ws://aprobotica.uao.edu.co:' + getMeta.websocket" :robot="robotObj"
           v-on:robotView="setRobotImage"
         />
       </v-card>
@@ -215,6 +215,7 @@ export default {
       }
 
       function elementDrag(e) {
+        console.log(e)
         e = e || window.event;
         e.preventDefault();
         // calculate the new cursor position:
@@ -237,7 +238,7 @@ export default {
     setRobotImage(data) {
       if (data) this.img = data;
       if (!this.imgBox) {
-        this.dragElement();
+       this.dragElement();
         this.imgBox = true;
       }
     },
@@ -250,17 +251,22 @@ export default {
   position: fixed;
   bottom: 3%;
   right: 2%;
-  max-width: 400px;
-  min-width: 400px;
-  max-height: 260px;
+  max-width: 500px;
+  min-width: 200px;
+  width: 340px;
+  max-height: 400px;
+  min-height: 100px;
+  height: 260px;
   cursor: pointer;
   border-radius: 10px;
   overflow: hidden;
-  z-index: 100;
+  z-index: 1000;
+  resize: both;
+
 }
 #drag-box img {
-  height: 260px;
-  max-width: 100%;
+  height: 100%;
+  min-width: 100%;
 }
 .chip {
   position: absolute;

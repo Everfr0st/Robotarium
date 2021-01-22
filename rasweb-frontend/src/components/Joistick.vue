@@ -37,7 +37,6 @@
         </v-btn>
       </v-row>
     </v-container>
-    
   </div>
 </template>
 
@@ -47,9 +46,9 @@ import ROSLIB from "roslib";
 var radius = 50;
 export default {
   name: "Joistick",
-  props: ['wsAddress'],
+  props: ["wsAddress"],
   data: () => ({
-    speed: 50,
+    speed: 70,
     dir: 0,
     interval: null,
     isPlaying: false,
@@ -57,7 +56,6 @@ export default {
     ros: null,
     topic: "",
     message: "",
-    
   }),
   mounted() {
     //this.joistickFunction();
@@ -93,48 +91,48 @@ export default {
     setTopic() {
       this.topic = new ROSLIB.Topic({
         ros: this.ros,
-        name: "/cmd_vel",
-        messageType: "geometry_msgs/Twist",
+        name: "/autobot1/wheels_driver_node/wheels_cmd",
+        messageType: "duckietown_msgs/WheelsCmdStamped",
       });
     },
 
     forward() {
       this.dir = 1;
       this.message = new ROSLIB.Message({
-        linear: { x: (this.speed / 100) * 0.26, y: 0, z: 0 },
-        angular: { x: 0, y: 0, z: 0 },
+        vel_left: (this.speed / 100) * 0.26,
+        vel_right: (this.speed / 100) * 0.26,
       });
       this.publishData();
     },
     backward() {
       this.dir = 3;
       this.message = new ROSLIB.Message({
-        linear: { x: (-this.speed / 100) * 0.26, y: 0, z: 0 },
-        angular: { x: 0, y: 0, z: 0 },
+        vel_left: -(this.speed / 100) * 0.26,
+        vel_right: -(this.speed / 100) * 0.26,
       });
       this.publishData();
     },
     left() {
       this.dir = 4;
       this.message = new ROSLIB.Message({
-        linear: { x: 0.0, y: 0, z: 0 },
-        angular: { x: 0.0, y: 0, z: (this.speed / 100) * 1.86 },
+        vel_left: -(this.speed / 100) * 0.26,
+        vel_right: (this.speed / 100) * 0.26,
       });
       this.publishData();
     },
     right() {
       this.dir = 2;
       this.message = new ROSLIB.Message({
-        linear: { x: 0.0, y: 0, z: 0 },
-        angular: { x: 0.0, y: 0, z: (-this.speed / 100) * 1.86 },
+        vel_left: (this.speed / 100) * 0.26,
+        vel_right: -(this.speed / 100) * 0.26,
       });
       this.publishData();
     },
     stop() {
       this.dir = 0;
       this.message = new ROSLIB.Message({
-        linear: { x: 0.0, y: 0, z: 0 },
-        angular: { x: 0.0, y: 0, z: 0 },
+        vel_left: 0,
+        vel_right: 0,
       });
       this.publishData();
     },
@@ -175,6 +173,4 @@ export default {
 </script>
 
 <style scoped>
-#zone_joystick {
-}
 </style>

@@ -13,7 +13,10 @@
       :disabled="!connected"
     >
     </v-select>
-    <small>* Topic recomendado: <strong>/camera/rgb/image_raw/compressed</strong></small>
+    <small
+      >* Topic recomendado:
+      <strong>/camera/rgb/image_raw/compressed</strong></small
+    >
     <v-btn
       :disabled="!connected"
       color="info"
@@ -33,7 +36,7 @@
         <v-btn @click="addTopic" color="accent darken-2" block> Añadir </v-btn>
       </v-col>
     </v-row>
-      <v-snackbar v-model="snackbar">
+    <v-snackbar v-model="snackbar">
       Debes agregar la información solicitada
 
       <template v-slot:action="{ attrs }">
@@ -51,7 +54,7 @@ import ROSLIB from "roslib";
 var radius = 50;
 export default {
   name: "Joistick",
-  props: ["wsAddress"],
+  props: ["wsAddress", "robot"],
   data: () => ({
     img: "",
     topicName: "",
@@ -59,24 +62,7 @@ export default {
     customMsgType: "",
     addCustomTopic: false,
     snackbar: false,
-    items: [
-      {
-        name: "/camera/rgb/image_raw",
-        messageType: "sensor_msgs/Image",
-      },
-      {
-        name: "/camera/rgb/image_raw/compressed",
-        messageType: "sensor_msgs/CompressedImage",
-      },
-      {
-        name: "/camera/rgb/image_raw/compressedDepth",
-        messageType: "sensor_msgs/CompressedImage",
-      },
-      {
-        name: "/camera/rgb/image_raw/theora",
-        messageType: "theora_image_transport/Packet",
-      },
-    ],
+
     ros: null,
     topic: "",
     message: "",
@@ -86,8 +72,18 @@ export default {
   mounted() {
     this.connect();
   },
-  computed: {},
-  
+  computed: {
+    items: function () {
+      let items = [
+        {
+          name: "/" + this.robot.name + "/camera_node/image/compressed",
+          messageType: "sensor_msgs/CompressedImage",
+        },
+      ];
+      return items;
+    },
+  },
+
   methods: {
     connect() {
       this.ros = new ROSLIB.Ros({
@@ -95,7 +91,7 @@ export default {
       });
 
       this.ros.on("connection", () => {
-        console.log("connected to websocket server rosbridge");
+        console.log("connected to websocket server rosbridge", this.wsAddress);
         this.connected = true;
       });
       this.ros.on("error", (error) => {
@@ -135,7 +131,7 @@ export default {
         this.customMsgType = "";
         this.customTopic = "";
         this.addCustomTopic = false;
-      } else{
+      } else {
         this.snackbar = true;
       }
     },

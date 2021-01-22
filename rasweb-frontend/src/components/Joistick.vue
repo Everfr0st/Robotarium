@@ -43,10 +43,9 @@
 <script>
 // 0.26 y 1.82
 import ROSLIB from "roslib";
-var radius = 50;
 export default {
   name: "Joistick",
-  props: ["wsAddress"],
+  props: ["wsAddress", "robot"],
   data: () => ({
     speed: 70,
     dir: 0,
@@ -56,6 +55,7 @@ export default {
     ros: null,
     topic: "",
     message: "",
+    initialSpeed: 0.13,
   }),
   mounted() {
     //this.joistickFunction();
@@ -78,7 +78,6 @@ export default {
       });
 
       this.ros.on("connection", () => {
-        console.log("connected to websocket server rosbridge");
         this.connected = true;
       });
       this.ros.on("error", (error) => {
@@ -91,7 +90,7 @@ export default {
     setTopic() {
       this.topic = new ROSLIB.Topic({
         ros: this.ros,
-        name: "/autobot1/wheels_driver_node/wheels_cmd",
+        name: "/" + this.robot.name + "/wheels_driver_node/wheels_cmd",
         messageType: "duckietown_msgs/WheelsCmdStamped",
       });
     },
@@ -99,32 +98,32 @@ export default {
     forward() {
       this.dir = 1;
       this.message = new ROSLIB.Message({
-        vel_left: (this.speed / 100) * 0.26,
-        vel_right: (this.speed / 100) * 0.26,
+        vel_left: (this.speed / 100) * 0.26 + this.initialSpeed,
+        vel_right: (this.speed / 100) * 0.26 + this.initialSpeed,
       });
       this.publishData();
     },
     backward() {
       this.dir = 3;
       this.message = new ROSLIB.Message({
-        vel_left: -(this.speed / 100) * 0.26,
-        vel_right: -(this.speed / 100) * 0.26,
+        vel_left: -(this.speed / 100) * 0.26 - this.initialSpeed,
+        vel_right: -(this.speed / 100) * 0.26 - this.initialSpeed,
       });
       this.publishData();
     },
     left() {
       this.dir = 4;
       this.message = new ROSLIB.Message({
-        vel_left: -(this.speed / 100) * 0.26,
-        vel_right: (this.speed / 100) * 0.26,
+        vel_left: -(this.speed / 100) * 0.26 - this.initialSpeed,
+        vel_right: (this.speed / 100) * 0.26 + this.initialSpeed,
       });
       this.publishData();
     },
     right() {
       this.dir = 2;
       this.message = new ROSLIB.Message({
-        vel_left: (this.speed / 100) * 0.26,
-        vel_right: -(this.speed / 100) * 0.26,
+        vel_left: (this.speed / 100) * 0.26 + this.initialSpeed,
+        vel_right: -(this.speed / 100) * 0.26 - this.initialSpeed,
       });
       this.publishData();
     },
@@ -137,10 +136,11 @@ export default {
       this.publishData();
     },
     publishData() {
-      setInterval(() => {
-        this.setTopic();
-        this.topic.publish(this.message);
-      }, 30);
+              this.setTopic();
+
+      this.topic.publish(this.message);
+      this.$root.$emit("angSpeeds", this.message);
+    
     },
     decrement() {
       this.speed--;

@@ -15,14 +15,15 @@
     </v-select>
     <small
       >* Topic recomendado:
-      <strong>/camera/rgb/image_raw/compressed</strong></small
+      <strong>/{{robot.name}}/camera_node/image/compressed</strong></small
     >
     <v-btn
       :disabled="!connected"
       color="info"
       v-if="!addCustomTopic"
       @click="addCustomTopic = true"
-      >Añadir topic personalizado</v-btn
+      class="mt-2"
+      ><span class="capitalize">Añadir topic personalizado</span></v-btn
     >
     <v-row class="pt-0" v-else>
       <v-col sm="6">
@@ -37,7 +38,7 @@
       </v-col>
     </v-row>
     <v-snackbar v-model="snackbar">
-      Debes agregar la información solicitada
+      {{ snackMsg }}
 
       <template v-slot:action="{ attrs }">
         <v-btn color="error" text v-bind="attrs" @click="snackbar = false">
@@ -62,12 +63,14 @@ export default {
     customMsgType: "",
     addCustomTopic: false,
     snackbar: false,
+    snackMsg: "",
 
     ros: null,
     topic: "",
     message: "",
     listener: null,
     connected: false,
+    subscriberData: false,
   }),
   mounted() {
     this.connect();
@@ -117,6 +120,13 @@ export default {
       this.topic.subscribe((data) => {
         this.$emit("robotView", data.data);
         //this.unSubscribe();
+        this.subscriberData = !!data;
+      });
+      this.sleep(5000).then(() => {
+        if (!this.subscriberData) {
+          this.snackbar = true;
+          this.snackMsg = "El robot tarda demasiado en retornar una respuesta. ¿Estás segur@ que publica información en este topic?"
+        }
       });
     },
     unSubscribe() {
@@ -133,14 +143,18 @@ export default {
         this.addCustomTopic = false;
       } else {
         this.snackbar = true;
+        this.snackMsg = "Debes agregar la información solicitada";
       }
+    },
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
   },
 };
 </script>
 
 <style scoped>
-#zone_joystick {
-  max-width: 300px;
+.capitalize {
+  text-transform: capitalize;
 }
 </style>

@@ -4,10 +4,10 @@
       <v-row>
         <v-col md="4" lg="3">
           <RobotVideoStream  />
-          
         </v-col>
         <v-col md="8" lg="9">
           <MainVideoStream />
+          <tacometer />
         </v-col>
       </v-row>
     </v-container>
@@ -27,12 +27,13 @@
 import { mapMutations, mapState } from "vuex";
 import MainVideoStream from "@/components/MainVideoStream.vue";
 import RobotVideoStream from "@/components/RobotVideoStream.vue";
-
+import Tacometer from "../components/Tacometer.vue";
 export default {
   name: "Robotarium",
   components: {
     MainVideoStream,
     RobotVideoStream,
+    Tacometer
   },
   created() {
     document.title = "Robotarium Live Stream · UAO-RAS";

@@ -74,18 +74,22 @@
         </template>
       </v-autocomplete>
       <v-card-actions v-if="robot">
-        <v-btn @click="closeRobotTools" :color="showRobotTools? '' : 'error'">
-          {{ showRobotTools? "" : "Desconectar" }}
+        <v-btn @click="closeRobotTools" :color="showRobotTools ? '' : 'error'">
+          {{ showRobotTools ? "" : "Desconectar" }}
         </v-btn>
       </v-card-actions>
     </v-card>
     <div v-if="robot">
       <v-card class="mt-3 mr-4">
-        <joistick :wsAddress="'ws://aprobotica.uao.edu.co:' + getMeta.websocket"  />
+        <joistick
+          :wsAddress="'ws://aprobotica.uao.edu.co:' + getMeta.websocket"
+          :robot="robotObj"
+        />
       </v-card>
       <v-card class="mt-4 px-3 mr-4 pb-3">
         <robot-image
-          :wsAddress="'ws://aprobotica.uao.edu.co:' + getMeta.websocket" :robot="robotObj"
+          :wsAddress="'ws://aprobotica.uao.edu.co:' + getMeta.websocket"
+          :robot="robotObj"
           v-on:robotView="setRobotImage"
         />
       </v-card>
@@ -152,7 +156,9 @@ export default {
   computed: {
     ...mapState(["domainBase", "authentication"]),
     getMeta: function () {
-      return JSON.parse(this.robotObj.meta);
+      try {
+        return JSON.parse(this.robotObj.meta);
+      } catch (error) {}
     },
   },
   methods: {
@@ -173,18 +179,19 @@ export default {
         })
         .then((response) => {
           this.robots = response;
-          console.log(response);
         })
         .catch(() => {}); //Hacer algo al error en respuesta
     },
     setRobotInfo(info) {
       this.robotObj = info;
+      this.$root.$emit("robotSelected", !!this.robotObj);
     },
     closeRobotTools() {
       this.robot = "";
       this.showRobotTools = false;
       this.imgBox = false;
       this.img = "";
+      this.$root.$emit("robotSelected", false);
     },
     dragElement() {
       var elmnt = document.getElementById("drag-box");
@@ -215,7 +222,9 @@ export default {
       }
 
       function elementDrag(e) {
-        console.log(e)
+        var elmntPos = document
+          .getElementById("drag-box")
+          .getBoundingClientRect();
         e = e || window.event;
         e.preventDefault();
         // calculate the new cursor position:
@@ -238,7 +247,7 @@ export default {
     setRobotImage(data) {
       if (data) this.img = data;
       if (!this.imgBox) {
-       this.dragElement();
+        this.dragElement();
         this.imgBox = true;
       }
     },
@@ -262,7 +271,6 @@ export default {
   overflow: hidden;
   z-index: 1000;
   resize: both;
-
 }
 #drag-box img {
   height: 100%;

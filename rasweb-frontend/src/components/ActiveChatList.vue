@@ -47,7 +47,6 @@ export default {
   bottom: -15px;
   left: 0px;
   height: auto;
-  background: orange;
   z-index: 10;
 }
 @media (min-width: 1264px){
@@ -58,7 +57,6 @@ export default {
     left: 0px;
     width: 90vw;
     height: auto;
-    background: orange;
   }
 }
 @media (max-width: 1264px){

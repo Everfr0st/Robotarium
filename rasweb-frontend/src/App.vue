@@ -12,7 +12,7 @@
           id="show-left-aside"
           v-if="view == 'Robotarium'"
         >
-          <v-icon left> mdi-menu-open </v-icon>
+          <v-icon left> {{menuOpen?'mdi-menu-open':'mdi-menu'}} </v-icon>
           Menú
         </v-btn>
         <v-container fluid>
@@ -201,4 +201,5 @@ export default {
 box-shadow: 3px 3px 3px 1px rgba(92,92,92,0.29);
   border-radius: 0% 3px 3px 0;
 }
+
 </style>

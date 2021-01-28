@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
   name: "UserCompleteRegistration",
   data: () => ({
@@ -84,8 +84,11 @@ export default {
   },
   mounted() {
     this.getUserRole();
+    this.setViewname("Rol");
   },
+  
   methods: {
+    ...mapMutations(["setViewname"]),
     getUserRole() {
       fetch(this.domainBase + this.apiDir, {
         method: "GET",

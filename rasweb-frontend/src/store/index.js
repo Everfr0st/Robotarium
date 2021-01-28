@@ -29,7 +29,9 @@ export default new Vuex.Store({
     chats: [],
     users: [],
     wsBase : '127.0.0.1:8000',
+    //wsBase : '192.168.8.104:8000',
     domainBase : 'http://127.0.0.1:8000',
+    //domainBase : 'http://192.168.8.104:8000',
     view: '',
   },
   mutations: {
@@ -45,7 +47,7 @@ export default new Vuex.Store({
     },
     setSelfuser(state, user) {
       state.selfUser.username = user.username;
-      state.selfUser.profilePicture = user.profilePicture? state.domainBase + user.profilePicture: "";
+      state.selfUser.profile_picture = user.profile_picture? state.domainBase + user.profile_picture: "";
       state.selfUser.name = user.name;
     },
     setAccountInfo(state, user) {

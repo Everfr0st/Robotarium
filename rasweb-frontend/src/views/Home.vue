@@ -12,8 +12,8 @@
         <form action="">
           <v-row class="pl-3" justify="start" align="center">
             <v-avatar>
-              <v-avatar size="50" color="blue" v-if="selfUser.profilePicture">
-                <img :src="selfUser.profilePicture" :alt="selfUser.name" />
+              <v-avatar size="50" color="blue" v-if="selfUser.profile_picture">
+                <img :src="selfUser.profile_picture" :alt="selfUser.name" />
               </v-avatar>
               <v-avatar size="50" color="secondary" v-else>
                 <span

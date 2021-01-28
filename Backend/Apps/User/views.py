@@ -1,3 +1,4 @@
+from PIL.Image import Image
 from django.contrib.auth import authenticate, login
 from django.db.models import Q
 from django.http import JsonResponse
@@ -8,7 +9,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from rasweb.settings import DOMAIN_BASE
+from rasweb.settings import DOMAIN_BASE, BASE_DIR
 from .auxmethods import get_semester_name
 from .models import *
 from .serializer import UserSerializer
@@ -42,36 +43,48 @@ class CreateUserApi(generics.CreateAPIView):
         }
 
 
-class SignUpMoreInfo(TemplateView):
-    def get(self, request, **kwargs):  # Post Method
+class SignUpMoreInfo(generics.RetrieveAPIView, generics.UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
 
+    def get(self, request, *args, **kwargs):
         try:
-            role = self.request.GET["Role"]
+            response_obj = Student.objects.filter(user=request.user).first()
 
+        except:
+            response_obj = Teacher.objects.filter(user=request.user).first()
+
+        if response_obj:
+            return Response(response_obj.serializer(), status=200)
+        else:
+            return Response({'Detail': 'User rol not found'})
+
+    def put(self, request, **kwargs):  # Post Method
+        try:
+            role = self.request.data["role"]
             if role == "Estudiante":
-                carreer = self.request.GET["Carreer"]
-                semester = self.request.GET["Semester"]
-
-                student = Student.objects.get(user=self.request.user)
-                student.carreer = carreer
-                student.semester = semester
-                student.save()
+                career = self.request.data["career"]
+                semester = self.request.data["semester"]
+                try:
+                    student = Student.objects.get(user=self.request.user)
+                    student.career = career
+                    student.semester = semester
+                    student.save()
+                except:
+                    Student.objects.create(user=self.request.user, career=career, semester=semester)
 
             elif role == "Docente":
-                department = self.request.GET["Department"]
-                date_start = self.request.GET["Date_start"]
-
-                teacher = Teacher.objects.get(user=self.request.user)
-                teacher.department = department
-                teacher.date_start = date_start
-
-            return JsonResponse({
-                'SignUp': True,
-            })
+                department = self.request.data["department"]
+                date_start = self.request.data["date_start"]
+                try:
+                    teacher = Teacher.objects.get(user=self.request.user)
+                    teacher.department = department
+                    teacher.date_start = date_start
+                    teacher.save()
+                except:
+                    Teacher.objects.create(user=self.request.user, department=department, date_start=date_start)
+            return Response({'Detail': 'User more info saved into DB'}, status=200)
         except:
-            return JsonResponse({
-                'SignUp': False,
-            })
+            return Response({'Detail': 'User more info cannot be saved'}, status=500)
 
 
 class NavBar(generics.RetrieveAPIView):  # , LoginRequiredMixin):
@@ -168,6 +181,52 @@ class UserInfoApi(generics.RetrieveAPIView):
             'profile_picture': profile_picture
         }
         return Response(json_obj)
+
+
+class ProfilePictureApi(generics.CreateAPIView, generics.UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        profile_picture = request.FILES.get("profile_picture")
+        try:
+            profile_picture_obj = UserProfilePhoto.objects.create(user=request.user, profile_picture=profile_picture)
+            self.resize_img(profile_picture_obj)
+            return Response({'profile_picture_created': True}, status=200)
+        except:
+            return Response({'profile_picture_created': False}, status=500)
+
+    def put(self, request, *args, **kwargs):
+        profile_picture = request.FILES.get("profile_picture")
+        try:
+            profile_picture_obj = UserProfilePhoto.objects.get(user=request.user)
+            profile_picture_obj.profile_picture = profile_picture
+            profile_picture_obj.save()
+            self.resize_img(profile_picture_obj)
+            return Response({'Detail': 'Profile photo updated successfully'}, status=200)
+        except:
+            self.post(request, args, kwargs)
+        return Response({})
+
+    def resize_img(self, profile_picture):
+        import cv2 as cv
+        path = str(BASE_DIR) + '/Files/' + str(profile_picture.profile_picture)
+        img = cv.imread(path)
+        height, width = img.shape[:2]
+
+        # if ratio eidth/heigth is greater than 0.1, crop image (square format)
+        if abs(height / width - 1) > 0.1:
+            if height < width:
+                image = img[0: height, int(width / 2) - int(height / 2): int(width / 2) + int(height / 2)]
+
+            else:
+                image = img[int(height / 2) - int(width / 2): int(height / 2) + int(width / 2), 0: width]
+
+            # save current profile_picture in its path
+            # encode_param = [int(cv.IMWRITE_JPEG_QUALITY), 90]
+            # result, encimg = cv.imencode('.jpg', image, encode_param)
+            cv.imwrite(path, image)
+            im = Image.open(path)
+            im.save(path, format="JPEG", quality=50)
 
 
 class Logout(generics.DestroyAPIView):

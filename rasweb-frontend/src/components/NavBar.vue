@@ -53,24 +53,35 @@
           <v-icon>mdi-bell</v-icon>
         </v-badge>
       </v-btn>
-      <v-btn fab text>
-        <v-avatar size="30" color="blue" v-if="profile_picture">
-          <img :src="profile_picture" :alt="name" />
-        </v-avatar>
-        <v-avatar size="30" color="secondary" v-else>
-          <span style="color: white">{{
-            name.trim().length
-              ? name.slice(0, 1) + name.split(" ")[1].slice(0, 1)
-              : username.slice(0, 1)
-          }}</span>
-        </v-avatar>
-      </v-btn>
-      <v-btn id="logout-btn" icon>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+            <v-avatar size="30" color="blue" v-if="profile_picture">
+              <img :src="profile_picture" :alt="name" />
+            </v-avatar>
+            <v-avatar size="30" color="secondary" v-else>
+              <span style="color: white">{{
+                name.trim().length
+                  ? name.slice(0, 1) + name.split(" ")[1].slice(0, 1)
+                  : username.slice(0, 1)
+              }}</span>
+            </v-avatar>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item class="item" :to="{ name: 'MoreInfo' }">
+            <v-list-item-title>Rol</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="profilePicture = true;" class="item">
+            <v-list-item-title >Foto de perfil</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <v-btn @click="Logout" id="logout-btn" icon>
         <v-icon>mdi-export</v-icon>
       </v-btn>
     </v-app-bar>
-
-  
 
     <v-snackbar v-model="snackbar">
       {{ message }}
@@ -90,6 +101,7 @@
       v-if="inbox"
       style="position: fixed"
     />
+    <profile-picture v-if="profilePicture" />
   </div>
 </template>
 
@@ -97,12 +109,14 @@
 import { mapMutations, mapState } from "vuex";
 import Notifications from "../components/Notifications.vue";
 import Inbox from "../components/Inbox.vue";
-
+import ProfilePicture from "../components/ProfilePicture.vue";
+const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "NavBar",
   components: {
     Notifications,
     Inbox,
+    ProfilePicture
   },
   data: () => ({
     unread_messages: 0,
@@ -115,9 +129,11 @@ export default {
     message: "Tienes una nueva notificación.",
     notifications: false,
     inbox: false,
+    profilePicture: false
   }),
   async created() {
     const web_domain = "http://127.0.0.1:8000";
+    //const web_domain = "http://192.168.8.104:8000";
     const api_dir = "/robotarium-api/v1.0/navbar-info/";
     let nav_data = await fetch(web_domain + api_dir, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -154,6 +170,22 @@ export default {
   },
   methods: {
     ...mapMutations(["setSelfuser", "destroyAuthcredentials"]),
+    async Logout() {
+      //const web_domain = "http://192.168.8.104:8000";
+      const api_dir = "/robotarium-api/v1.0/logout/";
+      let response = await fetch(
+        web_domain + api_dir + this.authentication.accessToken,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Token ${this.authentication.accessToken}`,
+          },
+        }
+      );
+
+      this.destroyAuthcredentials();
+      this.$router.push({ name: "Login" });
+    },
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(
@@ -245,9 +277,12 @@ export default {
   }
 }
 @media (min-width: 1264px) {
-
   #logout-btn {
     display: none;
   }
+}
+.item:hover{
+  background: rgb(241, 241, 241);
+  cursor: pointer;
 }
 </style>

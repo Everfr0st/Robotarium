@@ -180,6 +180,7 @@ import { mapState, mapMutations } from "vuex";
 import moment from "moment";
 var contador = 0;
 const web_domain = "http://127.0.0.1:8000";
+//const web_domain = "http://192.168.8.104:8000";
 export default {
   name: "ActiveChat",
   data: () => ({
@@ -331,7 +332,6 @@ export default {
             this.typing = socketData.typing;
           } else if (socketData.type === "chat_message") {
             this.messages.unshift(socketData);
-            console.log(socketData)
             this.date_send = socketData.send.split("-")[0];
           } else if (socketData.type === "seen_message") {
             this.checkSeen();

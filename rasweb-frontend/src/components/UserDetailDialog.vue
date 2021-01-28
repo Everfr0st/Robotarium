@@ -62,10 +62,10 @@ import { mapState, mapMutations } from "vuex";
 
 import store from "@/store/index.js";
 import { setDialogPosition } from "@/auxfunctions/DomFunctions.js";
-const web_domain = "http://127.0.0.1:8000";
+//const web_domain = "http://192.168.8.104:8000";
 var counter = 0;
 
-//const web_domain = "http://127.0.0.1:8000";
+const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "UserDetailDialog",
   data: () => ({

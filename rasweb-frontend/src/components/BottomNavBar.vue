@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-bottom-navigation grow id="bottom-nav" color="primary">
+    <v-bottom-navigation v-if="authentication.accessToken" grow id="bottom-nav" color="primary">
       <v-row class="px-3 pt-0">
         <v-col class="pa-0">
           <v-btn class="pa-2" block exact :to="{ name: 'Home' }">
@@ -29,7 +29,13 @@
 </template>
 
 <script>
-export default {};
+import {mapState} from "vuex";
+export default {
+  name: "BottomNavBar",
+  computed:{
+    ...mapState(["authentication"])
+  }
+};
 </script>
 
 <style>

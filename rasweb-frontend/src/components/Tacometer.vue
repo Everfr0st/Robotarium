@@ -29,7 +29,6 @@ export default {
   mounted() {
     this.$root.$on("robotSelected", (data) => {
       this.connected = data;
-      console.log("asdfsdsd")
     });
     this.$root.$on("angSpeeds", (data) => {
       if (data) {

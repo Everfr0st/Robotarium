@@ -11,8 +11,8 @@
             <v-list-item class="pa-0" two-line>
               <v-list-item-avatar color="secondary">
                 <img
-                  v-if="post.profilePicture"
-                  :src="domainBase + post.profilePicture"
+                  v-if="post.profile_picture"
+                  :src="domainBase + post.profile_picture"
                   :alt="post.name ? post.name : '@' + post.username"
                 />
                 <span style="color: white " v-else>{{

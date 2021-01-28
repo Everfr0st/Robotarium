@@ -94,7 +94,6 @@ export default {
       });
 
       this.ros.on("connection", () => {
-        console.log("connected to websocket server rosbridge", this.wsAddress);
         this.connected = true;
       });
       this.ros.on("error", (error) => {

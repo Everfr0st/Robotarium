@@ -1,4 +1,6 @@
 from PIL.Image import Image
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from dj_rest_auth.registration.views import SocialLoginView
 from django.contrib.auth import authenticate, login
 from django.db.models import Q
 from django.http import JsonResponse
@@ -227,6 +229,10 @@ class ProfilePictureApi(generics.CreateAPIView, generics.UpdateAPIView):
             cv.imwrite(path, image)
             im = Image.open(path)
             im.save(path, format="JPEG", quality=50)
+
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
 
 
 class Logout(generics.DestroyAPIView):

@@ -56,7 +56,10 @@ INSTALLED_APPS = [
     'channels',
     'notify',
     'django_eventstream',
-
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -191,8 +194,8 @@ USER_ONLINE_TIMEOUT = 300
 # Número de segundos que vamos a hacer seguimiento de los usuarios inactivos, para antes de su
 # visto por última vez. Se elimina de la memoria caché
 USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
-#DOMAIN_BASE = 'http://127.0.0.1:8000'
-DOMAIN_BASE = 'http://192.168.8.104:8000'
+DOMAIN_BASE = 'http://127.0.0.1:8000'
+#DOMAIN_BASE = 'http://192.168.8.104:8000'
 # Mail interface
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"

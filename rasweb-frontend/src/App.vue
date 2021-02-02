@@ -173,10 +173,12 @@ export default {
 }
 .menu-robotarium {
   position: fixed;
-  left: -200px;
+  left: -400px;
   top: 65px;
   z-index: 100;
   min-width: 200px;
+  max-width: 400px;
+  width: auto;
   background: white;
   height: 100vh;
   transition: all ease 500ms;

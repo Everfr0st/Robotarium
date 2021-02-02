@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-tabs v-model="tab" class="mt-1">
+    <v-tabs show-arrows v-model="tab" class="mt-1">
       <v-tab> <v-icon left>mdi-calendar-multiple</v-icon> Reservar </v-tab>
       <v-tab><v-icon left>mdi-text-box-search</v-icon> Historial</v-tab>
     </v-tabs>

@@ -236,8 +236,10 @@ class GoogleLogin(SocialLoginView):
 
 
 class Logout(generics.DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
 
     def delete(self, request, *args, **kwargs):
+        print("loggin out")
         user_online = UserOnline.objects.get(user_id=request.user.pk)
         user_online.is_online = False
         user_online.save()

@@ -106,7 +106,7 @@ export default {
       //const web_domain = "http://192.168.8.104:8000";
       const api_dir = "/robotarium-api/v1.0/logout/";
       let response = await fetch(
-        web_domain + api_dir + this.authentication.accessToken,
+        web_domain + api_dir,
         {
           method: "DELETE",
           headers: {

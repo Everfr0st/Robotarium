@@ -104,6 +104,7 @@ export default {
           }
         })
         .then((response) => {
+          if(!response.role) return 0;
           this.role = response.role;
           this.userRole = true
           if (response.role == "Estudiante") {

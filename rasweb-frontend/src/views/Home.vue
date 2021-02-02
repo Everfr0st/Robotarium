@@ -85,9 +85,9 @@
                       ></v-list-item-content>
                     </template>
                     <template v-else>
-                      <v-list-item-avatar left v-if="data.item.profilePicture">
+                      <v-list-item-avatar left v-if="data.item.profile_picture">
                         <img
-                          :src="data.item.profilePicture"
+                          :src="data.item.profile_picture"
                           :alt="data.item.name"
                         />
                       </v-list-item-avatar>

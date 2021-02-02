@@ -13,13 +13,9 @@
               <h1 class="mt-3">RAS-UAO</h1>
             </v-row>
 
-            <v-btn elevation="2" block class="google-button" dark large>
-              <v-img
-                class="google-logo"
-                src="https://img.icons8.com/color/452/google-logo.png"
-              ></v-img>
-              Inicia sesión con Google
-            </v-btn>
+            <social-login> 
+              Inicia sesión
+            </social-login>
 
             <v-row class="pa-3 mr-1">
               <v-col class="pa-2" sm="5"><div class="line"></div></v-col>
@@ -82,10 +78,12 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import SocialLogin from '../components/SocialLogin.vue';
 const web_domain = "http://127.0.0.1:8000/robotarium-api/v1.0/";
 //const web_domain = "http://192.168.8.104:8000/robotarium-api/v1.0/";
 
 export default {
+  components: { SocialLogin },
   name: "Login",
   data: () => ({
     username: "",

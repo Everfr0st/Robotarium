@@ -13,13 +13,7 @@
               <h1 class="mt-3">RAS-UAO</h1>
             </v-row>
 
-            <v-btn elevation="2" block class="google-button" dark large>
-              <v-img
-                class="google-logo"
-                src="https://img.icons8.com/color/452/google-logo.png"
-              ></v-img>
-              Regístrate con Google
-            </v-btn>
+            <social-login> Regístrate </social-login>
             <v-row class="pa-0 mb-0 mr-1">
               <v-col class="pa-2" sm="5"><div class="line"></div></v-col>
               <v-col class="pa-2" sm="2"
@@ -28,7 +22,7 @@
               <v-col class="pa-2" sm="5"><div class="line"></div></v-col>
             </v-row>
             <form style="width: 100%" @submit.prevent="signUpSubmit">
-              <v-row class="mb-0" >
+              <v-row class="mb-0">
                 <v-col class="mb-0 pb-0" xs="6">
                   <v-text-field
                     class="mb-1 mt-0 pt-0"
@@ -38,7 +32,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col class="mb-0 pb-0" sm="6" >
+                <v-col class="mb-0 pb-0" sm="6">
                   <v-text-field
                     required
                     class="mb-1 mt-0 pt-0"
@@ -65,7 +59,6 @@
               ></v-text-field>
               <v-row class="pt-3">
                 <v-col class="mt-0 pt-0" sm="6">
-
                   <v-text-field
                     required
                     class="mb-1 mt-0 pt-0"
@@ -103,13 +96,13 @@
                 :loading="loading"
                 block
                 type="submit"
-
               >
                 Registrate
               </v-btn>
-               <p class="mt-3 mb-0" align="center" >
-            ¿Ya tienes una cuenta? <a @click="go2LoginView">Inicia sesión</a>
-          </p>
+              <p class="mt-3 mb-0" align="center">
+                ¿Ya tienes una cuenta?
+                <a @click="go2LoginView">Inicia sesión</a>
+              </p>
             </form>
           </v-col>
           <v-col class="image-signup">
@@ -133,11 +126,15 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import SocialLogin from "../components/SocialLogin.vue";
 const web_domain = "http://127.0.0.1:8000/robotarium-api/v1.0/";
 //const web_domain = "http://192.168.8.104:8000/robotarium-api/v1.0/";
 
 export default {
   name: "Login",
+  components: {
+    SocialLogin,
+  },
   data: () => ({
     firstName: "",
     lastName: "",
@@ -163,7 +160,7 @@ export default {
     message: "",
   }),
   computed: {
-    ...mapState(["authentication","domainBase"]),
+    ...mapState(["authentication", "domainBase"]),
     passwordStrong() {
       var regex = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$/;
       if (!regex.test(this.password1)) {
@@ -195,8 +192,8 @@ export default {
   },
   methods: {
     ...mapMutations(["updateAuthcredentials", "setViewname"]),
-    go2LoginView(){
-      this.$router.push({name:"Login"})
+    go2LoginView() {
+      this.$router.push({ name: "Login" });
     },
     signUpSubmit() {
       this.loading = true;
@@ -235,17 +232,16 @@ export default {
           };
           this.updateAuthcredentials(responseObj);
           this.$router.push({ name: "MoreInfo" });
-          
         })
         .catch((e) => {
           this.snackbar = true;
           this.message =
             "Ya existe una cuenta con este correo o nombre de usuario";
         })
-        .finally(()=>{
+        .finally(() => {
           this.signUpDialog = false;
           this.loading = false;
-        })
+        });
     },
   },
 };

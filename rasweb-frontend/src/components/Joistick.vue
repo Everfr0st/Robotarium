@@ -41,7 +41,7 @@
 </template>
 
 <script>
-// 0.26 y 1.82
+// 0.5 y 1.82
 import ROSLIB from "roslib";
 export default {
   name: "Joistick",
@@ -98,32 +98,32 @@ export default {
     forward() {
       this.dir = 1;
       this.message = new ROSLIB.Message({
-        vel_left: (this.speed / 100) * 0.26 + this.initialSpeed,
-        vel_right: (this.speed / 100) * 0.26 + this.initialSpeed,
+        vel_left: (this.speed / 100) * 0.5 ,
+        vel_right: (this.speed / 100) * 0.5 ,
       });
       this.publishData();
     },
     backward() {
       this.dir = 3;
       this.message = new ROSLIB.Message({
-        vel_left: -(this.speed / 100) * 0.26 - this.initialSpeed,
-        vel_right: -(this.speed / 100) * 0.26 - this.initialSpeed,
+        vel_left: -(this.speed / 100) * 0.5,
+        vel_right: -(this.speed / 100) * 0.5,
       });
       this.publishData();
     },
     left() {
       this.dir = 4;
       this.message = new ROSLIB.Message({
-        vel_left: -(this.speed / 100) * 0.26 - this.initialSpeed,
-        vel_right: (this.speed / 100) * 0.26 + this.initialSpeed,
+        vel_left: -(this.speed / 100) * 0.5,
+        vel_right: (this.speed / 100) * 0.5 ,
       });
       this.publishData();
     },
     right() {
       this.dir = 2;
       this.message = new ROSLIB.Message({
-        vel_left: (this.speed / 100) * 0.26 + this.initialSpeed,
-        vel_right: -(this.speed / 100) * 0.26 - this.initialSpeed,
+        vel_left: (this.speed / 100) * 0.5 ,
+        vel_right: -(this.speed / 100) * 0.5,
       });
       this.publishData();
     },

@@ -21,6 +21,7 @@ class RobotUpdateAvailableStatusApi(generics.UpdateAPIView):
         print(robot)
         if robot:
             robot.available = status
+            robot.save()
             return Response({
                 "Detail": "Robot status updated",
                 "status": robot.available

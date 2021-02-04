@@ -12,7 +12,7 @@
         :readonly="showRobotTools"
       >
         <template v-slot:selection="data">
-          <v-chip v-bind="data.attrs" :input-value="data.selected">
+          <v-chip v-bind="data.attrs" :input-value="data.selected" v-if="data.item.available">
             <v-badge
               bottom
               overlap
@@ -63,7 +63,7 @@
               </v-list-item-avatar>
             </v-badge>
 
-            <v-list-item-content @click="setRobotInfo(data.item)">
+            <v-list-item-content @click="data.item.available?setRobotInfo(data.item):''">
               <v-list-item-title v-html="data.item.name"></v-list-item-title>
               <v-list-item-subtitle
                 class="ml-3"
@@ -86,7 +86,7 @@
           :robot="robotObj"
         />
       </v-card>
-      <v-card class="mt-4 px-3 mr-4 pb-3">
+      <v-card class="mt-4 px-3 mr-4 pb-10">
         <robot-image
           :wsAddress="'ws://aprobotica.uao.edu.co:' + getMeta.websocket"
           :robot="robotObj"

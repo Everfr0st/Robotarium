@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p v-if="connected" class="success--text">Tacometros conectados</p>
     <v-row v-if="connected" class="tacometers">
       <v-col sm="4">
         <highcharts :options="chartOptionsLeft"></highcharts>

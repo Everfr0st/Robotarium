@@ -1,6 +1,6 @@
 <template>
   <div id="zone_joystick">
-    <v-container>
+    <v-container >
       <small>Joistick</small>
       <p class="pt-0">Velocidad ({{ speed }}%)</p>
       <v-slider
@@ -32,7 +32,7 @@
         </v-btn>
       </v-row>
       <v-row class="mt-4" justify="center">
-        <v-btn :disabled="!connected" color="info" @mousedown="backward" fab>
+        <v-btn class="mb-3" :disabled="!connected" color="info" @mousedown="backward" fab>
           <v-icon>mdi-arrow-down</v-icon>
         </v-btn>
       </v-row>

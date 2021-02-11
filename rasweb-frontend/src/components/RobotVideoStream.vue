@@ -187,6 +187,7 @@ export default {
       this.$root.$emit("robotSelected", !!this.robotObj);
     },
     closeRobotTools() {
+      this.$root.$emit("ROSconnected", {status: true, robot: this.robotObj.name})
       this.robot = "";
       this.showRobotTools = false;
       this.imgBox = false;

@@ -1,5 +1,5 @@
 <template>
-  <div id="zone_joystick">
+  <div>
     <v-container >
       <small>Joistick</small>
       <p class="pt-0">Velocidad ({{ speed }}%)</p>

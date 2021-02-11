@@ -26,13 +26,12 @@ export default {
   },
   computed: {},
   mounted() {
-    this.$root.$on("robotSelected", (data) => {
-      this.connected = data;
-    });
+  
     this.$root.$on("angSpeeds", (data) => {
       if (data) {
         this.chartOptionsLeft.series[0].data = [data.vel_left];
         this.chartOptionsRight.series[0].data = [data.vel_right];
+        this.connected = data;
       }
     });
   },

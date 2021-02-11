@@ -3,7 +3,7 @@
     <v-container class="robotarium" fluid>
       <v-row>
         <v-col md="4" lg="3">
-          <RobotVideoStream  />
+          <RobotVideoStream />
         </v-col>
         <v-col md="8" lg="9">
           <MainVideoStream />
@@ -14,10 +14,10 @@
 
     <v-overlay id="overlay" opacity="0.8">
       <div class="display-1 pa-5 mt-12">
-        El robotarium RAS-UAO no funciona correctamente en dispositivos con resoluciones menores a 1200px 
+        El robotarium RAS-UAO no funciona correctamente en dispositivos con
+        resoluciones menores a 1200px
       </div>
     </v-overlay>
-    
   </div>
 </template>
 
@@ -33,17 +33,34 @@ export default {
   components: {
     MainVideoStream,
     RobotVideoStream,
-    Tacometer
+    Tacometer,
   },
+  data: () => ({
+    apiDir: "/robotarium-api/v1.0/robot-status/",
+  }),
   created() {
     document.title = "Robotarium Live Stream · UAO-RAS";
     this.setViewname("Robotarium");
   },
+  mounted() {
+    this.$root.$on("ROSconnected", (data) => {
+      this.updateRobotStatus(data);
+    });
+  },
   computed: {
-    ...mapState(["reservation"]),
+    ...mapState(["reservation", "domainBase"]),
   },
   methods: {
     ...mapMutations(["setViewname"]),
+    updateRobotStatus(data) {
+      fetch(this.domainBase + this.apiDir, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+    },
   },
 };
 </script>

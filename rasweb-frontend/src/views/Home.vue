@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card elevation="3" class="mb-4" style="border-radius: 15px">
+    <v-card elevation="3" class="mb-4 pa-5" style="border-radius: 15px">
       <v-container fluid>
         <v-progress-linear
           v-if="loading"
@@ -39,7 +39,7 @@
           </v-row>
           <v-divider class="mt-2 mb-2"></v-divider>
 
-          <v-row v-if="tagUsers" class="pt-0">
+          <v-row v-if="tagUsers">
             <v-col sm="12">
               <v-form>
                 <v-autocomplete
@@ -117,7 +117,7 @@
               </v-form>
             </v-col>
           </v-row>
-          <v-row class="pl-2">
+          <v-row class="px-3 mt-3">
             <v-dialog v-model="dialog" persistent max-width="600">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn text v-bind="attrs" v-on="on">
@@ -134,7 +134,7 @@
                 </v-btn>
               </template>
               <v-card>
-                <v-container class="ma-0 pa-0" style="overflow: hidden">
+                <v-container class="pa-5" style="overflow: hidden">
                   <v-row>
                     <v-carousel v-if="photos.length">
                       <v-carousel-item

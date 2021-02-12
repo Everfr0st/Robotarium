@@ -102,20 +102,16 @@ class CreateReservationApi(generics.CreateAPIView):
             reservation.element.code
         )
         try:
-            date_formated = reservation.schedule.date.strftime("%d de %b. de %Y")
-            start_formated = reservation.schedule.start_time.strftime("%I :%M %p")
-            end_formated = reservation.schedule.end_time.strftime("%I:%M %p")
+            date_formatted = reservation.schedule.date.strftime("%d de %b. de %Y")
+            start_formatted = reservation.schedule.start_time.strftime("%I :%M %p")
+            end_formatted = reservation.schedule.end_time.strftime("%I:%M %p")
         except:
-            date_formated = datetime.strptime(reservation.schedule.date, '%Y-%m-%d').strftime("%d de %b. de %Y")
-            start_formated = str(reservation.schedule.start_time)[0:len(str(reservation.schedule.start_time)) - 3]
-            end_formated = str(reservation.schedule.end_time)[0:len(str(reservation.schedule.start_time)) - 3]
+            date_formatted = datetime.strptime(reservation.schedule.date, '%Y-%m-%d').strftime("%d de %b. de %Y")
+            start_formatted = str(reservation.schedule.start_time)[0:len(str(reservation.schedule.start_time)) - 3]
+            end_formatted = str(reservation.schedule.end_time)[0:len(str(reservation.schedule.start_time)) - 3]
 
         description = 'Descarga el archivo con formato .ics y sincroniza tu calendario con el evento que tienes el {0} de {1} a {2}' \
-            .format(
-            date_formated,
-            start_formated,
-            end_formated
-        )
+            .format(date_formatted, start_formatted, end_formatted)
         context = {
             'username': username,
             'subject': subject,

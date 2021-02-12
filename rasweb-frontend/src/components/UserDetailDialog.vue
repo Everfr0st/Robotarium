@@ -90,13 +90,14 @@ export default {
   }),
   async mounted() {
       let username = this.dialog.username;
+      setDialogPosition(username);
       let response = await fetch(this.domainBase + this.apiDir + username, {
         method: "GET",
       });
       response = await response.json();
       this.user_detail.first_description = response.first_element;
       this.user_detail.second_description = response.second_element;
-      setDialogPosition(username);
+      
   },
   computed: {
     ...mapState(["dialog", "domainBase"]),

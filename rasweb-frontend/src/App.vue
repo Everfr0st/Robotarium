@@ -106,6 +106,11 @@ export default {
       console.log(status, "detail");
     });
   },
+  watch:{
+    view(){
+      this.menuOpen = false;
+    }
+  },
   methods: {
     ...mapMutations(["destroyAuthcredentials"]),
     async Logout() {

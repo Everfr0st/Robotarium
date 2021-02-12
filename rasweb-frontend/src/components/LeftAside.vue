@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container class="pt-0 white" >
+    <v-container class="pt-4 white" >
       <v-row class="white"  v-for="(item, index) in elements" :key="index" wrap>
         <v-btn
           small

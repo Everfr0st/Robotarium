@@ -4,11 +4,16 @@
     :id="'dialog_' + dialog.username"
     @mouseleave="hideDialog()"
   >
-    <v-card elevation="5" class="pa-0">
+    <v-card elevation="5" >
       <v-row wrap justify="center" class="pa-3">
-        <v-badge bordered bottom overlap :color="dialog.online?'green':'grey'">
-          <v-avatar size="45" v-if="dialog.profilePicture">
-            <img :src="dialog.profilePicture" :alt="dialog.name" />
+        <v-badge
+          bordered
+          bottom
+          overlap
+          :color="dialog.online ? 'green' : 'grey'"
+        >
+          <v-avatar size="45" v-if="dialog.profile_picture">
+            <img :src="dialog.profile_picture" :alt="dialog.name" />
           </v-avatar>
           <v-avatar color="secondary" size="45" v-else>
             <span v-if="dialog.name" style="color: white"
@@ -21,28 +26,38 @@
           </v-avatar>
         </v-badge>
       </v-row>
-      <v-card-title class="pt-1">
-          {{ dialog.name }}
+      <v-card-title justify="center" class="mt-1 dialog-name">
+        {{ dialog.name }}
       </v-card-title>
       <v-card-subtitle class="pt-1 pl-5 pr-0" style="margin-bottom: 0px">
-        <v-icon left  color="primary">mdi-book-open-variant</v-icon>
+        <v-icon left color="primary">mdi-book-open-variant</v-icon>
         <span class="pt-1 pr-2">
           {{ user_detail.first_description.split("-")[0] }}
           <strong>{{ user_detail.first_description.split("-")[1] }}</strong>
         </span>
       </v-card-subtitle>
-      <v-card-subtitle class="pl-5 pr-4" style="padding-top: 0px; padding-bottom: 0px">
+      <v-card-subtitle
+        class="pl-5 pr-4"
+        style="padding-top: 0px; padding-bottom: 0px"
+      >
         <v-icon left color="primary">mdi-calendar-multiple</v-icon>
         <span>{{ user_detail.second_description }}</span>
       </v-card-subtitle>
       <v-card-actions>
-        <v-row justify="center" class="mt-1 mb-2">
-          <v-btn @click="addChat2List({
-            username: dialog.username,
-            name: dialog.name,
-            online: dialog.online,
-            profile_picture: dialog.profilePicture,
-          })" small class="mr-1" color="primary">
+        <v-row justify="center" class="mt-1 mb-2 px-5">
+          <v-btn
+            @click="
+              addChat2List({
+                username: dialog.username,
+                name: dialog.name,
+                online: dialog.online,
+                profile_picture: dialog.profilePicture,
+              })
+            "
+            small
+            class="mr-1"
+            color="primary"
+          >
             <v-icon left>mdi-send</v-icon>
             <span>Escríbeme</span>
           </v-btn>
@@ -58,9 +73,7 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 
-import store from "@/store/index.js";
 import { setDialogPosition } from "@/auxfunctions/DomFunctions.js";
-var counter = 0;
 
 export default {
   name: "UserDetailDialog",
@@ -75,28 +88,22 @@ export default {
       boilerplate: false,
     },
   }),
-  async beforeUpdate() {
-    counter++;
-    if (counter > 1) {
-      counter = 0;
-    } else {
-      let username = store.state.dialog.username;
+  async mounted() {
+      let username = this.dialog.username;
       let response = await fetch(this.domainBase + this.apiDir + username, {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        method: "GET",
       });
       response = await response.json();
       this.user_detail.first_description = response.first_element;
       this.user_detail.second_description = response.second_element;
       setDialogPosition(username);
-    }
   },
   computed: {
     ...mapState(["dialog", "domainBase"]),
   },
   methods: {
     hideDialog() {
-      let dialog = document.getElementsByClassName("user-detail-dialog");
-      dialog[0].style = "display: none;";
+      this.$root.$emit("detailDialog", false);
     },
     ...mapMutations(["addChat2List"]),
   },
@@ -106,9 +113,11 @@ export default {
 <style>
 .user-detail-dialog {
   position: fixed;
-  top: 0px;
-  display: none;
   transition: all ease 500ms;
+  z-index: 10;
+}
+.dialog-name{
+  text-align: center;
 }
 
 </style>

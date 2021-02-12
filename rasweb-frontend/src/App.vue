@@ -12,8 +12,8 @@
           id="show-left-aside"
           v-if="view == 'Robotarium'"
         >
-          <v-icon left> {{menuOpen?'mdi-menu-open':'mdi-menu'}} </v-icon>
-          Menú
+          <v-icon> {{ menuOpen ? "mdi-menu-open" : "mdi-menu" }} </v-icon>
+          <span class="ml-2" v-if="!menuOpen">Menú</span>
         </v-btn>
         <v-container fluid>
           <v-row wrap>
@@ -60,7 +60,7 @@
         </v-container>
         <ActiveChatList />
       </v-main>
-      <UserDetailDialog />
+      <UserDetailDialog v-if="detailDialog && view != 'Robotarium'" />
     </div>
 
     <div v-else>
@@ -94,32 +94,35 @@ export default {
 
   data: () => ({
     menuOpen: false,
-    apiDir: "/robotarium-api/v1.0/logout/"
+    apiDir: "/robotarium-api/v1.0/logout/",
+    detailDialog: false,
   }),
   computed: {
-    ...mapState(["authentication", "selfUser", "view", "domainBase"]),
+    ...mapState(["authentication", "selfUser", "view", "domainBase", "dialog"]),
   },
-
+  mounted() {
+    this.$root.$on("detailDialog", (status) => {
+      this.detailDialog = status;
+      console.log(status, "detail");
+    });
+  },
   methods: {
     ...mapMutations(["destroyAuthcredentials"]),
     async Logout() {
-      let response = await fetch(
-        this.domainBase + this.apiDir,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Token ${this.authentication.accessToken}`,
-          },
-        }
-      );
+      let response = await fetch(this.domainBase + this.apiDir, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      });
 
       this.destroyAuthcredentials();
       this.$router.push({ name: "Login" });
     },
     toggleMenu() {
+      this.menuOpen = !this.menuOpen;
       var menu = document.getElementById("left-aside");
       var menuBtn = document.getElementById("show-left-aside");
-      this.menuOpen = !this.menuOpen;
       if (this.menuOpen) {
         menu.classList.add("menu-robotarium-active");
         menuBtn.classList.add("active");
@@ -193,14 +196,13 @@ export default {
   top: 65px;
   z-index: 1000;
 
-  transition: all ease 500ms;
+  transition: all ease 600ms;
 }
 #show-left-aside.active {
   left: 200px;
--webkit-box-shadow: 3px 3px 3px 1px rgba(92,92,92,0.29);
--moz-box-shadow: 3px 3px 3px 1px rgba(92,92,92,0.29);
-box-shadow: 3px 3px 3px 1px rgba(92,92,92,0.29);
+  -webkit-box-shadow: 3px 3px 3px 1px rgba(92, 92, 92, 0.29);
+  -moz-box-shadow: 3px 3px 3px 1px rgba(92, 92, 92, 0.29);
+  box-shadow: 3px 3px 3px 1px rgba(92, 92, 92, 0.29);
   border-radius: 0% 3px 3px 0;
 }
-
 </style>

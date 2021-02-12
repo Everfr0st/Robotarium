@@ -29,7 +29,7 @@
               <v-badge
                 bordered
                 bottom
-                :color="user.online?'green':'grey'"
+                :color="user.online ? 'green' : 'grey'"
                 offset-x="25px"
                 offset-y="25px"
                 dot
@@ -49,8 +49,12 @@
               </v-badge>
 
               <v-list-item-content>
-                <v-list-item-title :title="user.name">{{user.name}}</v-list-item-title>
-                <v-list-item-subtitle :title="'@'+user.username">@{{user.username}}</v-list-item-subtitle>
+                <v-list-item-title :title="user.name">{{
+                  user.name
+                }}</v-list-item-title>
+                <v-list-item-subtitle :title="'@' + user.username"
+                  >@{{ user.username }}</v-list-item-subtitle
+                >
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -99,20 +103,24 @@ export default {
       "setUsers",
     ]),
     hideDialog() {
-      let chatlist = document.getElementById("chat-list");
-      let chatlist_position = chatlist.getBoundingClientRect();
-      let dialog = document.getElementsByClassName("user-detail-dialog");
+      let chatList = document.getElementById("chat-list");
+      let chatListPosition = chatList.getBoundingClientRect();
+      
       if (
-        event.clientY > chatlist_position.bottom ||
-        event.clientY < chatlist_position.top
+        event.clientY > chatListPosition.bottom ||
+        event.clientY < chatListPosition.top
       ) {
-        dialog[0].style = "display: none;";
+        this.$root.$emit("detailDialog", false);
+        this.setAccountInfo({
+          username: "",
+          profilePicture: "",
+          name: "",
+          online: ""
+        });
       }
     },
     showDialog() {
-      let username = this.dialog.username;
-      let dialogdiv = document.getElementsByClassName("user-detail-dialog");
-      // setDialogPosition(username);
+      this.$root.$emit("detailDialog", true);
     },
     searchUser() {
       //This search engine is not working correctly

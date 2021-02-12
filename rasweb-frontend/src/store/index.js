@@ -16,7 +16,7 @@ export default new Vuex.Store({
     dialog: {
       name: '',
       username: '',
-      profilePicture: '',
+      profile_picture: '',
       online: '',
     },
     live:{
@@ -51,7 +51,7 @@ export default new Vuex.Store({
     setAccountInfo(state, user) {
       state.dialog.name = user.name;
       state.dialog.username = user.username;
-      state.dialog.profilePicture = user.profilePicture;
+      state.dialog.profile_picture = user.profile_picture;
       state.dialog.online = user.online;
     },
     setUsers(state, users){

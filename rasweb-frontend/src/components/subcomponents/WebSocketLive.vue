@@ -41,7 +41,6 @@ export default {
         console.info("conectado exitosamente!");
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
-          //console.log(JSON.parse(data))
           const socket_data = JSON.parse(data);
           this.img_text = socket_data.img_data;
           if (this.number == "one") {

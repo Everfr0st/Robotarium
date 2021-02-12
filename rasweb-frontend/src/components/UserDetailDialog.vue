@@ -5,7 +5,7 @@
     @mouseleave="hideDialog()"
   >
     <v-card elevation="5" class="pa-0">
-      <v-row wrap justify="center" class="pt-3">
+      <v-row wrap justify="center" class="pa-3">
         <v-badge bordered bottom overlap :color="dialog.online?'green':'grey'">
           <v-avatar size="45" v-if="dialog.profilePicture">
             <img :src="dialog.profilePicture" :alt="dialog.name" />
@@ -22,9 +22,7 @@
         </v-badge>
       </v-row>
       <v-card-title class="pt-1">
-        <v-row justify="center">
           {{ dialog.name }}
-        </v-row>
       </v-card-title>
       <v-card-subtitle class="pt-1 pl-5 pr-0" style="margin-bottom: 0px">
         <v-icon left  color="primary">mdi-book-open-variant</v-icon>

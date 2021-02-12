@@ -138,7 +138,6 @@ export default {
       },
     });
     response = await response.json();
-    console.log(response)
     this.setUsers(response);
     this.loaded = true;
   },

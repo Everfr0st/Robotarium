@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container >
+    <v-container>
       <small>Joistick</small>
       <p class="pt-0">Velocidad ({{ speed }}%)</p>
       <v-slider
@@ -32,7 +32,13 @@
         </v-btn>
       </v-row>
       <v-row class="mt-4" justify="center">
-        <v-btn class="mb-3" :disabled="!connected" color="info" @mousedown="backward" fab>
+        <v-btn
+          class="mb-3"
+          :disabled="!connected"
+          color="info"
+          @mousedown="backward"
+          fab
+        >
           <v-icon>mdi-arrow-down</v-icon>
         </v-btn>
       </v-row>
@@ -79,6 +85,7 @@ export default {
 
       this.ros.on("connection", () => {
         this.connected = true;
+        this.$root.$emit("ROSconnected", {status: false, robot: this.robot.name})
       });
       this.ros.on("error", (error) => {
         console.error(error);
@@ -98,8 +105,8 @@ export default {
     forward() {
       this.dir = 1;
       this.message = new ROSLIB.Message({
-        vel_left: (this.speed / 100) * 0.5 ,
-        vel_right: (this.speed / 100) * 0.5 ,
+        vel_left: (this.speed / 100) * 0.5,
+        vel_right: (this.speed / 100) * 0.5,
       });
       this.publishData();
     },
@@ -115,14 +122,14 @@ export default {
       this.dir = 4;
       this.message = new ROSLIB.Message({
         vel_left: -(this.speed / 100) * 0.5,
-        vel_right: (this.speed / 100) * 0.5 ,
+        vel_right: (this.speed / 100) * 0.5,
       });
       this.publishData();
     },
     right() {
       this.dir = 2;
       this.message = new ROSLIB.Message({
-        vel_left: (this.speed / 100) * 0.5 ,
+        vel_left: (this.speed / 100) * 0.5,
         vel_right: -(this.speed / 100) * 0.5,
       });
       this.publishData();
@@ -136,11 +143,10 @@ export default {
       this.publishData();
     },
     publishData() {
-              this.setTopic();
+      this.setTopic();
 
       this.topic.publish(this.message);
       this.$root.$emit("angSpeeds", this.message);
-    
     },
     decrement() {
       this.speed--;

@@ -55,7 +55,6 @@ export default {
         .catch((error) => {});
     },
     backendLogin(accessToken) {
-      console.log(accessToken);
       let formData = {
         access_token: accessToken,
         code: "",

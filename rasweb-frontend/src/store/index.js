@@ -29,9 +29,7 @@ export default new Vuex.Store({
     chats: [],
     users: [],
     wsBase : '127.0.0.1:8000',
-    //wsBase : '192.168.8.104:8000',
     domainBase : 'http://127.0.0.1:8000',
-    //domainBase : 'http://192.168.8.104:8000',
     view: '',
   },
   mutations: {

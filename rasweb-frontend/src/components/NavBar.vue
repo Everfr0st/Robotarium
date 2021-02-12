@@ -154,7 +154,7 @@ export default {
       this.name = nav_data.name;
       this.username = nav_data.username;
       this.profile_picture = nav_data.profile_picture.length
-        ? web_domain + nav_data.profile_picture
+        ? this.domainBase + nav_data.profile_picture
         : "";
       this.setSelfuser(nav_data);
       this.connect();

@@ -179,7 +179,6 @@
 import { mapState, mapMutations } from "vuex";
 import moment from "moment";
 var contador = 0;
-//const web_domain = "http://192.168.8.104:8000";
 export default {
   name: "ActiveChat",
   data: () => ({

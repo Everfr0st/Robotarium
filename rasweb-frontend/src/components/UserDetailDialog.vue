@@ -62,10 +62,8 @@ import { mapState, mapMutations } from "vuex";
 
 import store from "@/store/index.js";
 import { setDialogPosition } from "@/auxfunctions/DomFunctions.js";
-//const web_domain = "http://192.168.8.104:8000";
 var counter = 0;
 
-const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "UserDetailDialog",
   data: () => ({
@@ -73,6 +71,7 @@ export default {
       first_description: "",
       second_description: "",
     },
+    apiDir: "/robotarium-api/v1.0/user-detail?username=",
     loaded: false,
     attrs: {
       boilerplate: false,
@@ -84,8 +83,7 @@ export default {
       counter = 0;
     } else {
       let username = store.state.dialog.username;
-      const api_dir = "/robotarium-api/v1.0/user-detail?username=" + username;
-      let response = await fetch(web_domain + api_dir, {
+      let response = await fetch(this.domainBase + this.apiDir + username, {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
       });
       response = await response.json();
@@ -95,7 +93,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["dialog"]),
+    ...mapState(["dialog", "domainBase"]),
   },
   methods: {
     hideDialog() {

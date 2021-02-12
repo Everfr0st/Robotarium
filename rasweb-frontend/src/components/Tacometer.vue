@@ -15,7 +15,6 @@
 import { Chart } from "highcharts-vue";
 import Highcharts from "highcharts";
 import hcMore from "highcharts/highcharts-more";
-import ROSLIB from "roslib";
 
 hcMore(Highcharts);
 

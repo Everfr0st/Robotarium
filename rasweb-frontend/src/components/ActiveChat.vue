@@ -179,7 +179,6 @@
 import { mapState, mapMutations } from "vuex";
 import moment from "moment";
 var contador = 0;
-const web_domain = "http://127.0.0.1:8000";
 //const web_domain = "http://192.168.8.104:8000";
 export default {
   name: "ActiveChat",
@@ -194,10 +193,11 @@ export default {
     loading: true,
     seen: false,
     seenMessage: "",
+    apiDir: "/robotarium-api/v1.0/chat/chat-messages"
   }),
   props: ["chat", "index"],
   computed: {
-    ...mapState(["selfUser", "wsBase"]),
+    ...mapState(["selfUser", "wsBase", "domainBase"]),
     date: function () {
       if (this.messages.length) {
         return moment(this.messages[this.messages.length - 1])
@@ -356,9 +356,8 @@ export default {
   },
 };
 async function ApiComunication(sender, receiver) {
-  const api_dir = `/robotarium-api/v1.0/chat/chat-messages`;
   let response = await fetch(
-    web_domain + api_dir + `?sender=${sender}&receiver=${receiver}`,
+    this.domainBase + this.apiDir + `?sender=${sender}&receiver=${receiver}`,
     {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       credentials: "same-origin", // include, *same-origin, omit

@@ -79,8 +79,6 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import SocialLogin from '../components/SocialLogin.vue';
-const web_domain = "http://127.0.0.1:8000/robotarium-api/v1.0/";
-//const web_domain = "http://192.168.8.104:8000/robotarium-api/v1.0/";
 
 export default {
   components: { SocialLogin },
@@ -92,13 +90,14 @@ export default {
     incorrectAuth: false,
     snackbar: false,
     message: "",
+    apiDir: "robotarium-api/v1.0/user-auth/login/",
     view: false,
     rules: {
       required: (value) => !!value || "Obligatorio",
     },
   }),
   computed: {
-    ...mapState(["authentication"]),
+    ...mapState(["authentication", "domainBase"]),
   },
   mounted() {
     if (this.authentication.auth) {
@@ -129,7 +128,7 @@ export default {
         };
       }
     
-      fetch(web_domain + "user-auth/login/", {
+      fetch(this.domainBase + this.apiDir, {
         method: "POST",
         credentials: "same-origin",
         headers: {
@@ -162,11 +161,7 @@ export default {
         this.snackbar = true;
         this.message = "Debes ingresar datos!"
         this.loading = false;
-      }
-      
-      
-   
-      
+      }      
     },
     go2SignUpView(){
       this.$router.push({name:"SignUp"})

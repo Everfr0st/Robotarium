@@ -110,7 +110,6 @@ import { mapMutations, mapState } from "vuex";
 import Notifications from "../components/Notifications.vue";
 import Inbox from "../components/Inbox.vue";
 import ProfilePicture from "../components/ProfilePicture.vue";
-const web_domain = "http://127.0.0.1:8000";
 export default {
   name: "NavBar",
   components: {
@@ -129,13 +128,15 @@ export default {
     message: "Tienes una nueva notificación.",
     notifications: false,
     inbox: false,
-    profilePicture: false
+    profilePicture: false,
+    apiDir: {
+      logout: "/robotarium-api/v1.0/logout/",
+      navBar: "/robotarium-api/v1.0/navbar-info/"
+    }
   }),
   async created() {
-    const web_domain = "http://127.0.0.1:8000";
-    //const web_domain = "http://192.168.8.104:8000";
-    const api_dir = "/robotarium-api/v1.0/navbar-info/";
-    let nav_data = await fetch(web_domain + api_dir, {
+
+    let nav_data = await fetch(this.domainBase + this.apiDir.navBar, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
         Authorization: `Token ${this.authentication.accessToken}`,
@@ -171,10 +172,9 @@ export default {
   methods: {
     ...mapMutations(["setSelfuser", "destroyAuthcredentials"]),
     async Logout() {
-      //const web_domain = "http://192.168.8.104:8000";
-      const api_dir = "/robotarium-api/v1.0/logout/";
+
       let response = await fetch(
-        web_domain + api_dir + this.authentication.accessToken,
+        this.domainBase + this.apiDir.logout + this.authentication.accessToken,
         {
           method: "DELETE",
           headers: {
@@ -219,7 +219,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["authentication", "wsBase"]),
+    ...mapState(["authentication", "wsBase", "domainBase"]),
   },
 };
 </script>

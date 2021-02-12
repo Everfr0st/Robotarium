@@ -1,7 +1,9 @@
 <template>
   <div>
     <v-bottom-navigation v-if="authentication.accessToken" grow id="bottom-nav" color="primary">
-      <v-row class="px-3 pt-0">
+      <v-container fluid>
+
+      <v-row align="center" justify="space-around">
         <v-col class="pa-0">
           <v-btn class="pa-2" block exact :to="{ name: 'Home' }">
             <span>Inicio</span>
@@ -24,6 +26,8 @@
           </v-btn></v-col
         >
       </v-row>
+            </v-container>
+
     </v-bottom-navigation>
   </div>
 </template>

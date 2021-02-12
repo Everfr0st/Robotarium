@@ -2,7 +2,7 @@
   <div>
     <v-container fluid>
       <v-row v-for="row in parseInt(levels)" :key="row" wrap>
-        <v-col class="col-card" v-for="col in 3" sm="6" md="4" :key="col">
+        <v-col class="col-card" v-for="col in 3" cols="12" sm="12" md="4" :key="col">
           <CardInventory class="card" :stand="stand" :col="col" :row="row" />
         </v-col>
       </v-row>
@@ -74,12 +74,5 @@ export default {
   height: auto;
   overflow: hidden;
 }
-@media (max-width: 600px) {
-  .col-card {
-    min-width: 94vw;
-  }
-  .card {
-    height: 100%;
-  }
-}
+
 </style>

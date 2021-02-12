@@ -1,9 +1,7 @@
 <template>
   <div>
     <v-card>
-      <v-card-title>
-        Franja horaria permitida: 8am - 12m y 2pm - 8pm
-      </v-card-title>
+      <v-card-title> Habilitado: de 8am - 12m y 2pm - 6pm </v-card-title>
       <v-sheet height="500" style="overflow: hidden">
         <v-calendar
           ref="calendar"
@@ -21,28 +19,39 @@
           @mouseup:time="endDrag"
         >
           <template v-slot:event="{ event, timed, eventSummary }">
-            <v-row
-              :title="!event.valid ? 'Ajusta tu franja horaria' : ''"
-              class="pa-0 ml-1 pt-2"
-            >
-              <v-icon v-if="!event.valid" class="ml-3" color="error"
-                >mdi-alert</v-icon
+            <v-container fluid>
+              <v-row
+                :title="!event.valid ? 'Ajusta tu franja horaria' : ''"
+                class="ma-1"
               >
-              <div class="v-event-draggable" v-html="eventSummary()"></div>
-            </v-row>
+                <v-icon v-if="!event.valid" class="ml-3" color="error"
+                  >mdi-alert</v-icon
+                >
+                <div class="v-event-draggable" v-html="eventSummary()"></div>
+              </v-row>
+            </v-container>
 
             <div
               v-if="timed"
               :class="
                 !event.request && !reservation_created
-                  ? 'v-event-drag-bottom'
-                  : ''
+                  ? 'v-event-drag-bottom pt-3'
+                  : 'pt-3'
               "
               @mousedown.stop="extendBottom(event)"
             ></div>
           </template>
         </v-calendar>
         <v-card-actions>
+          <v-btn
+            title="Cerrar"
+            color="error"
+            class="close"
+            icon
+            @click="$emit('closeHourPicker')"
+            ><v-icon>mdi-close</v-icon></v-btn
+          >
+
           <v-btn
             class="submit-reserve"
             fab
@@ -110,8 +119,7 @@ export default {
     const response = await this.getApiInfo();
     this.getEvents(response);
   },
-  beforeDestroy() {
-  },
+  beforeDestroy() {},
   computed: {
     ...mapState(["selfUser", "domainBase", "authentication"]),
   },
@@ -187,7 +195,7 @@ export default {
       this.dragEvent = null;
       this.createEvent = null;
       this.createStart = null;
-      this.extendOriginal = null;     
+      this.extendOriginal = null;
     },
     cancelDrag() {
       if (this.createEvent) {
@@ -284,20 +292,20 @@ export default {
     },
     setEvent(event) {
       this.reserveSubmit = {
-          schedule: {
-            date: this.date,
-            start: new Date(event.start).toString().substr(16, 8),
-            end: new Date(event.end).toString().substr(16, 8),
-          },
-          element: {
-            name: this.item.name,
-            code: this.item.code,
-          },
-          user: {
-            username: this.selfUser.username,
-          },
-        };
-    
+        schedule: {
+          date: this.date,
+          start: new Date(event.start).toString().substr(16, 8),
+          end: new Date(event.end).toString().substr(16, 8),
+        },
+        element: {
+          name: this.item.name,
+          code: this.item.code,
+        },
+        user: {
+          username: this.selfUser.username,
+        },
+      };
+
       if (!event.request) {
         this.checkAvailability();
       }
@@ -503,5 +511,10 @@ div {
   position: absolute;
   bottom: 10px;
   right: 20px;
+}
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 </style>

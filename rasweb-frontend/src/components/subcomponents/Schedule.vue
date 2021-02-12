@@ -7,15 +7,35 @@
         :max="EndDate"
         full-width
         style="position: relative"
-        @change="setActive();"
+        @change="setActive()"
       >
-        <v-btn @click="reserve()" v-if="active" class="new-scheduler" fab dark color="accent">
-          <v-icon dark> mdi-plus </v-icon>
-        </v-btn>
       </v-date-picker>
+      <v-btn
+        title="Cerrar"
+        color="white"
+        class="close"
+        icon
+        @click="$emit('closeDatePicker')"
+        ><v-icon>mdi-close</v-icon></v-btn
+      >
+      <v-btn
+        @click="reserve()"
+        v-if="active"
+        class="new-scheduler"
+        fab
+        dark
+        color="accent"
+      >
+        <v-icon dark> mdi-plus </v-icon>
+      </v-btn>
     </v-card>
-    <v-dialog  max-width="500px" v-model="showDialog"> 
-      <HourReserve v-if="showDialog" :date="date" :item="item"/>
+    <v-dialog :retain-focus="false" max-width="500px" v-model="showDialog">
+      <HourReserve
+        v-on:closeHourPicker="showDialog = false"
+        v-if="showDialog"
+        :date="date"
+        :item="item"
+      />
     </v-dialog>
   </div>
 </template>
@@ -25,8 +45,8 @@ import HourReserve from "@/components/subcomponents/HourReserve.vue";
 
 export default {
   name: "Schedule",
-  components:{
-    HourReserve
+  components: {
+    HourReserve,
   },
   props: ["item"],
   data: () => ({
@@ -51,19 +71,16 @@ export default {
       this.EndDate = endDate.toISOString().substring(0, 10);
     },
     setActive() {
-      let select_date = this.date.split("-");
-      let selectDate = new Date(select_date[0], select_date[1], select_date[2]);
-      if (selectDate.getDay() == 1 || selectDate.getDay() == 2) {
+      let date = new Date(this.date).getDay() + 1;
+      if (date == 6 || date == 7) {
         this.active = false;
       } else {
         this.active = true;
       }
     },
-    reserve(){
-      
+    reserve() {
       this.showDialog = true;
-      
-    }
+    },
   },
 };
 </script>
@@ -73,5 +90,10 @@ export default {
   position: absolute;
   right: 5%;
   bottom: 10px;
+}
+.close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
 }
 </style>

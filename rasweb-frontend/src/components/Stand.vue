@@ -1,16 +1,19 @@
 <template>
-  <div >
-    <h3 class="ml-3">Vitrina {{ stand }}</h3>
-    <v-container fluid >
-      <v-row  v-for="row in parseInt(levels)" :key="row" wrap>
+  <div>
+    <v-container fluid>
+      <v-row v-for="row in parseInt(levels)" :key="row" wrap>
         <v-col class="col-card" v-for="col in 3" sm="6" md="4" :key="col">
           <CardInventory class="card" :stand="stand" :col="col" :row="row" />
         </v-col>
       </v-row>
     </v-container>
-     <v-dialog v-model="reservation.showDialog">
-          <Schedule v-if="reservation.showDialog" :item="reservation.element"/>
-      </v-dialog>
+    <v-dialog :retain-focus="false" v-model="reservation.showDialog">
+      <Schedule
+        v-on:closeDatePicker="reservation.showDialog = false"
+        v-if="reservation.showDialog"
+        :item="reservation.element"
+      />
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -26,7 +29,7 @@ export default {
   }),
   components: {
     CardInventory,
-    Schedule
+    Schedule,
   },
   computed: {
     ...mapState(["domainBase", "authentication", "reservation"]),
@@ -74,12 +77,9 @@ export default {
 @media (max-width: 600px) {
   .col-card {
     min-width: 94vw;
-    
   }
-  .card{
+  .card {
     height: 100%;
   }
 }
-
-
 </style>

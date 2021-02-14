@@ -1,5 +1,10 @@
 # Robotarium
 **.pyc
 **/migrations/*
+!**/migrations/__init__.py
+**/.idea/
 Pipfile
+Pipfile.lock
 Backend/db.sqlite3
+Backend/Files/**
+**/node_modules/*

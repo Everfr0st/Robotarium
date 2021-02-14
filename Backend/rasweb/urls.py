@@ -1,23 +1,41 @@
-"""rasweb URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include
+from django.conf.urls import include, url
+from django.conf.urls.static import static
+from django.conf import settings
+
+from Apps.User import urls as user_urls
+from Apps.Chat import urls as chat_urls
+from Apps.Post import urls as post_urls
+from Apps.LiveStream import urls as live_urls
+from Apps.Inventory import urls as inventory_urls
+from Apps.Robotarium import urls as robotarium_urls
+from Apps.Notifications import urls as notifications_urls
+
+url_base = 'robotarium-api/v1.0/'
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls'))
-]
+                  path('admin/', admin.site.urls),
+
+                  # User app apis
+                  path(url_base, include(user_urls)),
+
+                  # Post app apis
+                  path(url_base, include(post_urls)),
+
+                  # Chat app apis
+                  path(url_base, include(chat_urls)),
+
+                  # LiveStream app apis
+                  path(url_base, include(live_urls)),
+
+                  # Inventory app apis
+                  path(url_base, include(inventory_urls)),
+
+                  # Robotarium app apis
+                  path(url_base, include(robotarium_urls)),
+
+                  # Notifications app apis
+                  path(url_base, include(notifications_urls)),
+
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

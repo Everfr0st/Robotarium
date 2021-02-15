@@ -12,7 +12,11 @@
         :readonly="showRobotTools"
       >
         <template v-slot:selection="data">
-          <v-chip v-bind="data.attrs" :input-value="data.selected" v-if="data.item.available">
+          <v-chip
+            v-bind="data.attrs"
+            :input-value="data.selected"
+            v-if="data.item.available"
+          >
             <v-badge
               bottom
               overlap
@@ -63,7 +67,9 @@
               </v-list-item-avatar>
             </v-badge>
 
-            <v-list-item-content @click="data.item.available?setRobotInfo(data.item):''">
+            <v-list-item-content
+              @click="data.item.available ? setRobotInfo(data.item) : ''"
+            >
               <v-list-item-title v-html="data.item.name"></v-list-item-title>
               <v-list-item-subtitle
                 class="ml-3"
@@ -73,22 +79,41 @@
           </template>
         </template>
       </v-autocomplete>
+      <div v-if="robot && robotObj">
+        <a
+          class="mx-2 link"
+          :href="`http://${appDomain}:${getMeta.compose}`"
+          target="_blank"
+          >Compose</a
+        >
+        <a
+          :href="`http://${appDomain}:${getMeta.portainer}`"
+          class="link"
+          target="_blank"
+          >Portainer</a
+        >
+      </div>
       <v-card-actions v-if="robot">
-        <v-btn @click="closeRobotTools" :color="showRobotTools ? '' : 'error'">
+        <v-btn
+          block
+          @click="closeRobotTools"
+          :color="showRobotTools ? '' : 'error'"
+        >
           {{ showRobotTools ? "" : "Desconectar" }}
         </v-btn>
       </v-card-actions>
     </v-card>
+
     <div v-if="robot">
       <v-card class="mt-3 mr-4">
         <joistick
-          :wsAddress="'ws://aprobotica.uao.edu.co:' + getMeta.websocket"
+          :wsAddress="`ws://${appDomain}:${getMeta.websocket}`"
           :robot="robotObj"
         />
       </v-card>
       <v-card class="mt-4 px-3 mr-4 pb-10">
         <robot-image
-          :wsAddress="'ws://aprobotica.uao.edu.co:' + getMeta.websocket"
+          :wsAddress="`ws://${appDomain}:${getMeta.websocket}`"
           :robot="robotObj"
           v-on:robotView="setRobotImage"
         />
@@ -144,6 +169,8 @@ export default {
     snackbar: false,
     message: "",
     img: "",
+    appDomain: "aprobotica.uao.edu.co",
+    rosConnected: false,
   }),
   components: {
     WebSocketLive,
@@ -152,6 +179,11 @@ export default {
   },
   created() {
     this.getApiInfo();
+  },
+  mounted() {
+    this.$root.$on("ROSconnected", (data) => {
+      this.rosConnected = true;
+    });
   },
   computed: {
     ...mapState(["domainBase", "authentication"]),
@@ -187,7 +219,10 @@ export default {
       this.$root.$emit("robotSelected", !!this.robotObj);
     },
     closeRobotTools() {
-      this.$root.$emit("ROSconnected", {status: true, robot: this.robotObj.name})
+      this.$root.$emit("ROSconnected", {
+        status: true,
+        robot: this.robotObj.name,
+      });
       this.robot = "";
       this.showRobotTools = false;
       this.imgBox = false;
@@ -282,5 +317,12 @@ export default {
   z-index: 101;
   right: 5px;
   top: 3px;
+}
+.link {
+  color: rgb(29, 97, 185);
+  text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
 }
 </style>

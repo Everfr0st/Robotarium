@@ -103,8 +103,8 @@ export default {
   mounted() {
     this.$root.$on("detailDialog", (status) => {
       this.detailDialog = status;
-      console.log(status, "detail");
     });
+    
   },
   watch:{
     view(){

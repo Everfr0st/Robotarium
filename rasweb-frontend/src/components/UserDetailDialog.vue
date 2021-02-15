@@ -4,7 +4,7 @@
     :id="'dialog_' + dialog.username"
     @mouseleave="hideDialog()"
   >
-    <v-card elevation="5" >
+    <v-card elevation="5">
       <v-row wrap justify="center" class="pa-3">
         <v-badge
           bordered
@@ -88,25 +88,36 @@ export default {
       boilerplate: false,
     },
   }),
-  async mounted() {
-      let username = this.dialog.username;
-      setDialogPosition(username);
-      let response = await fetch(this.domainBase + this.apiDir + username, {
-        method: "GET",
-      });
-      response = await response.json();
-      this.user_detail.first_description = response.first_element;
-      this.user_detail.second_description = response.second_element;
-      
+  mounted() {
+    this.$root.$on("detailDialog", (data) => {
+      if(data){
+        this.getUserData();
+      }
+    });
   },
   computed: {
     ...mapState(["dialog", "domainBase"]),
   },
+
   methods: {
+    ...mapMutations(["addChat2List"]),
     hideDialog() {
       this.$root.$emit("detailDialog", false);
     },
-    ...mapMutations(["addChat2List"]),
+    async getUserData() {
+      let username = this.dialog.username;
+      setDialogPosition(username);
+      fetch(this.domainBase + this.apiDir + username, {
+        method: "GET",
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((response) => {
+          this.user_detail.first_description = response.first_element;
+          this.user_detail.second_description = response.second_element;
+        });
+    },
   },
 };
 </script>
@@ -117,8 +128,7 @@ export default {
   transition: all ease 500ms;
   z-index: 10;
 }
-.dialog-name{
+.dialog-name {
   text-align: center;
 }
-
 </style>

@@ -16,7 +16,7 @@
         <v-list two-line>
           <template v-for="(user, index) in users">
             <v-list-item
-              v-if="user.username != selfUser.username"
+              
               :key="index"
               class="user-list"
               :id="'user_' + user.username"

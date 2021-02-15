@@ -90,7 +90,7 @@ export default {
     incorrectAuth: false,
     snackbar: false,
     message: "",
-    apiDir: "robotarium-api/v1.0/user-auth/login/",
+    apiDir: "/robotarium-api/v1.0/user-auth/login/",
     view: false,
     rules: {
       required: (value) => !!value || "Obligatorio",
@@ -111,6 +111,7 @@ export default {
   methods: {
     ...mapMutations(["updateAuthcredentials", "setViewname"]),
     loginSubmit() {
+      
       this.loading = true;
       if(this.username){
         let form_data = {};
@@ -127,7 +128,7 @@ export default {
           password: this.password,
         };
       }
-    
+     
       fetch(this.domainBase + this.apiDir, {
         method: "POST",
         credentials: "same-origin",

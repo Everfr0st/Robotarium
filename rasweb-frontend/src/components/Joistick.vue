@@ -91,7 +91,7 @@ export default {
         console.error(error);
       });
       this.ros.on("close", () => {
-        console.log("connection closed");
+        console.log("Connection closed");
       });
     },
     setTopic() {

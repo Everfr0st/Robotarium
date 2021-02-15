@@ -88,12 +88,11 @@ export default {
       boilerplate: false,
     },
   }),
+  beforeUpdate(){
+    this.getUserData();
+  },
   mounted() {
-    this.$root.$on("detailDialog", (data) => {
-      if(data){
-        this.getUserData();
-      }
-    });
+    this.getUserData();
   },
   computed: {
     ...mapState(["dialog", "domainBase"]),

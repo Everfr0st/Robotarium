@@ -17,7 +17,7 @@ class RobotsListApi(generics.ListAPIView):
 class RobotUpdateAvailableStatusApi(generics.UpdateAPIView):
     def put(self, request, *args, **kwargs):
         status = request.data["status"]
-        print(status, "sd")
+
         robot = Robot.objects.filter(name=request.data["robot"]).first()
         if robot:
             robot.available = status

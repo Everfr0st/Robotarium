@@ -36,14 +36,16 @@ class ReserveListApi(generics.ListAPIView):
         code = request.GET["code"]
         name = request.GET["name"]
 
-        reservations = self.get_queryset([date, name, code])
+        reservations = self.get_queryset(params=[date, name, code])
         for reservation in reservations:
             query_list.append(reservation.serializer())
         return JsonResponse(query_list, safe=False)
 
-    def get_queryset(self, params):
+    def get_queryset(self, **kwargs):
+        params = kwargs["params"]
         return Reserve.objects.filter(
-            schedule__date=params[0],
+            schedule__date_start=params[0],
+            schedule__date_end=params[0],
             element__name__icontains=params[1],
             element__code=params[2]
         ).order_by("-element__code")
@@ -59,7 +61,7 @@ class CreateReservationApi(generics.CreateAPIView):
         schedule_record, element_in_db, user_in_db, reservation = None, None, None, None
         try:
             schedule_record = Schedule.objects.get(
-                date=schedule["date"],
+                date_start=schedule["date"],
                 start_time=schedule["start"],
                 end_time=schedule["end"]
             )

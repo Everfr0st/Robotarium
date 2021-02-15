@@ -21,7 +21,7 @@
       >
       <v-btn
         @click="reserve()"
-        v-if="active"
+        v-if="active && !allDay"
         class="new-scheduler"
         fab
         dark
@@ -31,14 +31,15 @@
       </v-btn>
       <v-btn
         @click="reserve()"
-        v-if="allDay"
+        v-if="!active && allDay"
         class="new-scheduler"
         fab
         dark
         color="accent"
       >
-        <v-icon dark> mdi-plus </v-icon>
+        <v-icon dark> mdi-home </v-icon>
       </v-btn>
+      
     </v-card>
     <v-dialog :retain-focus="false" max-width="500px" v-model="showDialog">
       <HourReserve
@@ -85,9 +86,12 @@ export default {
         if (startDate - endDate > 0) {
           this.date.unshift(this.date[1]);
           this.date.pop();
+          this.allDay = true;
         } else if (startDate - endDate == 0) {
           this.date.pop();
         }
+      } else {
+        this.allDay = false;
       }
       this.setActive();
     },

@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.sites.models import Site
 from django.db import models
 from django.contrib.auth.models import User
@@ -21,9 +22,9 @@ class Inventory(models.Model):
         return "{0} ({1})".format(self.name, self.quantity)
 
 
-
 class Schedule(models.Model):
-    date = models.DateField()
+    date_start = models.DateField()
+    date_end = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
 
@@ -32,7 +33,8 @@ class Schedule(models.Model):
 
     def serializer(self):
         json_bj = {
-            'date': self.date,
+            'date_start': self.date_start,
+            'date_end': self.date_end,
             'start_time': self.start_time,
             'end_time': self.end_time
         }

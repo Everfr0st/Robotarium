@@ -121,7 +121,7 @@ SIMPLE_JWT = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'robotarium',
+        'NAME': 'robotarium2',
         'USER': 'robotariumadmin',
         'PASSWORD': 'f?"cB>Wy<-y2CS_?',
         'HOST': '127.0.0.1',

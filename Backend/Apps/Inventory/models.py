@@ -29,7 +29,7 @@ class Schedule(models.Model):
     end_time = models.TimeField()
 
     def __str__(self):
-        return "{0} from {1} to {2}".format(self.date, self.start_time, self.end_time)
+        return "{0} - {1} from {2} to {3}".format(self.date_start, self.date_end, self.start_time, self.end_time)
 
     def serializer(self):
         json_bj = {

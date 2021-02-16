@@ -35,7 +35,6 @@ class ReserveListApi(generics.ListAPIView):
         date = request.GET["date"]
         code = request.GET["code"]
         name = request.GET["name"]
-
         reservations = self.get_queryset(params=[date, name, code])
         for reservation in reservations:
             query_list.append(reservation.serializer())
@@ -44,11 +43,10 @@ class ReserveListApi(generics.ListAPIView):
     def get_queryset(self, **kwargs):
         params = kwargs["params"]
         return Reserve.objects.filter(
-            schedule__date_start=params[0],
-            schedule__date_end=params[0],
             element__name__icontains=params[1],
             element__code=params[2]
-        ).order_by("-element__code")
+        ).exclude(schedule__date_start__lt=params[0],
+                  schedule__date_end__lt=params[0]).order_by("-element__code")
 
 
 class CreateReservationApi(generics.CreateAPIView):
@@ -59,15 +57,22 @@ class CreateReservationApi(generics.CreateAPIView):
         user = data["user"]
 
         schedule_record, element_in_db, user_in_db, reservation = None, None, None, None
+        if (len(schedule["date"]) == 1):
+            date_start, date_end = schedule["date"][0], schedule["date"][0]
+        else:
+            date_start, date_end = schedule["date"][0], schedule["date"][1]
+        print(date_start, date_end, schedule)
         try:
             schedule_record = Schedule.objects.get(
-                date_start=schedule["date"],
+                date_start=date_start,
+                date_end=date_end,
                 start_time=schedule["start"],
                 end_time=schedule["end"]
             )
         except Schedule.DoesNotExist:
             schedule_record = Schedule.objects.create(
-                date=schedule["date"],
+                date_start=date_start,
+                date_end=date_end,
                 start_time=schedule["start"],
                 end_time=schedule["end"]
             )
@@ -88,9 +93,9 @@ class CreateReservationApi(generics.CreateAPIView):
             element=element_in_db,
             quantity=element_in_db.quantity,
         )
-        self.mail_configs(reservation)
+        print(reservation)
+        # self.mail_configs(reservation)
         try:
-
             return JsonResponse({'created': True})
         except:
             return JsonResponse({'created': False})
@@ -108,7 +113,7 @@ class CreateReservationApi(generics.CreateAPIView):
             start_formatted = reservation.schedule.start_time.strftime("%I :%M %p")
             end_formatted = reservation.schedule.end_time.strftime("%I:%M %p")
         except:
-            date_formatted = datetime.strptime(reservation.schedule.date, '%Y-%m-%d').strftime("%d de %b. de %Y")
+            date_formatted = datetime.strptime(reservation.schedule.date_start, '%Y-%m-%d').strftime("%d de %b. de %Y")
             start_formatted = str(reservation.schedule.start_time)[0:len(str(reservation.schedule.start_time)) - 3]
             end_formatted = str(reservation.schedule.end_time)[0:len(str(reservation.schedule.start_time)) - 3]
 

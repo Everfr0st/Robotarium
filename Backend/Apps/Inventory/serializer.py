@@ -13,7 +13,8 @@ class ReserveSerializer(serializers.ModelSerializer):
         model = Reserve
         fields = ['user', 'schedule', 'element', 'quantity', 'created']
 
+
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule
-        fields = ['date', 'start_time', 'end_time']
+        fields = ['date_start', 'date_end', 'start_time', 'end_time']

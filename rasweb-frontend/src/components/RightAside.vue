@@ -20,6 +20,7 @@
               :key="index"
               class="user-list"
               :id="'user_' + user.username"
+              v-if="user.username != selfUser.username"
               @mouseenter="
                 setAccountInfo(user);
                 showDialog();

@@ -11,6 +11,7 @@
         width="600"
       >
       </v-date-picker>
+     
       <v-btn
         title="Cerrar"
         color="white"
@@ -21,7 +22,7 @@
       >
       <v-btn
         @click="reserve()"
-        v-if="active && !allDay"
+        v-if="active"
         class="new-scheduler"
         fab
         dark
@@ -29,23 +30,13 @@
       >
         <v-icon dark> mdi-plus </v-icon>
       </v-btn>
-      <v-btn
-        @click="reserve()"
-        v-if="!active && allDay"
-        class="new-scheduler"
-        fab
-        dark
-        color="accent"
-      >
-        <v-icon dark> mdi-home </v-icon>
-      </v-btn>
       
     </v-card>
     <v-dialog :retain-focus="false" max-width="500px" v-model="showDialog">
       <HourReserve
         v-on:closeHourPicker="showDialog = false"
         v-if="showDialog"
-        :date="date[0]"
+        :date="date"
         :item="item"
       />
     </v-dialog>
@@ -72,11 +63,12 @@ export default {
   data: () => ({
     date: [],
     startDate: new Date().toISOString().slice(0, 10),
-    active: true,
+    active: false,
     showDialog: false,
     allDay: false,
     snackbar: false,
     message: "",
+    multiple: true,
   }),
   watch: {
     date() {

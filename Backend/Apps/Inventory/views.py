@@ -57,11 +57,10 @@ class CreateReservationApi(generics.CreateAPIView):
         user = data["user"]
 
         schedule_record, element_in_db, user_in_db, reservation = None, None, None, None
-        if (len(schedule["date"]) == 1):
+        if len(schedule["date"]) == 1:
             date_start, date_end = schedule["date"][0], schedule["date"][0]
         else:
             date_start, date_end = schedule["date"][0], schedule["date"][1]
-        print(date_start, date_end, schedule)
         try:
             schedule_record = Schedule.objects.get(
                 date_start=date_start,
@@ -93,8 +92,7 @@ class CreateReservationApi(generics.CreateAPIView):
             element=element_in_db,
             quantity=element_in_db.quantity,
         )
-        print(reservation)
-        # self.mail_configs(reservation)
+        self.mail_configs(reservation)
         try:
             return JsonResponse({'created': True})
         except:
@@ -109,7 +107,7 @@ class CreateReservationApi(generics.CreateAPIView):
             reservation.element.code
         )
         try:
-            date_formatted = reservation.schedule.date.strftime("%d de %b. de %Y")
+            date_formatted = reservation.schedule.date_start.strftime("%d de %b. de %Y")
             start_formatted = reservation.schedule.start_time.strftime("%I :%M %p")
             end_formatted = reservation.schedule.end_time.strftime("%I:%M %p")
         except:
@@ -117,8 +115,8 @@ class CreateReservationApi(generics.CreateAPIView):
             start_formatted = str(reservation.schedule.start_time)[0:len(str(reservation.schedule.start_time)) - 3]
             end_formatted = str(reservation.schedule.end_time)[0:len(str(reservation.schedule.start_time)) - 3]
 
-        description = 'Descarga el archivo con formato .ics y sincroniza tu calendario con el evento que tienes el {0} de {1} a {2}' \
-            .format(date_formatted, start_formatted, end_formatted)
+        description = 'Descarga el archivo con formato .ics y sincroniza tu calendario con la reserva que tienes el {0}' \
+                      ' de {1} a {2}'.format(date_formatted, start_formatted, end_formatted)
         context = {
             'username': username,
             'subject': subject,
@@ -160,5 +158,5 @@ class ReservationHistoryApi(generics.ListAPIView):
         query = self.request.GET.get("query")
         date_start = self.request.GET.get("dateStart")
         date_end = self.request.GET.get("dateEnd")
-        return Reserve.objects.filter(element__name__icontains=query, schedule__date__gte=date_start,
-                                      schedule__date__lte=date_end).order_by('-schedule__date')
+        return Reserve.objects.filter(element__name__icontains=query, schedule__date_start__gte=date_start,
+                                      schedule__date_end__lte=date_end).order_by('-schedule__date_start')

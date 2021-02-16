@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-card>
-      <v-card-title> Habilitado: de 8am - 12m y 2pm - 6pm </v-card-title>
+      <v-card-title> Habilitado: de 8am - 12m y 2pm - 6pm</v-card-title>
       <v-sheet height="500" style="overflow: hidden">
         <v-calendar
           ref="calendar"
-          v-model="date"
+          v-model="dateReservation"
           first-time="06:00"
           :event-more="true"
           color="primary"
@@ -51,23 +51,50 @@
             @click="$emit('closeHourPicker')"
             ><v-icon>mdi-close</v-icon></v-btn
           >
-
-          <v-btn
+          <v-speed-dial
+            v-model="fab"
+            :bottom="true"
+            :right="true"
+            :open-on-hover="!reservation_created"
+            transition="slide-y-reverse-transition"
             class="submit-reserve"
-            fab
-            dark
-            :loading="loading"
             v-if="!disabled"
-            :color="reservation_created ? 'success' : 'accent'"
-            @click="submitReserve()"
           >
-            <v-icon dark>{{
-              reservation_created ? "mdi-check" : "mdi-calendar-check"
-            }}</v-icon>
-          </v-btn>
+            <template v-slot:activator>
+              <v-btn
+                v-model="fab"
+                dark
+                fab
+                :loading="loading"
+                :color="reservation_created ? 'success' : 'accent'"
+              >
+                <v-icon v-if="fab"> mdi-close </v-icon>
+                <v-icon v-else> mdi-calendar </v-icon>
+              </v-btn>
+            </template>
+            <v-btn v-if="!reservation_created" @click="quantityDialog=!quantityDialog;" fab dark small color="indigo">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn v-if="!reservation_created" @click="submitReserve()" fab dark small color="green">
+              <v-icon>mdi-check</v-icon>
+            </v-btn>
+            <v-btn v-if="!reservation_created" @click="removeEvent" fab dark small color="red">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-speed-dial>
         </v-card-actions>
       </v-sheet>
     </v-card>
+    <v-dialog width="600" persistent v-model="quantityDialog">
+      <v-card class="pa-6">
+        <v-card-text>
+          <v-text-field :rules="[validQuantity]"  label="Cantidad" type="number" v-model="quantity"></v-text-field>
+          <v-row class="px-3">
+            <v-btn :disabled="quantityBtn" @click="quantityDialog=false;" color="accent darken-2">Aceptar</v-btn>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-snackbar v-model="snackbar" timeout="5000">
       {{ message }}
       <template v-slot:action="{ attrs }">
@@ -108,24 +135,43 @@ export default {
     message: "",
     api_dir: "/robotarium-api/v1.0/reserve-list/",
     api_post: "/robotarium-api/v1.0/create-reservation/",
-    api_response: [],
+    apiResponse: [],
     index: null,
     loading: false,
-    disabled: false,
+    disabled: true,
     reserveSubmit: "",
     reservation_created: false,
+    quantity: 1,
+    fab: "",
+    quantityDialog: false,
+    quantityBtn: false,
+     
   }),
-  async created(event) {
+
+  async created() {
     const response = await this.getApiInfo();
     this.getEvents(response);
   },
-  beforeDestroy() {},
+  
   computed: {
     ...mapState(["selfUser", "domainBase", "authentication"]),
+    dateReservation() {
+      return this.date[0];
+    },
+    validQuantity(){
+      if(this.quantity > this.item.quantity || this.quantity < 1){
+        this.quantityBtn = true;
+        return `Cantidad inválida (max. ${this.item.quantity}).`
+      } else{
+        this.quantityBtn = false;
+        return true;
+      }
+    }
+     
   },
   methods: {
     startDrag({ event, timed }) {
-      if (event && timed) {
+      if (event && timed && !event.request) {
         this.dragEvent = event;
         this.dragTime = null;
         this.extendOriginal = null;
@@ -246,7 +292,8 @@ export default {
     getEvents(response) {
       response.forEach((element) => {
         let aux_vec = [];
-        const schedule_date = element.schedule.date.split("-");
+        //const schedule_date = element.schedule.date_start.split("-");
+        const schedule_date = this.dateReservation.split("-");
         const schedule_time_start = element.schedule.start_time.split(":");
         const schedule_time_end = element.schedule.end_time.split(":");
 
@@ -270,9 +317,8 @@ export default {
           valid: true,
           request: true,
         };
-
         this.events.push(this.createEvent);
-        this.api_response.push(this.createEvent);
+        this.apiResponse.push(this.createEvent);
       });
     },
     dateTotime(date) {
@@ -291,6 +337,9 @@ export default {
       return arr[this.rnd(0, arr.length - 1)];
     },
     setEvent(event) {
+      if (this.date.length == 1) {
+        this.date.push(this.date[0]);
+      }
       this.reserveSubmit = {
         schedule: {
           date: this.date,
@@ -304,6 +353,7 @@ export default {
         user: {
           username: this.selfUser.username,
         },
+        quantity: this.quantity,
       };
 
       if (!event.request) {
@@ -312,7 +362,7 @@ export default {
     },
     checkAvailability() {
       let allowedSchedule = {
-        date: this.date,
+        date: this.date[0],
         start1: "08:00",
         end1: "12:00",
         start2: "14:00",
@@ -413,7 +463,7 @@ export default {
       let response = await fetch(
         this.domainBase +
           this.api_dir +
-          `?date=${this.date}&name=${this.item.name}&code=${this.item.code}`,
+          `?date=${this.dateReservation}&name=${this.item.name}&code=${this.item.code}`,
         {
           method: "GET", // *GET, POST, PUT, DELETE, etc.
           headers: {
@@ -424,11 +474,23 @@ export default {
       response = await response.json();
       return response;
     },
+    removeEvent() {
+      if (this.events.length > this.apiResponse.length) {
+        this.events.pop();
+        this.disabled = true;
+        this.dragTime = null;
+        this.dragEvent = null;
+        this.createEvent = null;
+        this.createStart = null;
+        this.extendOriginal = null;
+        this.selfUserEvents = [];
+        this.index = null;
+      }
+    },
     submitReserve() {
       if (!this.reservation_created) {
         this.loading = true;
         let formData = JSON.stringify(this.reserveSubmit);
-        let response;
         fetch(this.domainBase + this.api_post, {
           method: "POST",
           headers: {

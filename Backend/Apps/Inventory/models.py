@@ -67,8 +67,8 @@ class Reserve(models.Model):
     def generate_event(self):
         cal = Calendar()
         site = Site.objects.get_current()
-        start = str(self.schedule.date) + ' ' + str(self.schedule.start_time)
-        end = str(self.schedule.date) + ' ' + str(self.schedule.end_time)
+        start = str(self.schedule.date_start) + ' ' + str(self.schedule.start_time)
+        end = str(self.schedule.date_start) + ' ' + str(self.schedule.end_time)
         start_date = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
         end_date = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
 

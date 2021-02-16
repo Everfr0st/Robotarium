@@ -9,6 +9,7 @@ class InventorySerializer(serializers.ModelSerializer):
 
 
 class ReserveSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Reserve
         fields = ['user', 'schedule', 'element', 'quantity', 'created']

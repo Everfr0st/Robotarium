@@ -9,7 +9,7 @@
             :src="userInfo.profile_picture"
           ></v-img>
           <span v-else class="white--text">{{
-            userInfo.name.slice(0, 1)
+            userInfo.name.trim().length?userInfo.name.slice(0, 1):userInfo.username.slice(0,1).toUpperCase()
           }}</span>
         </v-list-item-avatar>
 

@@ -84,7 +84,8 @@
                         v-text="data.item"
                       ></v-list-item-content>
                     </template>
-                    <template v-else>
+                    <template v-else-if="data.item.username != selfUser.username">
+                      
                       <v-list-item-avatar left v-if="data.item.profile_picture">
                         <img
                           :src="data.item.profile_picture"

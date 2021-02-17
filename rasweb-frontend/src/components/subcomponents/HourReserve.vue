@@ -58,7 +58,7 @@
             :open-on-hover="!reservation_created"
             transition="slide-y-reverse-transition"
             class="submit-reserve"
-            v-if="!disabled"
+            v-if="!disabled && !reservation_created"
           >
             <template v-slot:activator>
               <v-btn
@@ -72,13 +72,13 @@
                 <v-icon v-else> mdi-calendar </v-icon>
               </v-btn>
             </template>
-            <v-btn v-if="!reservation_created" @click="quantityDialog=!quantityDialog;" fab dark small color="indigo">
+            <v-btn  @click="quantityDialog=!quantityDialog;" fab dark small color="indigo">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
-            <v-btn v-if="!reservation_created" @click="submitReserve()" fab dark small color="green">
+            <v-btn @click="submitReserve()" fab dark small color="green">
               <v-icon>mdi-check</v-icon>
             </v-btn>
-            <v-btn v-if="!reservation_created" @click="removeEvent" fab dark small color="red">
+            <v-btn @click="removeEvent" fab dark small color="red">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-speed-dial>

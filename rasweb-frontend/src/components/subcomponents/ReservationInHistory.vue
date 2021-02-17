@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-list two-line v-if="userInfo">
+    <v-list two-line v-if="userInfo" class="pb-0">
       <v-list-item>
         <v-list-item-avatar color="secondary">
           <v-img
@@ -54,7 +54,7 @@
           >
         </v-row>
       </v-card-subtitle>
-      <v-img :src="elementInfo.photo"></v-img>
+      <v-img max-height="400" :src="elementInfo.photo"></v-img>
     </v-list>
   </div>
 </template>

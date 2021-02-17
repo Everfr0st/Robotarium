@@ -74,7 +74,7 @@
           <v-list-item class="item" :to="{ name: 'MoreInfo' }">
             <v-list-item-title>Rol</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="profilePicture = true;" class="item">
+          <v-list-item @click="profilePicture = !profilePicture;" class="item">
             <v-list-item-title >Foto de perfil</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -102,7 +102,7 @@
       v-if="inbox"
       style="position: fixed"
     />
-    <profile-picture v-if="profilePicture" />
+    <profile-picture v-on:closed="profilePicture = false;" v-if="profilePicture" />
   </div>
 </template>
 

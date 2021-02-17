@@ -47,6 +47,13 @@ export default {
       return "";
     },
   },
+  watch:{
+    dialog(){
+      if(!this.dialog){
+        this.$emit("closed")
+      }
+    }
+  },
   methods:{
       uploadProfilePicture() {
       this.loading = true;

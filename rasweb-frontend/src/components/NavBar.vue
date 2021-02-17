@@ -25,6 +25,7 @@
         @click="
           inbox = !inbox;
           notifications = false;
+          profilePicture = false;
         "
       >
         <v-badge
@@ -40,6 +41,7 @@
         @click="
           notifications = !notifications;
           inbox = false;
+          profilePicture = false;
         "
         fab
         text
@@ -55,7 +57,7 @@
       </v-btn>
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
+          <v-btn icon v-bind="attrs" v-on="on" @click="notifications = false; inbox = false;">
             <v-avatar size="30" color="blue" v-if="profile_picture">
               <img :src="profile_picture" :alt="name" />
             </v-avatar>

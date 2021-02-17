@@ -40,14 +40,14 @@ export function getCookie(name) {
     return cookieValue;
 }
 
-
-
-
-/*@click = function (e) {
-    const messageInputDom = document.querySelector('#chat-message-input');
-    const message = messageInputDom.value;
-    chatSocket.send(JSON.stringify({
-        'message': message
-    }));
-    messageInputDom.value = '';
-};*/
+export function sendNotificationViaWS(sockedData, wsBase, channel) {
+    let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
+    var websocket = new WebSocket(
+        protocol + wsBase + "/ws/notifications/" + channel + "/"
+    );
+    console.log(websocket);
+    websocket.onopen = () => websocket.send(JSON.stringify(sockedData));
+    websocket.onmessage = () => {
+        websocket.close();
+    };
+}

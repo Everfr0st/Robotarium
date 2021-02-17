@@ -152,12 +152,11 @@ export default {
             this.conversation.sender = socketData.sender;
             if(socketData.sender != this.selfUser.username) {
                 this.conversation.unread_messages = socketData.unread_messages;
-                this.$emit("unreadMessages", this.conversation.unread_messages);
-               // this.$emit('moveChat', this.index)
+                this.$root.$emit("unreadMessages");
             } 
           } else if (socketData.type == "seen_message" && socketData.receiver == this.selfUser.username) {
             this.conversation.unread_messages = socketData.unread_messages;
-            this.$emit("unreadMessages", this.conversation.unread_messages);
+            this.$root.$emit("unreadMessages");
           }
         };
       };

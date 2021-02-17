@@ -43,5 +43,9 @@ class ChatConsumer(WebsocketConsumer):
         event['unread_notifications'] = unread_notifications
         self.send(text_data=json.dumps(event))
 
+    def new_msg(self, event):
+        print(event)
+        self.send(text_data=json.dumps(event))
+
     def get_unread_notifications(self, event):
         return Notification.objects.filter(recipient__username=event['receiver'], read=False).count()

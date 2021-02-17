@@ -97,7 +97,6 @@
       class="notifications"
     />
     <Inbox
-      v-on:unreadMessages="updateMsgStatus"
       v-if="inbox"
       style="position: fixed"
     />
@@ -131,7 +130,8 @@ export default {
     profilePicture: false,
     apiDir: {
       logout: "/robotarium-api/v1.0/logout/",
-      navBar: "/robotarium-api/v1.0/navbar-info/"
+      navBar: "/robotarium-api/v1.0/navbar-info/",
+       unread: "/robotarium-api/v1.0/chat/unread-msgs"
     }
   }),
   async created() {
@@ -168,6 +168,9 @@ export default {
     logo.forEach((boton) => {
       boton.classList.remove("v-btn--active", "v-btn--contained");
     });
+    this.$root.$on("unreadMsgs", ()=>{
+      this.updateCountUnreadMessages();
+    })
   },
   methods: {
     ...mapMutations(["setSelfuser", "destroyAuthcredentials"]),
@@ -206,6 +209,8 @@ export default {
                 : socketData.unread_notifications;
             this.unread_notifications = unread_notifications;
             this.snackbar = true;
+          } else if(socketData.type === "new_msg" && socketData.sender != this.username){
+            this.updateCountUnreadMessages();
           }
         };
       };
@@ -217,6 +222,23 @@ export default {
     updateMsgStatus(unreadMessages) {
       this.unread_messages = unreadMessages;
     },
+    updateCountUnreadMessages(){
+      fetch(this.domainBase + this.apiDir.unread, {
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((response) => {
+          this.unread_messages = response.unread_messages > 10?'+10':response.unread_messages;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    
   },
   computed: {
     ...mapState(["authentication", "wsBase", "domainBase"]),

@@ -49,10 +49,7 @@ export default new Vuex.Store({
       state.selfUser.name = user.name;
     },
     setAccountInfo(state, user) {
-      state.dialog.name = user.name;
-      state.dialog.username = user.username;
-      state.dialog.profile_picture = user.profile_picture;
-      state.dialog.online = user.online;
+      state.dialog = user;
     },
     setUsers(state, users){
       state.users = users;

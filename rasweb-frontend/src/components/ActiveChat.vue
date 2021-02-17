@@ -5,7 +5,6 @@
       :style="'right: ' + index * position + 'px;'"
       :id="'chat-card-' + chat.username"
       elevation="3"
-     
     >
       <v-card-title
         @click="toggletChat(chat.username, 1)"
@@ -16,7 +15,7 @@
             <img :src="chat.profilePicture" :alt="chat.name" />
           </v-avatar>
           <v-avatar color="secondary" size="30" v-else>
-            <span v-if="chat.name" style="color: white">{{
+            <span v-if="chat.name.trim().length" style="color: white">{{
               chat.name.split(" ")[0].slice(0, 1)
             }}</span>
             <span v-else style="color: white">{{
@@ -28,8 +27,8 @@
         <span
           class="ml-3 d-inline-block text-truncate"
           style="font-size: 11pt; max-width: 130px"
-          :title="chat.name ? chat.name : '@' + chat.username"
-          >{{ chat.name ? chat.name : "@" + chat.username }}</span
+          :title="chat.name.trim().length ? chat.name : '@' + chat.username"
+          >{{ chat.name.trim().length ? chat.name : "@" + chat.username }}</span
         >
 
         <v-spacer></v-spacer>
@@ -59,7 +58,7 @@
             {{ seenMessage }}
           </span>
           <v-card-text class="ma-0 pa-0" v-if="typing">
-            <v-row class="ml-0 pb-0">
+            <v-row align="center" class="px-4 mt-2 pb-1">
               <v-avatar size="20" v-if="chat.profilePicture">
                 <img :src="chat.profilePicture" :alt="chat.name" />
               </v-avatar>
@@ -71,19 +70,14 @@
                   chat.username.slice(0, 1).toUpperCase()
                 }}</span>
               </v-avatar>
-              <span style="position: relaive" class="ml-1"
-                >Escribiendo
-
-                <div class="fb-chat">
-                  <div class="fb-chat--bubbles">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-                  <!--fb-chat-bubbles-->
+              <span class="ml-1">Escribiendo </span>
+              <div class="fb-chat">
+                <div class="fb-chat--bubbles">
+                  <span></span>
+                  <span></span>
+                  <span></span>
                 </div>
-                <!--fb-chat-->
-              </span>
+              </div>
             </v-row>
           </v-card-text>
           <v-card
@@ -162,13 +156,13 @@
           class="text-input"
           @keyup.enter="sendMessage()"
           @keyup="typingMessage()"
+          @focus="seenText"
           block
           v-model="message"
           label="Envía un mensaje..."
           type="text"
           solo
           autocomplete="off"
-          @input="seenText"
         ></v-text-field>
       </v-card-actions>
     </v-card>
@@ -177,6 +171,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import { sendNotificationViaWS } from "../auxfunctions/DomFunctions.js";
 import moment from "moment";
 var contador = 0;
 export default {
@@ -192,7 +187,7 @@ export default {
     loading: true,
     seen: false,
     seenMessage: "",
-    apiDir: "/robotarium-api/v1.0/chat/chat-messages"
+    apiDir: "/robotarium-api/v1.0/chat/chat-messages",
   }),
   props: ["chat", "index"],
   computed: {
@@ -211,30 +206,8 @@ export default {
         .format("hh:mm a");
     },
   },
-  created() {
-    let response;
-    ApiComunication(this.selfUser.username, this.chat.username).then(
-      (response) => {
-        if (response.conversation_created == undefined) {
-          this.messages = response;
-          this.date_send = response[response.length - 1].send.split("-")[0];
-          this.room = response[0].conversation;
-        } else if (
-          response.error == undefined &&
-          response.conversation_created != undefined
-        ) {
-          this.room = response.conversation;
-        } else {
-          console.error("Unexpected error have ocurred!!");
-        }
-        if (this.room != null) {
-          this.connect();
-          this.seenText();
-        }
-        this.loading = false;
-        this.message = "";
-      }
-    );
+  mounted() {
+    this.ApiComunication(this.selfUser.username, this.chat.username);
   },
   methods: {
     ...mapMutations(["deleteChatfromlist"]),
@@ -256,7 +229,6 @@ export default {
         }
       } catch {}
     },
-    showDate(Date) {},
     sendMessage() {
       if (this.message.length) {
         this.websocket.send(
@@ -271,6 +243,12 @@ export default {
         );
 
         this.message = "";
+        let sockedData = {
+          type: "new_msg",
+          sender: this.selfUser.username,
+          receiver: this.chat.username,
+        };
+        sendNotificationViaWS(sockedData, this.wsBase, this.chat.username);
       }
     },
     typingMessage() {
@@ -296,13 +274,9 @@ export default {
       }
     },
     seenText() {
-      if (
-        this.messages.length &&
-        this.messages[0].sender !== this.selfUser.username &&
-        !this.messages[0].read
-      ) {
+      if (this.chat.username != this.selfUser.username) {
         let sender = this.selfUser.username;
-        this.websocket.onopen = () => this.websocket.send(
+        this.websocket.send(
           JSON.stringify({
             type: "seen_message",
             sender: sender,
@@ -319,11 +293,10 @@ export default {
         protocol + this.wsBase + "/ws/chat/" + this.room + "/"
       );
       this.websocket.onopen = () => {
-        console.info("conectado exitosamente!", this.room);
+        /* console.info("conectado exitosamente!", this.room); */
         this.websocket.onmessage = ({ data }) => {
-          // this.messages.unshift(JSON.parse(data));
-
           const socketData = JSON.parse(data);
+
           if (
             socketData.type === "type_message" &&
             socketData.sender != this.selfUser.username
@@ -331,18 +304,21 @@ export default {
             this.typing = socketData.typing;
           } else if (socketData.type === "chat_message") {
             this.messages.unshift(socketData);
-            this.date_send = socketData.send.split("-")[0];
           } else if (socketData.type === "seen_message") {
-            this.checkSeen();
+            if (socketData.receiver == this.selfUser.username) {
+              this.checkSeen();
+            } else {
+              this.$root.$emit("unreadMsgs");
+            }
           }
         };
       };
       this.websocket.onclose = () => {
+        this.websocket = null;
       };
     },
     closeChat() {
       this.websocket.close();
-      this.websocket = null;
       this.$emit("close", { username: this.chat.username, index: this.index });
     },
     checkSeen() {
@@ -352,22 +328,42 @@ export default {
         }
       });
     },
+    ApiComunication(sender, receiver) {
+      fetch(
+        this.domainBase +
+          this.apiDir +
+          `?sender=${sender}&receiver=${receiver}`,
+        {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.conversation_created == undefined) {
+            this.messages = response;
+            this.date_send = response[response.length - 1].send.split("-")[0];
+            this.room = response[0].conversation;
+          } else if (
+            response.error == undefined &&
+            response.conversation_created != undefined
+          ) {
+            this.room = response.conversation;
+          } else {
+            console.error("Unexpected error have ocurred!!");
+          }
+          if (this.room != null) {
+            this.connect();
+          }
+          this.loading = false;
+          this.message = "";
+        });
+    },
   },
 };
-async function ApiComunication(sender, receiver) {
-  let response = await fetch(
-    this.domainBase + this.apiDir + `?sender=${sender}&receiver=${receiver}`,
-    {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    }
-  );
-  return response.json();
-}
 </script>
 <style  scoped>
 .chat-card {
@@ -413,20 +409,9 @@ async function ApiComunication(sender, receiver) {
   padding: 5px 5px 5% 5px;
   position: relative;
   border-right: 0px;
+  border-radius: 10px 0px 10px 10px;
 }
-.outgoing-message::after {
-  content: "";
-  width: 0;
-  height: 0;
-  border-right: 5px solid #0a4a73;
-  border-top: 5px solid transparent;
-  border-left: 5px solid transparent;
-  border-bottom: 5px solid #0a4a73;
-  transform: rotate(180deg);
-  position: absolute;
-  top: 0.8px;
-  right: -5px;
-}
+
 .incomming-message {
   background: #d96334;
   width: auto;
@@ -434,20 +419,9 @@ async function ApiComunication(sender, receiver) {
   padding: 5px 5px 5% 5px;
   position: relative;
   border-left: 0px;
+  border-radius: 0px 10px 10px 10px;
 }
-.incomming-message::after {
-  content: "";
-  width: 0;
-  height: 0;
-  border-right: 5px solid #d96334;
-  border-top: 5px solid transparent;
-  border-left: 5px solid transparent;
-  border-bottom: 5px solid#D96334;
-  transform: rotate(-90deg);
-  position: absolute;
-  top: 0.8px;
-  left: -5px;
-}
+
 .text-input {
   border-top: 1px solid rgb(197, 197, 197);
 }
@@ -477,8 +451,8 @@ async function ApiComunication(sender, receiver) {
   display: block;
   border-radius: 30%/50%;
   position: absolute;
-  left: 75px;
-  bottom: -8px;
+  left: 80px;
+  bottom: -15px;
 }
 .fb-chat--bubbles {
   text-align: center;

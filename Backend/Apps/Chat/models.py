@@ -23,6 +23,7 @@ class Message(SoftDeletableModel):
 
     def serializer(self):
         serializer = {
+            "type": "chat_message",
             "conversation": self.conversation.pk,
             "sender": self.sender.username,
             "text": self.text,

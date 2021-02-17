@@ -9,7 +9,7 @@
             :src="userInfo.profile_picture"
           ></v-img>
           <span v-else class="white--text">{{
-            userInfo.name.slice(0, 1)
+            userInfo.name.trim().length?userInfo.name.slice(0, 1).toUpperCase():userInfo.username.slice(0,1).toUpperCase()
           }}</span>
         </v-list-item-avatar>
 
@@ -45,8 +45,14 @@
         :title="date + ', de ' + timeStart + ' a ' + timeEnd"
         v-if="scheduleInfo"
       >
-        <v-icon left>mdi-calendar-clock</v-icon>
-        {{ date | capitalize }}, de {{ timeStart }} a {{ timeEnd }}.
+        <v-row align="center" class="px-3">
+          <v-icon left>mdi-calendar-clock</v-icon>
+          <span
+            >Desde el {{ date(elementInfo.date_start) }} hasta el
+            {{ date(elementInfo.date_end) }}, de {{ timeStart }} a
+            {{ timeEnd }}.</span
+          >
+        </v-row>
       </v-card-subtitle>
       <v-img :src="elementInfo.photo"></v-img>
     </v-list>
@@ -75,19 +81,15 @@ export default {
     timeSince: function () {
       return moment(this.reservation.created).locale("es").fromNow();
     },
-    date: function () {
-      return moment(this.scheduleInfo.date)
-        .locale("es")
-        .format("dddd D MMM YYYY");
-    },
+
     timeStart: function () {
-      let date = this.scheduleInfo.date;
+      let date = this.scheduleInfo.date_start;
       return moment(date + " " + this.scheduleInfo.start_time)
         .locale("es")
         .format("hh:mm a");
     },
     timeEnd: function () {
-      let date = this.scheduleInfo.date;
+      let date = this.scheduleInfo.date_start;
       return moment(date + " " + this.scheduleInfo.end_time)
         .locale("es")
         .format("hh:mm a");
@@ -128,6 +130,9 @@ export default {
             this.scheduleInfo = response;
           }
         });
+    },
+    date(date) {
+      return moment(date).locale("es").format("dddd D [de] MMM [de] YYYY");
     },
   },
   filters: {

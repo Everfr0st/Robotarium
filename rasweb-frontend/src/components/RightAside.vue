@@ -141,7 +141,7 @@ export default {
   },
   async created() {
     let response = await fetch(this.domainBase + this.api_dir, {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      method: "GET", 
       headers: {
         Authorization: `Token ${this.authentication.accessToken}`,
       },

@@ -1,10 +1,11 @@
 <template>
   <v-container fluid class="chat-list"  >
     <v-row  justify="end" class="pa-0">   
-      <div v-for="(chat,index) in chats" :key="index">
+      <!-- <div v-for="(chat,index) in chats" :key="index">
           <ActiveChat :id="`chat_${chat.username}`" :chat="chat" v-on:close="deleteChat" :index="index"/>
       
-      </div>
+      </div> -->
+      {{chats}}
     </v-row>
   </v-container>
 </template>
@@ -53,7 +54,7 @@ export default {
     .chat-list{
     display: block;
     position: fixed;
-    bottom: -15px;
+    bottom: 15px;
     left: 0px;
     width: 90vw;
     height: auto;

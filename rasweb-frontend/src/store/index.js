@@ -58,16 +58,8 @@ export default new Vuex.Store({
       state.users = users;
     },
     addChat2List(state, chat) {
-      let auxChat = {
-        username: chat.username,
-        name: chat.name,
-        online: chat.online,
-        profile_picture: chat.profile_picture
-      }
-      let chat_in_list = state.chats.indexOf(auxChat)
-      if (chat_in_list==-1) {
-        state.chats.push(auxChat)
-      }
+      const result = state.chats.filter(chatObj => chatObj.id == chat.id);
+      if(!result.length) state.chats.push(chat)
     },
     deleteChatfromlist(state, index) {
       state.chats.splice(index, 1);

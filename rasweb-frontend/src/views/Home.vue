@@ -37,7 +37,7 @@
               ></div>
             </v-col>
           </v-row>
-          <v-divider class="mt-2 mb-2"></v-divider>
+          <v-divider class="mt-4 mb-2"></v-divider>
 
           <v-row v-if="tagUsers">
             <v-col sm="12">

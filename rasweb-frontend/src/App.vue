@@ -141,7 +141,7 @@ export default {
 </script>
 
 <style scoped>
-@media (max-width: 1200px) {
+@media (max-width: 1270px) {
   .right-aside {
     display: none;
   }
@@ -149,7 +149,7 @@ export default {
     display: none;
   }
   #main {
-    padding: 50px 0 !important;
+    padding: 60px 0 !important;
   }
   .menu-robotarium {
     display: none;

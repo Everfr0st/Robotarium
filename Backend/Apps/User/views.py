@@ -124,6 +124,7 @@ class UsersList(generics.RetrieveAPIView):
         users_query = User.objects.all().order_by("username")
         for user in users_query:
             user_dic = {
+                "id": user.pk,
                 "name": "{0} {1}".format(user.first_name,
                                          user.last_name).strip(" "),
                 "username": user.username,

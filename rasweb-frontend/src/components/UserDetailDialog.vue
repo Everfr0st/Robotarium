@@ -46,14 +46,7 @@
       <v-card-actions>
         <v-row justify="center" class="mt-1 mb-2 px-5">
           <v-btn
-            @click="
-              addChat2List({
-                username: dialog.username,
-                name: dialog.name,
-                online: dialog.online,
-                profile_picture: dialog.profilePicture,
-              })
-            "
+            @click="addChat2List(dialog)"
             small
             class="mr-1"
             color="primary"

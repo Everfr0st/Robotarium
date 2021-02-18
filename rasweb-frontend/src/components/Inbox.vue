@@ -4,7 +4,7 @@
     <v-card-subtitle class="mt-2" v-if="!inbox.length">Aún no tienes mensajes 😵</v-card-subtitle>
     <v-card-text class="px-0 pt-0 mx-0 pb-0" v-for="(conversation, index) in inbox"
         :key="index">
-        <ChatElement v-on:unreadMessages="updateCountUnreadMessages" :index="index" :dialog="conversation" />
+        <ChatElement :index="index" :dialog="conversation" />
     </v-card-text>
   </v-card>
 </template>
@@ -19,7 +19,10 @@ export default {
   },
   data: () => ({
     inbox: [],
-    apiDir: "/robotarium-api/v1.0/inbox/",
+    apiDir: {
+      inbox: "/robotarium-api/v1.0/inbox/" ,
+     
+    }, 
     unreadMessages: 0,
   }),
   computed: {
@@ -31,7 +34,7 @@ export default {
   methods: {
     ...mapMutations(["addChat2List"]),
     retrieveMessages() {
-      fetch(this.domainBase + this.apiDir, {
+      fetch(this.domainBase + this.apiDir.inbox, {
         headers: {
           Authorization: `Token ${this.authentication.accessToken}`,
         },
@@ -46,11 +49,7 @@ export default {
           console.error(err);
         });
     },
-    updateCountUnreadMessages(unreadMessages){
-      this.unreadMessages += unreadMessages;
-      this.$emit('unreadMessages', this.unreadMessages)
-      this.unreadMessages = 0;
-    },
+    
 
   },
 };

@@ -37,7 +37,7 @@
               ></div>
             </v-col>
           </v-row>
-          <v-divider class="mt-2 mb-2"></v-divider>
+          <v-divider class="mt-4 mb-2"></v-divider>
 
           <v-row v-if="tagUsers">
             <v-col sm="12">
@@ -84,7 +84,9 @@
                         v-text="data.item"
                       ></v-list-item-content>
                     </template>
-                    <template v-else>
+                    <template
+                      v-else-if="data.item.username != selfUser.username"
+                    >
                       <v-list-item-avatar left v-if="data.item.profile_picture">
                         <img
                           :src="data.item.profile_picture"
@@ -240,7 +242,7 @@
 // @ is an alias to /src
 import { mapState, mapMutations } from "vuex";
 import PubList from "@/components/PubList.vue";
-
+import { sendNotificationViaWS } from "../auxfunctions/DomFunctions.js";
 export default {
   name: "Home",
   components: {
@@ -366,21 +368,13 @@ export default {
       if (index >= 0) this.users.splice(index, 1);
     },
     sendNotification() {
-      let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
-
       this.tagUserslist.forEach((user) => {
-        var websocket = new WebSocket(
-          protocol + this.wsBase + "/ws/notifications/" + user + "/"
-        );
         let sockedData = {
           type: "new_notification",
           sender: this.selfUser.username,
           receiver: user,
         };
-        websocket.onopen = () => websocket.send(JSON.stringify(sockedData));
-        websocket.onmessage = ({ data }) => {
-          websocket.close();
-        };
+        sendNotificationViaWS(sockedData, this.wsBase, user);
       });
     },
     sleep(ms) {

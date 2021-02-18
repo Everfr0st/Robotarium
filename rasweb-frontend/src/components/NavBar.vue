@@ -25,6 +25,7 @@
         @click="
           inbox = !inbox;
           notifications = false;
+          profilePicture = false;
         "
       >
         <v-badge
@@ -40,6 +41,7 @@
         @click="
           notifications = !notifications;
           inbox = false;
+          profilePicture = false;
         "
         fab
         text
@@ -55,7 +57,7 @@
       </v-btn>
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
+          <v-btn icon v-bind="attrs" v-on="on" @click="notifications = false; inbox = false;">
             <v-avatar size="30" color="blue" v-if="profile_picture">
               <img :src="profile_picture" :alt="name" />
             </v-avatar>
@@ -72,7 +74,7 @@
           <v-list-item class="item" :to="{ name: 'MoreInfo' }">
             <v-list-item-title>Rol</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="profilePicture = true;" class="item">
+          <v-list-item @click="profilePicture = !profilePicture;" class="item">
             <v-list-item-title >Foto de perfil</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -97,11 +99,10 @@
       class="notifications"
     />
     <Inbox
-      v-on:unreadMessages="updateMsgStatus"
       v-if="inbox"
       style="position: fixed"
     />
-    <profile-picture v-if="profilePicture" />
+    <profile-picture v-on:closed="profilePicture = false;" v-if="profilePicture" />
   </div>
 </template>
 
@@ -131,7 +132,8 @@ export default {
     profilePicture: false,
     apiDir: {
       logout: "/robotarium-api/v1.0/logout/",
-      navBar: "/robotarium-api/v1.0/navbar-info/"
+      navBar: "/robotarium-api/v1.0/navbar-info/",
+       unread: "/robotarium-api/v1.0/chat/unread-msgs"
     }
   }),
   async created() {
@@ -168,6 +170,9 @@ export default {
     logo.forEach((boton) => {
       boton.classList.remove("v-btn--active", "v-btn--contained");
     });
+    this.$root.$on("unreadMsgs", ()=>{
+      this.updateCountUnreadMessages();
+    })
   },
   methods: {
     ...mapMutations(["setSelfuser", "destroyAuthcredentials"]),
@@ -206,6 +211,8 @@ export default {
                 : socketData.unread_notifications;
             this.unread_notifications = unread_notifications;
             this.snackbar = true;
+          } else if(socketData.type === "new_msg" && socketData.sender != this.username){
+            this.updateCountUnreadMessages();
           }
         };
       };
@@ -217,6 +224,23 @@ export default {
     updateMsgStatus(unreadMessages) {
       this.unread_messages = unreadMessages;
     },
+    updateCountUnreadMessages(){
+      fetch(this.domainBase + this.apiDir.unread, {
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((response) => {
+          this.unread_messages = response.unread_messages > 10?'+10':response.unread_messages;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    
   },
   computed: {
     ...mapState(["authentication", "wsBase", "domainBase"]),

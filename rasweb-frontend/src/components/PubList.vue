@@ -68,8 +68,8 @@
             >
             </v-carousel-item>
           </v-carousel>
-        <v-row class="pr-3">
-          <v-divider class="ml-3 mb-3 mt-3"></v-divider>
+        <v-row class="px-3 pt-6">
+          <v-divider class="mb-3"></v-divider>
         </v-row>
       </v-card>
     </v-lazy>

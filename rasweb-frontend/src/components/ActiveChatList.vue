@@ -3,7 +3,6 @@
     <v-row  justify="end" class="pa-0">   
       <div v-for="(chat,index) in chats" :key="index">
           <ActiveChat :id="`chat_${chat.username}`" :chat="chat" v-on:close="deleteChat" :index="index"/>
-      
       </div>
     </v-row>
   </v-container>
@@ -20,7 +19,6 @@ export default {
     ActiveChat,
   },
   data: () => ({
-    closedChats : []
   }),
   computed: {
   ...mapState(["chats"]), 
@@ -29,9 +27,8 @@ export default {
     ...mapMutations(["deleteChatfromlist"]),
     deleteChat(chat){
       this.deleteChatfromlist(chat.index);
-      let chatCard = document.getElementById('chat_'+chat.username)
+      
       //chatCard.parentNode.removeChild(chatCard);
-      this.closedChats.push(chat.username)
 
     }
   },
@@ -41,19 +38,12 @@ export default {
 };
 </script>
 <style  scoped>
-.chat-list{
-  display: block;
-  position: fixed;
-  bottom: -15px;
-  left: 0px;
-  height: auto;
-  z-index: 10;
-}
+
 @media (min-width: 1264px){
     .chat-list{
     display: block;
     position: fixed;
-    bottom: -15px;
+    bottom: -13px;
     left: 0px;
     width: 90vw;
     height: auto;
@@ -62,7 +52,6 @@ export default {
 @media (max-width: 1264px){
     .chat-list{
     display: none;
-
   }
 }
 

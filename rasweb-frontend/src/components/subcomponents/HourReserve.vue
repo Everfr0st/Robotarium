@@ -1,7 +1,27 @@
 <template>
   <div>
     <v-card>
-      <v-card-title> Habilitado: de 8am - 12m y 2pm - 6pm</v-card-title>
+      <v-card-title
+        >Horario
+
+        <div class="ml-auto">
+          <v-switch
+            v-if="date.length > 1"
+            class="switch"
+            v-model="allDay"
+            :label="allDay ? 'Día' : 'Horas'"
+          ></v-switch>
+        </div>
+        <div>
+          <v-btn
+            title="Cerrar"
+            color="error"
+            icon
+            @click="$emit('closeHourPicker')"
+            ><v-icon>mdi-close</v-icon></v-btn
+          >
+        </div>
+      </v-card-title>
       <v-sheet height="500" style="overflow: hidden">
         <v-calendar
           ref="calendar"
@@ -43,14 +63,6 @@
           </template>
         </v-calendar>
         <v-card-actions>
-          <v-btn
-            title="Cerrar"
-            color="error"
-            class="close"
-            icon
-            @click="$emit('closeHourPicker')"
-            ><v-icon>mdi-close</v-icon></v-btn
-          >
           <v-speed-dial
             v-model="fab"
             :bottom="true"
@@ -58,7 +70,7 @@
             :open-on-hover="!reservation_created"
             transition="slide-y-reverse-transition"
             class="submit-reserve"
-            v-if="!disabled && !reservation_created"
+            v-if="(!disabled || allDay) && !reservation_created"
           >
             <template v-slot:activator>
               <v-btn
@@ -72,7 +84,13 @@
                 <v-icon v-else> mdi-calendar </v-icon>
               </v-btn>
             </template>
-            <v-btn  @click="quantityDialog=!quantityDialog;" fab dark small color="indigo">
+            <v-btn
+              @click="quantityDialog = !quantityDialog"
+              fab
+              dark
+              small
+              color="indigo"
+            >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn @click="submitReserve()" fab dark small color="green">
@@ -88,9 +106,19 @@
     <v-dialog width="600" persistent v-model="quantityDialog">
       <v-card class="pa-6">
         <v-card-text>
-          <v-text-field :rules="[validQuantity]"  label="Cantidad" type="number" v-model="quantity"></v-text-field>
+          <v-text-field
+            :rules="[validQuantity]"
+            label="Cantidad"
+            type="number"
+            v-model="quantity"
+          ></v-text-field>
           <v-row class="px-3">
-            <v-btn :disabled="quantityBtn" @click="quantityDialog=false;" color="accent darken-2">Aceptar</v-btn>
+            <v-btn
+              :disabled="quantityBtn"
+              @click="quantityDialog = false"
+              color="accent darken-2"
+              >Aceptar</v-btn
+            >
           </v-row>
         </v-card-text>
       </v-card>
@@ -145,29 +173,62 @@ export default {
     fab: "",
     quantityDialog: false,
     quantityBtn: false,
-     
+    allDay: false,
+    auxEvent: {
+      event: "",
+      reserveSubmit: "",
+    },
   }),
-
+  watch: {
+    allDay() {
+      if (this.allDay) {
+        this.auxEvent.event = this.events[this.index];
+        this.auxEvent.reserveSubmit = this.reserveSubmit;
+        this.events.pop();
+        this.index = null;
+        this.reserveSubmit = {
+          schedule: {
+            date: this.date,
+            start: new Date(this.date[0] + "T00:00:00")
+              .toString()
+              .substr(16, 8),
+            end: new Date(this.date[0] + "T23:59:59").toString().substr(16, 8),
+          },
+          element: {
+            name: this.item.name,
+            code: this.item.code,
+          },
+          user: {
+            username: this.selfUser.username,
+          },
+          quantity: this.quantity,
+        };
+      } else if (this.auxEvent != null) {
+        this.events.push(this.auxEvent.event);
+        this.reserveSubmit = this.auxEvent.reserveSubmit;
+        this.index = this.events.length - 1;
+      }
+    },
+  },
   async created() {
     const response = await this.getApiInfo();
     this.getEvents(response);
   },
-  
+
   computed: {
     ...mapState(["selfUser", "domainBase", "authentication"]),
     dateReservation() {
       return this.date[0];
     },
-    validQuantity(){
-      if(this.quantity > this.item.quantity || this.quantity < 1){
+    validQuantity() {
+      if (this.quantity > this.item.quantity || this.quantity < 1) {
         this.quantityBtn = true;
-        return `Cantidad inválida (max. ${this.item.quantity}).`
-      } else{
+        return `Cantidad inválida (max. ${this.item.quantity}).`;
+      } else {
         this.quantityBtn = false;
         return true;
       }
-    }
-     
+    },
   },
   methods: {
     startDrag({ event, timed }) {
@@ -181,12 +242,11 @@ export default {
       const mouse = this.toTime(tms);
       if (this.dragEvent && this.dragTime === null) {
         const start = this.dragEvent.start;
-
         this.dragTime = mouse - start;
-      } else if (this.selfUserEvents.length < 1) {
+      } else if (this.selfUserEvents.length < 1 && !this.allDay) {
         this.createStart = this.roundTime(mouse);
         this.createEvent = {
-          name: `${this.selfUser.name} separa el elemento: ${this.item.name}`,
+          name: `Reservas el elemento: ${this.item.name}`,
           color: this.rndElement(this.colors),
           start: this.createStart,
           end: this.createStart + 0.5 * 3600 * 1000,
@@ -309,7 +369,7 @@ export default {
         const date2time_end = this.dateTotime(aux_vec);
 
         this.createEvent = {
-          name: `${element.user.name} separó el elemento: ${element.element}`,
+          name: `${element.user.name.trim().length?element.user.name.trim():"@"+element.user.username} separó el elemento: ${element.element}`,
           color: this.rndElement(this.colors),
           start: date2time_start,
           end: date2time_end,
@@ -485,6 +545,8 @@ export default {
         this.extendOriginal = null;
         this.selfUserEvents = [];
         this.index = null;
+        this.auxEvent.event = "";
+        this.auxEvent.reserveSubmit = "";
       }
     },
     submitReserve() {
@@ -573,10 +635,5 @@ div {
   position: absolute;
   bottom: 10px;
   right: 20px;
-}
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
 }
 </style>

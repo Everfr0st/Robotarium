@@ -4,7 +4,6 @@
       v-if="authentication.userIsAuthenticated || authentication.accessToken"
     >
       <NavBar />
-
       <v-main id="main">
         <v-btn
           @click="toggleMenu"

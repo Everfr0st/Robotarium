@@ -27,7 +27,7 @@
             >
               <LeftAside />
               <v-btn
-                class="ml-4 mt-5"
+                class="ml-4 mt-2"
                 small
                 outlined
                 color="error darken-1"

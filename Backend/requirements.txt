@@ -6,12 +6,10 @@ django_eventstream == 3.1.0
 django_model_utils == 4.0.0
 django_notify_x == 0.1.9
 opencv_python == 4.2.0.34
-python-memcached
 Pillow
 djangorestframework
-#djangorestframework_simplejwt
 django-cors-headers
-asgiref~=3.2  --use-feature=2020-resolver
+asgiref~=3.2
 icalendar
 psycopg2--binary
 dj_rest_auth

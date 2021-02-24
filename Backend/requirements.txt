@@ -3,7 +3,6 @@ channels~=3.0.3
 django_allauth
 django_braces
 django_eventstream
-django_model_utils
 django_notify_x
 opencv_python
 Pillow~=8.0.1
@@ -13,4 +12,3 @@ dj_rest_auth
 djangorestframework~=3.12.2
 django-model-utils~=4.1.1
 asgiref~=3.3.1
-django-allauth~=0.44.0

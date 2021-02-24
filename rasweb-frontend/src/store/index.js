@@ -28,8 +28,8 @@ export default new Vuex.Store({
     robotarium:'',
     chats: [],
     users: [],
-    wsBase : '127.0.0.1:8000',
-    domainBase : 'http://127.0.0.1:8000',
+    wsBase : 'robotarium.uao.edu.co',
+    domainBase : 'https://robotarium.uao.edu.co',
     view: '',
   },
   mutations: {

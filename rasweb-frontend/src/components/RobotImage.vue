@@ -100,7 +100,7 @@ export default {
         console.error(error);
       });
       this.ros.on("close", () => {
-        console.log("connection closed");
+       // console.log("connection closed");
       });
     },
     subscribe2Topic() {

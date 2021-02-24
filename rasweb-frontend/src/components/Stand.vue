@@ -35,36 +35,6 @@ export default {
     ...mapState(["domainBase", "authentication", "reservation"]),
   },
   props: ["stand", "levels"],
-  created() {
-    /* let response = await fetch(
-      this.domainBase + this.api_dir + "&code=" + this.stand,
-      {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        headers: {
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
-      }
-    );
-    response = await response.json();
-    let aux_array = [];
-    for (let index = 0; index < response.length; index++) {
-      if (index == 0) {
-        aux_array.push(response[index]);
-      } else {
-        let current_obj_array = response[index].code.split("-")[1].split("");
-        let previous_obj_array = response[index - 1].code
-          .split("-")[1]
-          .split("");
-        if (current_obj_array[0] == previous_obj_array[0]) {
-          aux_array.push(response[index]);
-        } else {
-          this.data_api.push(aux_array);
-          console.log(aux_array);
-          aux_array = [];
-        }
-      }
-    }*/
-  },
 };
 </script>
 

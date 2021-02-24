@@ -45,7 +45,6 @@ export function sendNotificationViaWS(sockedData, wsBase, channel) {
     var websocket = new WebSocket(
         protocol + wsBase + "/ws/notifications/" + channel + "/"
     );
-    console.log(websocket);
     websocket.onopen = () => websocket.send(JSON.stringify(sockedData));
     websocket.onmessage = () => {
         websocket.close();

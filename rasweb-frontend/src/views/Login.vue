@@ -111,7 +111,7 @@ export default {
   methods: {
     ...mapMutations(["updateAuthcredentials", "setViewname"]),
     loginSubmit() {
-      
+      console.log("asd");
       this.loading = true;
       if(this.username){
         let form_data = {};

@@ -2,7 +2,7 @@ Django == 3.0.4
 channels == 2.4.0
 django_allauth == 0.42.0
 django_braces == 1.14.0
-django_eventstream == 3.1.0
+#django_eventstream == 3.1.0
 django_model_utils == 4.0.0
 django_notify_x == 0.1.9
 opencv_python == 4.2.0.34

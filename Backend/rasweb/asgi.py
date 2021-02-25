@@ -19,14 +19,14 @@ from Apps.Notifications import routing as notify_routing
 from Apps.Robotarium import routing as robotarium_routing
 
 application = ProtocolTypeRouter({
+
     # Django's ASGI application to handle traditional HTTP requests
     'http': URLRouter([
         url(r'^notifications/', AuthMiddlewareStack(
             URLRouter(django_eventstream.routing.urlpatterns)
         ), {'channels': ['posts']}),
-        django_asgi_app,
+        url(r'', django_asgi_app),
     ]),
-    # WebSocket chat handler
     'websocket': AuthMiddlewareStack(
         URLRouter(
             chat_routing.websocket_urlpatterns +

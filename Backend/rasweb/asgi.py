@@ -24,7 +24,7 @@ application = ProtocolTypeRouter({
         url(r'^notifications/', AuthMiddlewareStack(
             URLRouter(django_eventstream.routing.urlpatterns)
         ), {'channels': ['posts']}),
-        url(r'', django_asgi_app),
+        django_asgi_app,
     ]),
     # WebSocket chat handler
     'websocket': AuthMiddlewareStack(

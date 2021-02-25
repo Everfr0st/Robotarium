@@ -1,5 +1,6 @@
 import os
 
+import django_eventstream
 from django.conf.urls import url
 from django.core.asgi import get_asgi_application
 
@@ -19,8 +20,12 @@ from Apps.Robotarium import routing as robotarium_routing
 
 application = ProtocolTypeRouter({
     # Django's ASGI application to handle traditional HTTP requests
-    "http": django_asgi_app,
-
+    'http': URLRouter([
+        url(r'^notifications/', AuthMiddlewareStack(
+            URLRouter(django_eventstream.routing.urlpatterns)
+        ), {'channels': ['posts']}),
+        url(r'', django_asgi_app),
+    ]),
     # WebSocket chat handler
     "websocket": AuthMiddlewareStack(
         URLRouter(
@@ -31,4 +36,3 @@ application = ProtocolTypeRouter({
         )
     ),
 })
-

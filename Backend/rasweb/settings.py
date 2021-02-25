@@ -169,7 +169,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'Files')
 MEDIA_URL = '/ras-uao-files/'
 
 # Django channels
-ASGI_APPLICATION = "rasweb.asgi.application"
+ASGI_APPLICATION = "rasweb.routing.application"
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',

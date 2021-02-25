@@ -26,7 +26,7 @@ SECRET_KEY = 'bt+7398mxkr^_3dccbup8gns3q#1qhc#705*g$grpq!re_l6&q'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['robotarium.uao.edu.co']
+ALLOWED_HOSTS = ['robotarium.uao.edu.co', '127.0.0.1']
 
 # Application definition
 
@@ -76,10 +76,15 @@ MIDDLEWARE = [
 EVENTSTREAM_ALLOW_ORIGIN = "*"
 EVENTSTREAM_ALLOW_CREDENTIALS = False
 
-# this is for corsheaders (pip)
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_HEADERS = default_headers + ('cache-control',)
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "https://ras.uao.edu.co",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080"
+]
+# CORS_ALLOW_HEADERS = default_headers + ('cache-control',)
 # Check why not works
 # AUTHENTICATION_BACKENDS = ['Apps.User.backend.EmailAuthBackend']
 

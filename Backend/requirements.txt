@@ -11,6 +11,5 @@ psycopg2-binary
 django-cors-headers
 dj_rest_auth
 djangorestframework~=3.12.2
-django-model-utils~=4.1.1
 asgiref~=3.3.1
 django-allauth~=0.44.0

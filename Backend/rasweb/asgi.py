@@ -23,11 +23,12 @@ application = ProtocolTypeRouter({
 
     # WebSocket chat handler
     "websocket": AuthMiddlewareStack(
-        URLRouter([
+        URLRouter(
             chat_routing.websocket_urlpatterns +
             live_routing.websocket_urlpatterns +
             notify_routing.websocket_urlpatterns +
             robotarium_routing.websocket_urlpatterns
-        ])
+        )
     ),
 })
+

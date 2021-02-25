@@ -8,7 +8,7 @@ import django_eventstream
 from . import consumers
 
 websocket_urlpatterns = [
-    re_path(r'ws/notifications/(?P<username>\w+)/$', consumers.ChatConsumer),
+    re_path(r'ws/notifications/(?P<username>\w+)/$', consumers.ChatConsumer.as_asgi()),
 ]
 urlpatterns = [
     url(r'^notifications/', AuthMiddlewareStack(

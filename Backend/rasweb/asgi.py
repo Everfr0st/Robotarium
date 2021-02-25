@@ -19,7 +19,7 @@ from Apps.Robotarium import routing as robotarium_routing
 
 application = ProtocolTypeRouter({
     # Django's ASGI application to handle traditional HTTP requests
-    "http": django_asgi_app,
+    "http": notify_routing.urlpatterns,
 
     # WebSocket chat handler
     "websocket": AuthMiddlewareStack(

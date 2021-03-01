@@ -7,7 +7,7 @@
         </v-col>
         <v-col md="8" lg="9">
           <MainVideoStream />
-          <tacometer />
+          <tacometer v-if="robot" />
         </v-col>
       </v-row>
     </v-container>
@@ -37,6 +37,7 @@ export default {
   },
   data: () => ({
     apiDir: "/robotarium-api/v1.0/robot-status/",
+    robot: false,
   }),
   created() {
     document.title = "Robotarium Live Stream · UAO-RAS";
@@ -46,6 +47,9 @@ export default {
     this.$root.$on("ROSconnected", (data) => {
       this.updateRobotStatus(data);
     });
+    this.$root.$on("robotSelected", (data) => {
+      this.robot = data;
+    })
   },
   computed: {
     ...mapState(["reservation", "domainBase"]),

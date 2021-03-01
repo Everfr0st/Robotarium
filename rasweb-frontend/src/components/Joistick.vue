@@ -68,6 +68,9 @@ export default {
     this.connect();
     //joistick_div.style = "position: relative;"
   },
+  beforeDestroy(){
+    this.stop();
+  },
   computed: {
     color() {
       if (this.speed < 25) return "red";

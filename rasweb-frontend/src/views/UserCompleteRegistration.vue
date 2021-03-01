@@ -26,7 +26,7 @@
           </div>
           <div v-else-if="role == 'Docente'">
             <v-text-field
-              label="Departamento"
+              label="Programa"
               :rules="[rules.required]"
               v-model="department"
             ></v-text-field>

@@ -55,7 +55,7 @@ async def send_data(uri):
 
 print('conectando a :')
 print('ws://robotarium.uao.edu.co/ws/live-main-stream/{}/'.format(sys.argv[1]))
-asyncio.get_event_loop().run_until_complete(send_data('wss://robotarium.uao.edu.co/ws/live-main-stream/{}/'.format(sys.argv[1])))
+asyncio.get_event_loop().run_until_complete(send_data('ws://robotarium.uao.edu.co/ws/live-main-stream/{}/'.format(sys.argv[1])))
     
     
      

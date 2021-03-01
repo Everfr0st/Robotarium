@@ -148,7 +148,7 @@ class UserDetail(TemplateView):
 
         try:
             user_is_teacher = Teacher.objects.get(user__username=username)
-            first_element = "Departamento de " + user_is_teacher.department
+            first_element = "Programa de " + user_is_teacher.department
             second_element = "Trabaja desde el " + str(user_is_teacher.date_start.strftime("%d de %b de %Y"))
         except:
             try:

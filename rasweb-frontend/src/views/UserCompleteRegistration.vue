@@ -86,7 +86,7 @@ export default {
     this.getUserRole();
     this.setViewname("Rol");
   },
-  
+
   methods: {
     ...mapMutations(["setViewname"]),
     getUserRole() {
@@ -104,9 +104,9 @@ export default {
           }
         })
         .then((response) => {
-          if(!response.role) return 0;
+          if (!response.role) return 0;
           this.role = response.role;
-          this.userRole = true
+          this.userRole = true;
           if (response.role == "Estudiante") {
             this.career = response.career;
             this.semester = response.semester;

@@ -29,7 +29,7 @@ export default new Vuex.Store({
     chats: [],
     users: [],
     wsBase : 'robotarium.uao.edu.co',
-    domainBase : 'https://robotarium.uao.edu.co',
+    domainBase : document.location.protocol +'//robotarium.uao.edu.co',
     view: '',
   },
   mutations: {

@@ -20,6 +20,7 @@
       <v-spacer></v-spacer>
 
       <v-btn
+        class="inbox-component"
         fab
         text
         @click="
@@ -299,10 +300,16 @@ export default {
   #logout-btn {
     display: block;
   }
+  .inbox-component{
+    display: none;
+  }
 }
 @media (min-width: 1264px) {
   #logout-btn {
     display: none;
+  }
+  .inbox-component{
+    display: block;
   }
 }
 .item:hover{

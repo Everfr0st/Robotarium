@@ -107,13 +107,13 @@
     <div v-if="robot">
       <v-card class="mt-3 mr-4">
         <joistick
-          :wsAddress="`ws://${appDomain}:${getMeta.websocket}`"
+          :wsAddress="websocketAddress"
           :robot="robotObj"
         />
       </v-card>
       <v-card class="mt-4 px-3 mr-4 pb-10">
         <robot-image
-          :wsAddress="`ws://${appDomain}:${getMeta.websocket}`"
+          :wsAddress="websocketAddress"
           :robot="robotObj"
           v-on:robotView="setRobotImage"
         />
@@ -191,6 +191,10 @@ export default {
       try {
         return JSON.parse(this.robotObj.meta);
       } catch (error) {}
+    },
+    websocketAddress() {
+      let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
+      return protocol + this.appDomain + ":" + this.getMeta.websocket;
     },
   },
   methods: {
